@@ -36,33 +36,31 @@
   }
 
   .dark {
-    --background: 240 5% 14%;
+    --background: 230 50% 5%; /* Deep dark blue */
     --foreground: 0 0% 98%;
 
-    --card: 240 5% 20%;
+    --card: 230 40% 10%; /* Slightly lighter dark blue for cards */
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 5% 20%;
+    --popover: 230 40% 10%;
     --popover-foreground: 0 0% 98%;
 
-    --border: 240 5% 26%;
-    --input: 240 5% 26%;
+    --border: 230 30% 18%; /* Subtle blue-gray borders */
+    --input: 230 30% 18%;
 
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
 
-    --secondary: 240 4% 18%;
+    --secondary: 230 30% 15%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 240 4% 18%;
-    --muted-foreground: 240 5% 68%;
+    --muted: 230 30% 15%;
+    --muted-foreground: 230 10% 65%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 240 4.9% 83.9%;
+    --ring: 230 60% 50%;
   }
 }
 
