@@ -35,7 +35,14 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const rawAccentCookie = cookieStore.get("accentColor")?.value;
-  const accentCookie = rawAccentCookie ? decodeURIComponent(rawAccentCookie) : "345 100% 60%";
+  let accentCookie = "345 100% 60%";
+  if (rawAccentCookie) {
+    try {
+      accentCookie = decodeURIComponent(rawAccentCookie);
+    } catch (e) {
+      accentCookie = rawAccentCookie; // Fallback to raw if decode fails
+    }
+  }
 
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
