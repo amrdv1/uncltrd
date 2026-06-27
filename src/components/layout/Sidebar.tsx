@@ -25,7 +25,7 @@ export async function Sidebar() {
   const userImage = dbUser?.image || session?.user?.image;
 
   return (
-    <aside className="fixed left-0 top-0 h-[125vh] w-[320px] bg-white dark:bg-card/60 backdrop-blur-2xl text-black dark:text-white border-r border-zinc-200 dark:border-white/5 hidden lg:flex flex-col overflow-y-auto font-sans [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] transition-colors z-40 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]">
+    <aside className="fixed left-0 top-0 h-[125vh] w-[320px] bg-white dark:bg-card text-black dark:text-white border-r border-zinc-200 dark:border-white/10 hidden lg:flex flex-col overflow-y-auto font-sans [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] transition-colors z-40 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.4)]">
       <div className="p-8 pb-4">
         {isLoggedIn ? (
           <div className="flex flex-col space-y-4 mb-4">
