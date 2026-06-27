@@ -22,12 +22,21 @@ export async function register(formData: FormData) {
     redirect("/register?error=Пароль+має+містити+мінімум+8+символів,+велику+букву,+цифру+та+спеціальний+символ");
   }
 
-  const existingUser = await db.user.findUnique({
-    where: { email },
+  const existingUser = await db.user.findFirst({
+    where: { 
+      OR: [
+        { email },
+        { name: { equals: name, mode: "insensitive" } }
+      ]
+    },
   });
 
   if (existingUser) {
-    redirect("/register?error=User+already+exists");
+    if (existingUser.email === email) {
+      redirect("/register?error=User+already+exists");
+    } else {
+      redirect("/register?error=Нікнейм+вже+зайнятий");
+    }
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -43,7 +52,7 @@ export async function register(formData: FormData) {
   const verificationToken = await generateVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
-  return { success: "Лист для підтвердження надіслано!" };
+  redirect("/login?success=Аккаунт+успішно+створено,+тепер+увійдіть");
 }
 
 export async function login(formData: FormData, code?: string) {

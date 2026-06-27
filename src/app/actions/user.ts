@@ -13,6 +13,15 @@ export async function updateProfile(formData: FormData) {
   const name = formData.get("name") as string;
   const image = formData.get("image") as string;
 
+  if (name && name !== session.user.name) {
+    const existingName = await db.user.findFirst({
+      where: { name: { equals: name, mode: "insensitive" } }
+    });
+    if (existingName) {
+      throw new Error("Цей нікнейм вже зайнятий");
+    }
+  }
+
   await db.user.update({
     where: { id: session.user.id },
     data: {

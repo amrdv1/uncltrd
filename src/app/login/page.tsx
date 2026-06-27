@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { login } from "@/app/actions/auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
@@ -11,6 +11,18 @@ export default function LoginPage() {
   const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const successParam = params.get("success");
+      if (successParam) {
+        setSuccess(successParam);
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  }, []);
 
   const handleSubmit = async (formData: FormData) => {
     setIsPending(true);

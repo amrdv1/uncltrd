@@ -4,11 +4,13 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { ChangePasswordForm } from "@/components/admin/ChangePasswordForm";
+import { ChangeRoleSelect } from "@/components/admin/ChangeRoleSelect";
 
 export default async function AdminUsersPage() {
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") {
-    // Only admins can see users
+  const allowedEmails = ["gokrai@uncultured.media", "leanoplav@uncultured.media", "skyti@uncultured.media"];
+  if (session?.user?.role !== "ADMIN" && !allowedEmails.includes(session?.user?.email?.toLowerCase() || "")) {
+    // Only admins or specific users can see users
     redirect("/admin-panel");
   }
 
@@ -67,13 +69,17 @@ export default async function AdminUsersPage() {
                     <td className="p-6 font-bold text-black dark:text-white">{u.name || "N/A"}</td>
                     <td className="p-6 text-zinc-500 dark:text-zinc-400 font-medium">{u.email}</td>
                     <td className="p-6">
-                      <span className={`px-3 py-1 text-[9px] rounded-full font-black uppercase tracking-widest border ${
-                        u.role === "ADMIN" ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-500 dark:border-purple-500/20" :
-                        u.role === "EDITOR" ? "bg-lime-100 text-lime-800 border-lime-200 dark:bg-lime-500/10 dark:text-lime-500 dark:border-lime-500/20" :
-                        "bg-zinc-100 text-zinc-600 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700"
-                      }`}>
-                        {u.role}
-                      </span>
+                      {session?.user?.id === u.id ? (
+                        <span className={`px-3 py-1 text-[9px] rounded-full font-black uppercase tracking-widest border ${
+                          u.role === "ADMIN" ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-500 dark:border-purple-500/20" :
+                          u.role === "EDITOR" ? "bg-lime-100 text-lime-800 border-lime-200 dark:bg-lime-500/10 dark:text-lime-500 dark:border-lime-500/20" :
+                          "bg-zinc-100 text-zinc-600 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700"
+                        }`}>
+                          {u.role}
+                        </span>
+                      ) : (
+                        <ChangeRoleSelect userId={u.id} currentRole={u.role} />
+                      )}
                     </td>
                     <td className="p-6 text-zinc-500 font-medium uppercase tracking-widest text-[10px]">{u.createdAt.toLocaleDateString("uk-UA")}</td>
                     <td className="p-6 text-right">

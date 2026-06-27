@@ -9,7 +9,8 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-  const isAdmin = session?.user?.role === "ADMIN";
+  const allowedEmails = ["gokrai@uncultured.media", "leanoplav@uncultured.media", "skyti@uncultured.media"];
+  const isAdmin = session?.user?.role === "ADMIN" || allowedEmails.includes(session?.user?.email?.toLowerCase() || "");
 
   return (
     <div className="flex min-h-screen bg-zinc-50 dark:bg-[#050505] text-zinc-900 dark:text-white selection:bg-accent selection:text-white transition-colors">
