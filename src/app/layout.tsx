@@ -46,7 +46,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
-      <body className="antialiased bg-background text-foreground selection:bg-accent selection:text-white min-h-screen" style={{ "--accent": accentCookie } as React.CSSProperties}>
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: `:root, body { --accent: ${accentCookie}; }` }} />
+      </head>
+      <body className="antialiased bg-background text-foreground selection:bg-accent selection:text-white min-h-screen">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

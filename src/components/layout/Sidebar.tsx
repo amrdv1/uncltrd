@@ -53,7 +53,7 @@ export async function Sidebar() {
               <Link href="/settings" className="flex-1 text-center border border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest hover:border-black hover:text-black dark:hover:border-white dark:hover:text-white transition-colors">
                 Профіль
               </Link>
-              <LogoutButton className="flex-1 w-full text-center bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
+              <LogoutButton className="flex-1 w-full text-center bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white dark:hover:bg-red-600 dark:hover:text-white transition-colors">
                 Вийти
               </LogoutButton>
             </div>
