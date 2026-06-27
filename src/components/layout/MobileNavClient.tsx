@@ -108,10 +108,6 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
                     <Link href="/settings" onClick={() => setIsOpen(false)} className="block text-sm font-bold uppercase tracking-widest text-zinc-500 hover:text-black dark:hover:text-white transition-colors">
                       Налаштування
                     </Link>
-                    <div className="pt-2">
-                      <p className="text-[10px] font-bold text-zinc-400 mb-2 uppercase tracking-widest">Тема інтерфейсу</p>
-                      <ThemeSwitcher />
-                    </div>
                     <LogoutButton className="text-left text-sm font-bold uppercase tracking-widest text-red-500 hover:text-red-600 transition-colors w-full">
                       Вийти
                     </LogoutButton>

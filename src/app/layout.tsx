@@ -44,6 +44,7 @@ export default async function RootLayout({
           defaultTheme="light"
           enableSystem={false}
           disableTransitionOnChange
+          enableColorScheme={false}
         >
           {children}
         </ThemeProvider>
