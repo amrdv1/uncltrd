@@ -30,18 +30,18 @@ export default async function SettingsPage() {
 
       <div className="bg-white dark:bg-zinc-950 p-8 md:p-12 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 transition-colors">
         
-        <div className="flex items-center space-x-6 mb-10 pb-10 border-b border-zinc-100">
-          <div className="w-24 h-24 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400 overflow-hidden border-2 border-zinc-200 relative shrink-0">
+        <div className="flex items-center space-x-4 md:space-x-6 mb-10 pb-10 border-b border-zinc-100 dark:border-zinc-800">
+          <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-400 overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 shrink-0">
             {user.image ? (
               <img src={user.image} alt={user.name || "Avatar"} className="w-full h-full object-cover" />
             ) : (
               <User size={40} />
             )}
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-black dark:text-white">{user.name || "Користувач"}</h2>
-            <p className="text-zinc-500 dark:text-zinc-400 font-medium">{user.email}</p>
-            <div className="mt-2 inline-block bg-black text-accent px-3 py-1 text-xs font-bold uppercase tracking-widest rounded-full">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl md:text-2xl font-bold text-black dark:text-white truncate">{user.name || "Користувач"}</h2>
+            <p className="text-sm md:text-base text-zinc-500 dark:text-zinc-400 font-medium truncate" title={user.email || ""}>{user.email}</p>
+            <div className="mt-2 inline-block bg-black dark:bg-white text-accent dark:text-black px-3 py-1 text-xs font-bold uppercase tracking-widest rounded-full">
               {user.role}
             </div>
           </div>
