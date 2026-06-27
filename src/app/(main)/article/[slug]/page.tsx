@@ -237,7 +237,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
           <div className="mt-12">
             {!session?.user ? (
               <div className="bg-zinc-50 dark:bg-[#0a0a0a] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 text-center transition-colors">
-                <p className="text-zinc-500 dark:text-zinc-400 font-bold">Для відправки рецензії вам необхідно <Link href="/login" className="text-black dark:text-white underline hover:text-accent">увійти в свій акаунт</Link></p>
+                <p className="text-zinc-500 dark:text-zinc-400 font-bold">Щоб залишити рецензію, <Link href="/login" className="text-black dark:text-white underline hover:text-accent">увійдіть у свій акаунт</Link></p>
               </div>
             ) : (
               <RatingSliders 

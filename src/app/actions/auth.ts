@@ -52,7 +52,7 @@ export async function register(formData: FormData) {
   const verificationToken = await generateVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
-  return { redirectUrl: "/login?success=Аккаунт+успішно+створено,+тепер+увійдіть" };
+  return { redirectUrl: "/login?success=Акаунт+успішно+створено,+тепер+увійдіть" };
 }
 
 export async function login(formData: FormData, code?: string) {
