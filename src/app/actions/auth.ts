@@ -14,12 +14,12 @@ export async function register(formData: FormData) {
   const password = formData.get("password") as string;
 
   if (!email || !password) {
-    redirect("/register?error=Missing+fields");
+    return { error: "Всі поля обов'язкові" };
   }
 
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   if (!passwordRegex.test(password)) {
-    redirect("/register?error=Пароль+має+містити+мінімум+8+символів,+велику+букву,+цифру+та+спеціальний+символ");
+    return { error: "Пароль має містити мінімум 8 символів, велику букву, цифру та спеціальний символ" };
   }
 
   const existingUser = await db.user.findFirst({
@@ -33,9 +33,9 @@ export async function register(formData: FormData) {
 
   if (existingUser) {
     if (existingUser.email === email) {
-      redirect("/register?error=User+already+exists");
+      return { error: "Цей email використовується на іншому акаунті" };
     } else {
-      redirect("/register?error=Нікнейм+вже+зайнятий");
+      return { error: "Цей нікнейм вже зайнятий, спробуйте інший" };
     }
   }
 
@@ -52,7 +52,7 @@ export async function register(formData: FormData) {
   const verificationToken = await generateVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
-  redirect("/login?success=Аккаунт+успішно+створено,+тепер+увійдіть");
+  return { redirectUrl: "/login?success=Аккаунт+успішно+створено,+тепер+увійдіть" };
 }
 
 export async function login(formData: FormData, code?: string) {
