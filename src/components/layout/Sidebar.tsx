@@ -24,7 +24,7 @@ export async function Sidebar() {
   const userImage = dbUser?.image || session?.user?.image;
 
   return (
-    <aside className="fixed left-0 top-0 h-[125vh] w-[320px] bg-white dark:bg-[#0a0a0a] text-black dark:text-white border-r border-zinc-200 dark:border-zinc-800 hidden lg:flex flex-col overflow-y-auto font-sans [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] transition-colors">
+    <aside className="fixed left-0 top-0 h-[125vh] w-[320px] bg-white/80 dark:bg-background/80 backdrop-blur-xl text-black dark:text-white border-r border-zinc-200 dark:border-zinc-800 hidden lg:flex flex-col overflow-y-auto font-sans [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] transition-colors z-40">
       <div className="p-8 pb-4">
         {isLoggedIn ? (
           <div className="flex flex-col space-y-4 mb-4">
@@ -108,7 +108,7 @@ export async function Sidebar() {
         </nav>
 
       {/* Logo placed at the bottom */}
-      <div className="sticky bottom-0 p-8 mt-auto bg-white dark:bg-[#0a0a0a] z-10 border-t border-zinc-100 dark:border-zinc-800 transition-colors">
+      <div className="sticky bottom-0 p-8 mt-auto bg-transparent z-10 border-t border-zinc-100 dark:border-zinc-800 transition-colors">
         <Link href="/">
           <Image
             src="/logo.svg"

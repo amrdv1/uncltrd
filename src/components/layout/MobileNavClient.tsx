@@ -44,7 +44,7 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
       
       {/* Sidebar */}
       <div 
-        className={`fixed top-0 right-0 w-[80vw] sm:w-[320px] h-full bg-white dark:bg-[#0a0a0a] z-50 flex flex-col overflow-y-auto shadow-2xl transition-transform duration-400 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 right-0 w-[80vw] sm:w-[320px] h-full bg-white/80 dark:bg-background/80 backdrop-blur-xl z-50 flex flex-col overflow-y-auto shadow-2xl transition-transform duration-400 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
               <div className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800">
                 <span className="text-xl font-black uppercase tracking-tighter font-serif">Меню</span>
