@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { NavLinks } from "@/components/layout/NavLinks";
+import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 
 
 export async function Sidebar() {
@@ -104,7 +105,10 @@ export async function Sidebar() {
           </Link>
         </div>
 
-
+        <div className="pt-4 mb-4">
+          <p className="text-[10px] font-bold text-zinc-400 mb-2 uppercase tracking-widest">Тема інтерфейсу</p>
+          <ThemeSwitcher />
+        </div>
         </nav>
 
       {/* Logo placed at the bottom */}
