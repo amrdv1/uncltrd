@@ -144,7 +144,7 @@ export default async function Home() {
       {reviews.length > 0 && (
         <section className="px-4 md:px-6 lg:px-12">
           <div className="flex items-end justify-between gap-4 border-b-4 border-black pb-4 mb-6 md:mb-10">
-            <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tighter font-serif">Останні огляди</h2>
+            <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tighter font-serif">Останні 3 огляди</h2>
             <Link href="/category/reviews" className="text-sm font-bold tracking-widest uppercase text-zinc-500 hover:text-black transition-colors shrink-0 whitespace-nowrap mb-1">Більше оглядів</Link>
           </div>
           
