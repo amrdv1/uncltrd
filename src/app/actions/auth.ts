@@ -26,7 +26,7 @@ export async function register(formData: FormData) {
     where: { 
       OR: [
         { email },
-        { name: { equals: name, mode: "insensitive" } }
+        { name: { equals: name } }
       ]
     },
   });

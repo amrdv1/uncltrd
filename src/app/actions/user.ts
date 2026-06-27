@@ -15,7 +15,7 @@ export async function updateProfile(formData: FormData) {
 
   if (name && name !== session.user.name) {
     const existingName = await db.user.findFirst({
-      where: { name: { equals: name, mode: "insensitive" } }
+      where: { name: { equals: name } }
     });
     if (existingName) {
       throw new Error("Цей нікнейм вже зайнятий");

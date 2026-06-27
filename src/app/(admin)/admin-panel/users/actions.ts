@@ -46,7 +46,7 @@ export async function changeUserRole(formData: FormData) {
   }
 
   // Prevent changing your own role to avoid locking yourself out
-  if (session.user.id === userId) {
+  if (session?.user?.id === userId) {
     throw new Error("Cannot change your own role");
   }
 
