@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: "uncultured.",
     description: config.description,
     icons: {
-      icon: "/favicon.ico",
+      icon: "/favicon.ico?v=2",
     },
   };
 }
