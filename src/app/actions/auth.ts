@@ -17,6 +17,11 @@ export async function register(formData: FormData) {
     redirect("/register?error=Missing+fields");
   }
 
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!passwordRegex.test(password)) {
+    redirect("/register?error=Пароль+має+містити+мінімум+8+символів,+велику+букву,+цифру+та+спеціальний+символ");
+  }
+
   const existingUser = await db.user.findUnique({
     where: { email },
   });
