@@ -34,7 +34,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const accentCookie = cookieStore.get("accentColor")?.value || "345 100% 60%";
+  const rawAccentCookie = cookieStore.get("accentColor")?.value;
+  const accentCookie = rawAccentCookie ? decodeURIComponent(rawAccentCookie) : "345 100% 60%";
 
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
