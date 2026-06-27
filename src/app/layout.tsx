@@ -22,6 +22,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "uncultured.",
     description: config.description,
+    icons: {
+      icon: "/logo.svg",
+    },
   };
 }
 
