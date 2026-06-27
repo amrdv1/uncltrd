@@ -23,7 +23,7 @@ export function AccentColorPicker() {
       setActiveColor(decodeURIComponent(match[1]));
     } else {
       // get computed style fallback
-      const current = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+      const current = getComputedStyle(document.body).getPropertyValue("--accent").trim();
       if (current) setActiveColor(current);
     }
   }, []);
@@ -32,7 +32,7 @@ export function AccentColorPicker() {
     setActiveColor(value);
     
     // Set CSS Variable immediately for fast visual feedback
-    document.documentElement.style.setProperty("--accent", value);
+    document.body.style.setProperty("--accent", value);
     
     // Save to cookie (1 year expiry)
     document.cookie = `accentColor=${encodeURIComponent(value)}; max-age=31536000; path=/`;

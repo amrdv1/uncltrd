@@ -37,8 +37,8 @@ export default async function RootLayout({
   const accentCookie = cookieStore.get("accentColor")?.value || "345 100% 60%";
 
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} style={{ "--accent": accentCookie } as React.CSSProperties} suppressHydrationWarning>
-      <body className="antialiased bg-background text-foreground selection:bg-accent selection:text-white min-h-screen">
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
+      <body className="antialiased bg-background text-foreground selection:bg-accent selection:text-white min-h-screen" style={{ "--accent": accentCookie } as React.CSSProperties}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
