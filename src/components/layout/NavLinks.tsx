@@ -37,8 +37,7 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
               <div className="flex flex-col">
                 <button
                   onClick={() => toggleDropdown(link.label)}
-                  className="flex items-center justify-between w-full text-left text-2xl font-black uppercase tracking-tighter hover:text-accent transition-colors py-2 text-black dark:text-white"
-                  style={{ fontFamily: "var(--font-space-grotesk)" }}
+                  className="flex items-center justify-between w-full text-left text-2xl font-extrabold uppercase tracking-tighter hover:text-accent transition-colors py-2 text-black dark:text-white"
                 >
                   {link.label}
                   <motion.span
@@ -63,7 +62,6 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
                             href={subLink.href}
                             onClick={onLinkClick}
                             className="group flex items-center text-xl font-bold uppercase tracking-tight text-zinc-500 dark:text-zinc-400 hover:text-accent transition-all"
-                            style={{ fontFamily: "var(--font-space-grotesk)" }}
                           >
                             <span className="transform transition-transform duration-300 ease-out group-hover:translate-x-3">
                               {subLink.label}
@@ -79,8 +77,7 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
               <Link
                 href={link.href!}
                 onClick={onLinkClick}
-                className="group flex items-center text-2xl font-black uppercase tracking-tighter hover:text-accent transition-all py-2 text-black dark:text-white"
-                style={{ fontFamily: "var(--font-space-grotesk)" }}
+                className="group flex items-center text-2xl font-extrabold uppercase tracking-tighter hover:text-accent transition-all py-2 text-black dark:text-white"
               >
                 <span className="transform transition-transform duration-300 ease-out group-hover:translate-x-3">
                   {link.label}
