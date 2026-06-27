@@ -113,7 +113,7 @@ export default async function CategoryPage(props: {
 
   return (
     <div className="flex flex-col pb-24">
-      <section className="bg-white dark:bg-black border-b-2 border-black dark:border-white pt-12 pb-8 px-4 md:px-6 lg:px-12 mb-8 transition-colors">
+      <section className="bg-white dark:bg-transparent border-b-2 border-zinc-200 dark:border-white/10 pt-12 pb-8 px-4 md:px-6 lg:px-12 mb-8 transition-colors">
         <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
           <h1 className="text-4xl md:text-7xl font-black uppercase tracking-tighter font-serif text-black dark:text-white transition-colors" style={{ fontFamily: "var(--font-space-grotesk)"}}>
             {category.name}<span className="text-accent">.</span>
