@@ -42,7 +42,7 @@ export async function changeUserRole(formData: FormData) {
   const allowedEmails = ["gokrai@uncultured.media", "leanoplav@uncultured.media", "skyti@uncultured.media"];
   
   const isTrueAdmin = session?.user?.role === "ADMIN";
-  const isSpecialEditor = !isTrueAdmin && allowedEmails.includes(session?.user?.email?.toLowerCase() || "");
+  const isSpecialEditor = allowedEmails.includes(session?.user?.email?.toLowerCase() || "");
 
   if (!isTrueAdmin && !isSpecialEditor) {
     throw new Error("Unauthorized");

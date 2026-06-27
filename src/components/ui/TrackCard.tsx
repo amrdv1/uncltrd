@@ -26,7 +26,7 @@ export function TrackCard({
   compact = false
 }: TrackCardProps) {
   return (
-    <Link href={`/article/${slug}`} className={cn("group flex flex-col w-full h-full bg-white dark:bg-card rounded-3xl transition-all duration-500 hover:-translate-y-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-white/10 hover:border-accent/30 dark:hover:border-accent/50 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_40px_-15px_rgba(255,51,102,0.15)] active:scale-[0.98]", compact ? "p-3" : "p-4", className)}>
+    <Link href={`/article/${slug}`} className={cn("group flex flex-col w-full h-full bg-[#111] rounded-xl transition-all duration-500 hover:-translate-y-2 hover:bg-[#151515] border border-zinc-800 hover:border-accent/50 hover:shadow-[0_20px_40px_-15px_rgba(255,51,102,0.15)] active:scale-[0.98]", compact ? "p-3" : "p-4", className)}>
       {/* Cover Image */}
       <div className={cn("relative w-full aspect-square overflow-hidden shadow-sm group-hover:shadow-lg transition-shadow duration-500 shrink-0", compact ? "rounded-lg mb-3" : "rounded-xl mb-4")}>
         <Image 
@@ -42,7 +42,7 @@ export function TrackCard({
       
       {/* Title & Artist */}
       <div className={compact ? "mb-2" : "mb-4"}>
-        <h3 className={cn("text-black dark:text-white font-bold leading-tight mb-1 truncate group-hover:text-accent transition-colors", compact ? "text-base" : "text-lg")} style={{ fontFamily: "var(--font-space-grotesk)"}}>
+        <h3 className={cn("text-white font-bold leading-tight mb-1 truncate group-hover:text-accent transition-colors", compact ? "text-base" : "text-lg")} style={{ fontFamily: "var(--font-space-grotesk)"}}>
           {title}
         </h3>
         <p className="text-zinc-500 text-sm font-medium truncate uppercase tracking-widest text-[10px]">
