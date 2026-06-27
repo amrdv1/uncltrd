@@ -24,7 +24,15 @@ export async function createArticle(formData: FormData) {
 
   const content = formData.get("content") as string;
   const imageUrl = formData.get("imageUrl") as string;
-  const categoryId = formData.get("categoryId") as string;
+  let categoryId = formData.get("categoryId") as string;
+  
+  if (isReview && !categoryId) {
+    const reviewCategory = await db.category.findFirst({
+      where: { OR: [{ slug: "reviews" }, { slug: "review" }] }
+    });
+    if (reviewCategory) categoryId = reviewCategory.id;
+  }
+
   // Generate slug supporting Cyrillic/Unicode: replace spaces with -, remove invalid chars, trim dashes
   let baseSlug = title.toLowerCase().replace(/[\s_]+/g, "-").replace(/[^\p{L}\p{N}-]+/gu, "").replace(/(^-|-$)+/g, "");
   
@@ -138,13 +146,21 @@ export async function updateArticle(id: string, formData: FormData) {
 
   const isReview = formData.get("isTrackReview") === "on" || formData.get("isTrackReview") === "true";
 
+  let finalCategoryId = categoryId || null;
+  if (isReview && !finalCategoryId) {
+    const reviewCategory = await db.category.findFirst({
+      where: { OR: [{ slug: "reviews" }, { slug: "review" }] }
+    });
+    if (reviewCategory) finalCategoryId = reviewCategory.id;
+  }
+
   await db.article.update({
     where: { id },
     data: {
       title,
       content,
       imageUrl: imageUrl || null,
-      categoryId: categoryId || null,
+      categoryId: finalCategoryId,
       isTrackReview: isReview,
       media: {
         deleteMany: {}, // Clear old media
