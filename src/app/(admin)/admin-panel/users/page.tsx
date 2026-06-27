@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { FadeIn } from "@/components/ui/FadeIn";
+import { ChangePasswordForm } from "@/components/admin/ChangePasswordForm";
 
 export default async function AdminUsersPage() {
   const session = await auth();
@@ -57,6 +58,7 @@ export default async function AdminUsersPage() {
                   <th className="p-6 font-bold uppercase tracking-widest text-[10px]">Email</th>
                   <th className="p-6 font-bold uppercase tracking-widest text-[10px]">Role</th>
                   <th className="p-6 font-bold uppercase tracking-widest text-[10px]">Joined</th>
+                  <th className="p-6 font-bold uppercase tracking-widest text-[10px] text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
@@ -74,6 +76,9 @@ export default async function AdminUsersPage() {
                       </span>
                     </td>
                     <td className="p-6 text-zinc-500 font-medium uppercase tracking-widest text-[10px]">{u.createdAt.toLocaleDateString("uk-UA")}</td>
+                    <td className="p-6 text-right">
+                      <ChangePasswordForm userId={u.id} userName={u.name || "Користувач"} />
+                    </td>
                   </tr>
                 ))}
               </tbody>

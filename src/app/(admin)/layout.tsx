@@ -1,11 +1,16 @@
 import Link from "next/link";
-import { Users, FileText, Settings, LayoutDashboard, BookOpen } from "lucide-react";
+import { Users, FileText, Settings, LayoutDashboard, BookOpen, LogOut } from "lucide-react";
+import { auth } from "@/lib/auth";
+import { LogoutButton } from "@/components/ui/LogoutButton";
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+  const isAdmin = session?.user?.role === "ADMIN";
+
   return (
     <div className="flex min-h-screen bg-zinc-50 dark:bg-[#050505] text-zinc-900 dark:text-white selection:bg-accent selection:text-white transition-colors">
       {/* Admin Sidebar */}
@@ -27,10 +32,12 @@ export default function AdminLayout({
             <FileText size={18} className="group-hover:text-blue-500 transition-colors" />
             <span className="font-medium text-sm">Articles</span>
           </Link>
-          <Link href="/admin-panel/users" className="flex items-center space-x-3 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 px-4 py-3 rounded-xl transition-all hover:translate-x-1 group">
-            <Users size={18} className="group-hover:text-green-500 transition-colors" />
-            <span className="font-medium text-sm">Users</span>
-          </Link>
+          {isAdmin && (
+            <Link href="/admin-panel/users" className="flex items-center space-x-3 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 px-4 py-3 rounded-xl transition-all hover:translate-x-1 group">
+              <Users size={18} className="group-hover:text-green-500 transition-colors" />
+              <span className="font-medium text-sm">Users</span>
+            </Link>
+          )}
           <Link href="/admin-panel/settings" className="flex items-center space-x-3 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 px-4 py-3 rounded-xl transition-all hover:translate-x-1 group">
             <Settings size={18} className="group-hover:text-purple-500 transition-colors" />
             <span className="font-medium text-sm">Settings</span>
@@ -60,14 +67,20 @@ export default function AdminLayout({
           <FileText size={20} />
           <span className="text-[10px] font-bold uppercase mt-1">Статті</span>
         </Link>
-        <Link href="/admin-panel/users" className="flex flex-col items-center p-2 text-zinc-500 hover:text-green-500 dark:text-zinc-400 dark:hover:text-green-500">
-          <Users size={20} />
-          <span className="text-[10px] font-bold uppercase mt-1">Люди</span>
-        </Link>
+        {isAdmin && (
+          <Link href="/admin-panel/users" className="flex flex-col items-center p-2 text-zinc-500 hover:text-green-500 dark:text-zinc-400 dark:hover:text-green-500">
+            <Users size={20} />
+            <span className="text-[10px] font-bold uppercase mt-1">Люди</span>
+          </Link>
+        )}
         <Link href="/admin-panel/settings" className="flex flex-col items-center p-2 text-zinc-500 hover:text-purple-500 dark:text-zinc-400 dark:hover:text-purple-500">
           <Settings size={20} />
           <span className="text-[10px] font-bold uppercase mt-1">Налаштування</span>
         </Link>
+        <LogoutButton className="flex flex-col items-center p-2 text-red-500 hover:text-red-600 dark:text-red-500 dark:hover:text-red-600">
+          <LogOut size={20} />
+          <span className="text-[10px] font-bold uppercase mt-1">Вийти</span>
+        </LogoutButton>
       </nav>
 
       {/* Admin Content */}
