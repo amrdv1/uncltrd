@@ -45,7 +45,13 @@ export default async function CategoryPage(props: {
   }
 
   // Date calculation for the current week's release cycle
-  const now = new Date();
+  // Use Kyiv timezone to avoid UTC offset issues
+  const nowStr = new Date().toLocaleString("en-US", { timeZone: "Europe/Kyiv" });
+  const now = new Date(nowStr);
+
+  // Advance by 2 days so that Saturday and Sunday belong to the NEXT week's release cycle (since Friday is release day)
+  now.setDate(now.getDate() + 2);
+
   const dayOfWeek = now.getDay() === 0 ? 7 : now.getDay(); // 1 (Mon) to 7 (Sun)
   const daysSinceMonday = dayOfWeek - 1;
 
