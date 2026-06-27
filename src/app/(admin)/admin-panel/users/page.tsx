@@ -18,6 +18,9 @@ export default async function AdminUsersPage() {
     orderBy: { createdAt: "desc" }
   });
 
+  const isTrueAdmin = session?.user?.role === "ADMIN";
+  const currentUserEmail = session?.user?.email?.toLowerCase() || "";
+
   async function createEditor(formData: FormData) {
     "use server"
     const name = formData.get("name") as string;
@@ -69,7 +72,7 @@ export default async function AdminUsersPage() {
                     <td className="p-6 font-bold text-black dark:text-white">{u.name || "N/A"}</td>
                     <td className="p-6 text-zinc-500 dark:text-zinc-400 font-medium">{u.email}</td>
                     <td className="p-6">
-                      {session?.user?.id === u.id ? (
+                      {session?.user?.id === u.id || (!isTrueAdmin && (allowedEmails.includes(u.email?.toLowerCase() || "") || u.role === "ADMIN")) ? (
                         <span className={`px-3 py-1 text-[9px] rounded-full font-black uppercase tracking-widest border ${
                           u.role === "ADMIN" ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-500 dark:border-purple-500/20" :
                           u.role === "EDITOR" ? "bg-lime-100 text-lime-800 border-lime-200 dark:bg-lime-500/10 dark:text-lime-500 dark:border-lime-500/20" :
@@ -83,7 +86,7 @@ export default async function AdminUsersPage() {
                     </td>
                     <td className="p-6 text-zinc-500 font-medium uppercase tracking-widest text-[10px]">{u.createdAt.toLocaleDateString("uk-UA")}</td>
                     <td className="p-6 text-right">
-                      <ChangePasswordForm userId={u.id} userName={u.name || "Користувач"} />
+                      {isTrueAdmin && <ChangePasswordForm userId={u.id} userName={u.name || "Користувач"} />}
                     </td>
                   </tr>
                 ))}
