@@ -1,0 +1,399 @@
+import { db } from "@/lib/db";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { auth } from "@/lib/auth";
+import { MediaGallery } from "@/components/ui/MediaGallery";
+import { InteractionBar } from "@/components/ui/InteractionBar";
+import { Lightbox } from "@/components/ui/Lightbox";
+import { RatingSliders } from "@/components/ui/RatingSliders";
+import { CustomAudioPlayer } from "@/components/ui/CustomAudioPlayer";
+import { SoundCloudPlayer } from "@/components/ui/SoundCloudPlayer";
+
+const parseMarkdown = (text: string) => {
+  if (!text) return "";
+  let html = text;
+  
+  // Headers
+  html = html.replace(/^### (.*$)/gim, '<h3 class="text-xl font-bold mt-6 mb-3 text-black dark:text-white">$1</h3>');
+  html = html.replace(/^## (.*$)/gim, '<h2 class="text-2xl font-black mt-8 mb-4 text-black dark:text-white">$1</h2>');
+  html = html.replace(/^# (.*$)/gim, '<h1 class="text-3xl font-black mt-10 mb-4 text-black dark:text-white">$1</h1>');
+  
+  // Blockquotes
+  html = html.replace(/^\> (.*$)/gim, '<blockquote class="border-l-[3px] border-accent pl-6 py-5 pr-5 my-8 text-lg italic font-medium text-zinc-800 dark:text-zinc-200 bg-accent/5 rounded-r-2xl leading-relaxed">$1</blockquote>');
+  
+  // Bold
+  html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+  
+  // Italic
+  html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+  
+  // Links
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">$1</a>');
+  
+  // Lists
+  html = html.replace(/(?:^\- .*(?:\n|$))+/gim, (match) => {
+    return '<ul class="list-disc pl-5 my-4 space-y-2 marker:text-accent">\n' + match.replace(/^\- (.*$)/gim, '<li>$1</li>') + '\n</ul>';
+  });
+  
+  return html;
+};
+
+const renderContentWithMedia = (content: string, media: any[]) => {
+  if (!content) return null;
+  const regex = /\[media:(\d+)\]/g;
+  const parts = content.split(regex);
+  
+  return parts.map((part, index) => {
+    // Odd indexes are the captured group (the media number)
+    if (index % 2 !== 0) {
+      const mediaIndex = parseInt(part, 10) - 1;
+      const mediaItem = media[mediaIndex];
+      
+      if (mediaItem) {
+        if (mediaItem.type === "VIDEO") {
+          let youtubeId = null;
+          if (mediaItem.url.includes("youtube.com/watch")) {
+            youtubeId = new URL(mediaItem.url).searchParams.get("v");
+          } else if (mediaItem.url.includes("youtu.be/")) {
+            youtubeId = mediaItem.url.split("youtu.be/")[1]?.split("?")[0];
+          }
+
+          if (youtubeId) {
+            return (
+              <div key={index} className="my-8 rounded-2xl overflow-hidden shadow-xl mx-auto w-full max-w-4xl border border-zinc-200 dark:border-zinc-800 aspect-video">
+                <iframe
+                  src={`https://www.youtube.com/embed/${youtubeId}`}
+                  title="YouTube video player"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                ></iframe>
+              </div>
+            );
+          }
+
+          return (
+            <div key={index} className="my-8 rounded-2xl overflow-hidden shadow-xl mx-auto w-full max-w-4xl border border-zinc-200 dark:border-zinc-800">
+              <video src={mediaItem.url} controls className="w-full h-auto bg-black" />
+            </div>
+          );
+        } else {
+          return (
+            <div key={index} className="my-8 relative w-full aspect-video md:aspect-[21/9] bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800">
+              <Lightbox src={mediaItem.url} alt={`Media ${part}`}>
+                <Image src={mediaItem.url} alt={`Media ${part}`} fill className="object-cover" />
+              </Lightbox>
+            </div>
+          );
+        }
+      }
+      return <span key={index} className="text-red-500 font-bold bg-red-500/10 px-2 py-1 rounded text-sm">[Файл {part} не знайдено]</span>;
+    }
+    return <div key={index} dangerouslySetInnerHTML={{ __html: parseMarkdown(part) }} />;
+  });
+};
+
+export default async function ArticlePage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
+  const decodedSlug = decodeURIComponent(params.slug);
+  const session = await auth();
+  const article = await db.article.findUnique({
+    where: { slug: decodedSlug },
+    include: { 
+      author: true, 
+      category: true,
+      media: true,
+      likes: true,
+      comments: { include: { user: true } },
+      trackReview: true,
+      userRatings: {
+        include: { user: true },
+        orderBy: { createdAt: 'desc' }
+      }
+    }
+  });
+
+  if (!article || article.status !== "PUBLISHED") {
+    notFound();
+  }
+
+  if (article.isTrackReview && article.trackReview) {
+    const publicTotal = Math.round(article.trackReview.totalScore || 0);
+    const adminRatings = article.userRatings.filter((r: any) => r.user.role === 'ADMIN');
+    let adminTotal = article.trackReview.adminTotal || 0;
+    
+    let cleanCoverUrl = article.trackReview.coverUrl || "";
+    if (cleanCoverUrl.includes("url(")) {
+      const match = cleanCoverUrl.match(/url\([^a-zA-Z0-9]*(https?:\/\/[^"'\s&]+)[^a-zA-Z0-9]*\)/);
+      if (match) cleanCoverUrl = match[1];
+    }
+    
+    if (adminRatings.length > 0) {
+      const sum = adminRatings.reduce((acc: number, r: any) => acc + (r.text + r.beats + r.sound + r.vibe + r.charisma), 0);
+      adminTotal = Math.round(sum / adminRatings.length);
+    }
+    
+    return (
+      <div className="bg-white dark:bg-[#050505] min-h-screen pt-8 pb-20 text-black dark:text-white font-sans transition-colors">
+        <div className="max-w-6xl mx-auto px-6">
+          <Link href={article.category ? `/category/${article.category.slug}` : "/"} className="inline-flex items-center text-[#2A75FF] hover:text-black dark:hover:text-white transition mb-6 font-bold uppercase tracking-widest text-xs">
+            <ArrowLeft size={14} className="mr-2" />
+            НАЗАД
+          </Link>
+          
+          <div className="bg-zinc-50 dark:bg-[#0a0a0a] rounded-3xl p-6 lg:p-10 border border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col md:flex-row gap-8 lg:gap-12 relative overflow-hidden transition-colors">
+            {/* Background glow */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-zinc-800 opacity-20 blur-[100px] rounded-full pointer-events-none" />
+            
+            {cleanCoverUrl ? (
+              <div className="relative w-full md:w-72 lg:w-96 aspect-square flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 z-10 transition-colors">
+                <Image src={cleanCoverUrl} alt="Cover" fill className="object-cover" priority />
+              </div>
+            ) : (
+              <div className="w-full md:w-72 lg:w-96 aspect-square flex-shrink-0 rounded-2xl bg-zinc-200 dark:bg-zinc-900 flex items-center justify-center border border-zinc-200 dark:border-zinc-800 z-10 transition-colors">
+                <span className="text-zinc-400 dark:text-zinc-700 font-bold">Немає обкладинки</span>
+              </div>
+            )}
+            
+            <div className="flex-1 flex flex-col justify-center z-10">
+              <h1 className={`${
+                article.trackReview.trackName.length > 20 
+                  ? "text-4xl md:text-5xl lg:text-6xl" 
+                  : article.trackReview.trackName.length > 12 
+                    ? "text-5xl md:text-6xl lg:text-7xl" 
+                    : "text-5xl md:text-7xl lg:text-8xl"
+              } font-black uppercase tracking-tighter leading-tight mb-4`} style={{ fontFamily: "var(--font-space-grotesk)"}}>
+                {article.trackReview.trackName}
+              </h1>
+              
+              <div className="flex items-center gap-6 text-zinc-400 font-bold mb-10 text-sm md:text-base">
+                <span>{article.trackReview.artistName}</span>
+                <span>Реліз: {((article.trackReview as any).releaseDate || article.createdAt).toLocaleDateString("uk-UA")}</span>
+              </div>
+              
+              <div className="flex flex-wrap items-center gap-6 mt-auto">
+                <div className="flex items-center gap-2">
+                  <div className="w-14 h-14 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-xl shadow-lg border-2 border-zinc-200 dark:border-zinc-900 transition-colors" title="Оцінка користувачів">
+                    {publicTotal || "-"}
+                  </div>
+                  <div className="group relative cursor-help w-14 h-14 rounded-full bg-transparent border-2 border-zinc-400 dark:border-zinc-500 text-black dark:text-white font-black flex items-center justify-center text-xl shadow-lg backdrop-blur-md transition-colors">
+                    {adminTotal || "-"}
+                    
+                    {(adminRatings.length > 0 || adminTotal > 0) && (
+                      <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-black dark:text-white text-xs rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all shadow-2xl z-50 p-4 min-w-[200px]">
+                        <div className="font-bold uppercase tracking-widest text-zinc-500 mb-3 border-b border-zinc-200 dark:border-zinc-800 pb-2 text-center text-[10px]">Оцінка редакції</div>
+                        {adminRatings.length > 0 ? (
+                          <div className="space-y-3">
+                            {adminRatings.map((r: any) => (
+                              <div key={r.id} className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  {r.user.image ? (
+                                    <img src={r.user.image} alt={r.user.name} className="w-5 h-5 rounded-full object-cover" />
+                                  ) : (
+                                    <div className="w-5 h-5 rounded-full bg-accent text-white flex items-center justify-center text-[8px] font-black">{r.user.name?.[0] || "A"}</div>
+                                  )}
+                                  <span className="font-bold text-[10px] uppercase tracking-widest">{r.user.name || r.user.email?.split('@')[0]}</span>
+                                </div>
+                                <span className="font-black text-accent">{r.text + r.beats + r.sound + r.vibe + r.charisma}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            <div className="flex justify-between"><span>Текст / Рими:</span> <span className="font-bold text-accent">{(article.trackReview as any).adminText}</span></div>
+                            <div className="flex justify-between"><span>Біт:</span> <span className="font-bold text-accent">{(article.trackReview as any).adminBeats}</span></div>
+                            <div className="flex justify-between"><span>Звучання:</span> <span className="font-bold text-accent">{(article.trackReview as any).adminSound}</span></div>
+                            <div className="flex justify-between"><span>Вайб:</span> <span className="font-bold text-accent">{(article.trackReview as any).adminVibe}</span></div>
+                            <div className="flex justify-between"><span>Харизма:</span> <span className="font-bold text-accent">{(article.trackReview as any).adminCharisma}</span></div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {article.media && article.media.length > 0 ? (
+                  article.media[0].url.match(/\.(mp3|wav|ogg|m4a|aac)$/i) ? (
+                    <CustomAudioPlayer src={article.media[0].url} />
+                  ) : article.media[0].url.includes('soundcloud.com') ? (
+                    <SoundCloudPlayer url={article.media[0].url} />
+                  ) : (
+                    <a href={article.media[0].url} target="_blank" rel="noopener noreferrer" className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white px-8 py-3.5 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />
+                      СЛУХАТИ
+                    </a>
+                  )
+                ) : (
+                  <button className="bg-zinc-200/50 dark:bg-zinc-800/50 text-zinc-400 dark:text-zinc-500 px-8 py-3.5 rounded-full font-bold uppercase tracking-widest cursor-not-allowed flex items-center gap-2 transition-colors" title="Немає посилання на трек">
+                    СЛУХАТИ
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-12">
+            {!session?.user ? (
+              <div className="bg-zinc-50 dark:bg-[#0a0a0a] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 text-center transition-colors">
+                <p className="text-zinc-500 dark:text-zinc-400 font-bold">Для відправки рецензії вам необхідно <Link href="/login" className="text-black dark:text-white underline hover:text-accent">увійти в свій акаунт</Link></p>
+              </div>
+            ) : (
+              <RatingSliders 
+                articleId={article.id}
+                initialUserRating={article.userRatings?.find((r: any) => r.userId === session?.user?.id) || null}
+                totalScores={article.trackReview}
+                currentUserId={session?.user?.id}
+                dynamicAdminTotal={adminTotal}
+              />
+            )}
+          </div>
+          
+          <div className="mt-16 bg-zinc-50 dark:bg-[#0a0a0a] p-8 lg:p-12 rounded-3xl border border-zinc-200 dark:border-zinc-800 transition-colors">
+            <div className="flex items-center justify-between mb-10 border-b border-zinc-200 dark:border-zinc-800 pb-6">
+              <h3 className="text-4xl font-black text-black dark:text-white tracking-tighter uppercase" style={{ fontFamily: "var(--font-space-grotesk)"}}>
+                Рецензії користувачів
+              </h3>
+              <span className="bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white px-4 py-2 rounded-full text-lg font-bold">
+                {article.userRatings.filter((r: any) => r.content).length}
+              </span>
+            </div>
+
+            <div className="space-y-6">
+              {article.userRatings.filter((r: any) => r.content).length === 0 ? (
+                <p className="text-zinc-500 font-medium text-lg">Поки немає рецензій. Будьте першим!</p>
+              ) : (
+                article.userRatings.filter((r: any) => r.content).map((rating: any) => {
+                  const total = Math.round(rating.text + rating.beats + rating.sound + rating.vibe + rating.charisma);
+                  return (
+                    <div key={rating.id} className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 transition-colors">
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-black dark:text-white font-bold text-xl uppercase overflow-hidden relative shadow-inner">
+                            {rating.user.image ? (
+                              <Image src={rating.user.image} alt="Avatar" fill className="object-cover" />
+                            ) : (
+                              (rating.user.name || rating.user.email)[0]
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-bold text-black dark:text-white text-base uppercase tracking-widest">{rating.user.name || rating.user.email}</p>
+                            <p className="text-sm text-zinc-500">{rating.createdAt.toLocaleDateString("uk-UA")}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="text-right">
+                          <div className="text-4xl font-black text-black dark:text-white mb-2" style={{ fontFamily: "var(--font-space-grotesk)"}}>{total}</div>
+                          <div className="flex gap-2 text-xs font-bold text-zinc-500 justify-end">
+                            <div className="group relative cursor-help">
+                              <span className="text-blue-500">{rating.text}</span>
+                              <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Текст / Рими</div>
+                            </div>
+                            <div className="group relative cursor-help">
+                              <span className="text-blue-500">{rating.beats}</span>
+                              <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Біт</div>
+                            </div>
+                            <div className="group relative cursor-help">
+                              <span className="text-blue-500">{rating.sound}</span>
+                              <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Звучання</div>
+                            </div>
+                            <div className="group relative cursor-help">
+                              <span className="text-accent">{rating.vibe}</span>
+                              <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Вайб</div>
+                            </div>
+                            <div className="group relative cursor-help">
+                              <span className="text-accent">{rating.charisma}</span>
+                              <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Харизма</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <p className="text-zinc-700 dark:text-zinc-300 text-base leading-relaxed whitespace-pre-wrap">{rating.content}</p>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+          
+          {article.content && (
+            <div className="mt-16 bg-zinc-50 dark:bg-[#0a0a0a] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 lg:p-12 transition-colors">
+              <h3 className="text-2xl font-black text-black dark:text-white tracking-tighter uppercase mb-6" style={{ fontFamily: "var(--font-space-grotesk)"}}>
+                Опис / Редакційна думка
+              </h3>
+              <div className="prose dark:prose-invert prose-lg max-w-none">
+                <div className="whitespace-pre-wrap font-medium text-zinc-700 dark:text-zinc-300">
+                  {renderContentWithMedia(article.content, article.media)}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto py-12 px-8">
+      <Link href="/" className="inline-flex items-center text-zinc-500 hover:text-black transition mb-8 font-bold uppercase tracking-widest text-xs">
+        <ArrowLeft size={14} className="mr-2" />
+        На головну
+      </Link>
+
+      <div className="mb-10">
+        <div className="flex items-center space-x-3 mb-4">
+          {article.category?.name.toLowerCase() !== "огляди" && article.category?.name.toLowerCase() !== "reviews" && (
+            <span className="bg-accent text-black px-3 py-1 text-xs font-bold uppercase tracking-widest font-serif">
+              {article.category?.name || "Новина"}
+            </span>
+          )}
+          <span className="text-sm font-medium text-zinc-500">
+            {article.createdAt.toLocaleDateString("uk-UA")}
+          </span>
+        </div>
+        
+        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] font-serif mb-6" style={{ fontFamily: "var(--font-space-grotesk)"}}>
+          {article.title}
+        </h1>
+        
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-zinc-200 rounded-full flex items-center justify-center font-bold text-zinc-500">
+            {(article.author.name || article.author.email || "?").charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <p className="font-bold text-sm">Автор: {article.author.name || article.author.email}</p>
+          </div>
+        </div>
+      </div>
+
+      {article.imageUrl && (
+        <div className="relative w-full aspect-[21/9] mb-12 bg-zinc-100 rounded-xl overflow-hidden shadow-sm">
+          <Lightbox src={article.imageUrl} alt={article.title}>
+            <Image 
+              src={article.imageUrl} 
+              alt={article.title} 
+              fill 
+              className="object-cover hover:scale-105 transition duration-700" 
+              priority
+            />
+          </Lightbox>
+        </div>
+      )}
+
+      <div className="prose prose-lg prose-zinc dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:font-black prose-headings:font-serif prose-headings:uppercase prose-headings:tracking-tighter transition-colors">
+        <div className="whitespace-pre-wrap font-medium text-lg leading-relaxed text-zinc-800 dark:text-zinc-200 transition-colors">
+          {renderContentWithMedia(article.content, article.media)}
+        </div>
+      </div>
+
+      <InteractionBar 
+        articleId={article.id} 
+        initialLikes={article.likes} 
+        initialComments={article.comments} 
+        currentUserId={session?.user?.id}
+      />
+    </div>
+  );
+}

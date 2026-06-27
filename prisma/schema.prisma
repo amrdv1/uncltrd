@@ -1,0 +1,207 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  
+  access_token       String?  
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("USER") // USER, EDITOR, ADMIN
+  isTwoFactorEnabled Boolean @default(false)
+  twoFactorConfirmation TwoFactorConfirmation?
+  accounts      Account[]
+  sessions      Session[]
+  articles      Article[] @relation("AuthoredArticles")
+  editableArticles Article[] @relation("AllowedEditors")
+  likes         Like[]
+  comments      Comment[]
+  ratings       UserRating[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid())
+  email      String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([email, token])
+}
+
+
+
+model TwoFactorToken {
+  id         String   @id @default(cuid())
+  email      String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorConfirmation {
+  id String @id @default(cuid())
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  articles  Article[]
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String
+  status      String   @default("DRAFT") // DRAFT, PUBLISHED
+  imageUrl    String?
+  isPinned    Boolean  @default(false)
+
+  authorId    String
+  author      User     @relation("AuthoredArticles", fields: [authorId], references: [id])
+
+  allowedEditors User[] @relation("AllowedEditors")
+
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  media       Media[]
+  likes       Like[]
+  comments    Comment[]
+  
+  isTrackReview Boolean @default(false)
+  trackReview   TrackReview?
+  userRatings   UserRating[]
+}
+
+model TrackReview {
+  id          String   @id @default(cuid())
+  articleId   String   @unique
+  article     Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  artistName  String
+  trackName   String
+  coverUrl    String?
+  releaseType String   @default("SINGLE") // ALBUM, EP, SINGLE
+  releaseDate DateTime?
+  
+  // Overall User Scores (cached average)
+  scoreText      Float @default(0)
+  scoreBeats     Float @default(0)
+  scoreSound     Float @default(0)
+  scoreVibe      Float @default(0)
+  scoreCharisma  Float @default(0)
+  totalScore     Float @default(0)
+  
+  // Official Admin Scores
+  adminText      Int @default(0)
+  adminBeats     Int @default(0)
+  adminSound     Int @default(0)
+  adminVibe      Int @default(0)
+  adminCharisma  Int @default(0)
+  adminTotal     Int @default(0)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model UserRating {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  articleId   String
+  article     Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  content     String?  // The text review
+  
+  // Individual user scores
+  text        Int      // 1-10
+  beats       Int      // 1-10
+  sound       Int      // 1-10
+  vibe        Int      // 1-10
+  charisma    Int      // 1-10
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, articleId])
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  url       String
+  type      String   // "IMAGE" or "VIDEO"
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  isLike    Boolean  @default(true) // true = like, false = dislike
+  createdAt DateTime @default(now())
+
+  @@unique([userId, articleId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
