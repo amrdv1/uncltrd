@@ -213,7 +213,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                     {adminTotal || "-"}
                     
                     {(adminRatings.length > 0 || adminTotal > 0) && (
-                      <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-black dark:text-white text-xs rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all shadow-2xl z-50 p-4 min-w-[200px]">
+                      <div className="hidden md:block absolute bottom-full mb-3 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-black dark:text-white text-xs rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all shadow-2xl z-50 p-4 min-w-[200px]">
                         <div className="font-bold uppercase tracking-widest text-zinc-500 mb-3 border-b border-zinc-200 dark:border-zinc-800 pb-2 text-center text-[10px]">Оцінка редакції</div>
                         <div className="space-y-2">
                           <div className="flex justify-between gap-4"><span>Текст / Рими:</span> <span className="font-bold text-accent">{avgText}</span></div>
