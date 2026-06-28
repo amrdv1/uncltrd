@@ -76,7 +76,9 @@ export default async function AdminArticlesPage() {
                         <span className="text-[8px] font-black uppercase tracking-widest bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700">Стаття</span>
                       )}
                       <div className="flex items-center gap-2">
-                        {article.title}
+                        <Link href={`/admin-panel/articles/${article.id}`} className="hover:underline hover:text-[#2A75FF] transition-colors">
+                          {article.title}
+                        </Link>
                         {article.isPinned && (
                           <Pin size={14} className="text-accent shrink-0" fill="currentColor" />
                         )}
