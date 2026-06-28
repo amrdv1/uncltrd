@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThumbsUp, ThumbsDown, MessageSquare } from "lucide-react";
 import { toggleLike, submitComment } from "@/app/actions/interactions";
+import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 
 interface InteractionBarProps {
   articleId: string;
@@ -14,6 +17,12 @@ interface InteractionBarProps {
 export function InteractionBar({ articleId, initialLikes, initialComments, currentUserId }: InteractionBarProps) {
   const [comments, setComments] = useState(initialComments);
   const [likes, setLikes] = useState(initialLikes);
+  const [showLoginAlert, setShowLoginAlert] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const hasLiked = currentUserId ? likes.some(l => l.userId === currentUserId && l.isLike) : false;
   const hasDisliked = currentUserId ? likes.some(l => l.userId === currentUserId && !l.isLike) : false;
@@ -22,7 +31,7 @@ export function InteractionBar({ articleId, initialLikes, initialComments, curre
   const downvotes = likes.filter(l => !l.isLike).length;
 
   const handleLike = async (isLike: boolean) => {
-    if (!currentUserId) return alert("Потрібно увійти, щоб голосувати!");
+    if (!currentUserId) return setShowLoginAlert(true);
     
     // Optimistic UI update
     let newLikes = [...likes];
@@ -43,8 +52,9 @@ export function InteractionBar({ articleId, initialLikes, initialComments, curre
   };
 
   return (
-    <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 transition-colors">
-      <div className="flex items-center space-x-6 mb-12">
+    <>
+      <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 transition-colors">
+        <div className="flex items-center space-x-6 mb-12">
         <button 
           onClick={() => handleLike(true)}
           className={`flex items-center space-x-2 font-bold px-4 py-2 rounded-full border-2 transition ${hasLiked ? "border-accent text-accent bg-accent/10" : "border-zinc-200 dark:border-zinc-800 hover:border-black dark:hover:border-white"}`}
