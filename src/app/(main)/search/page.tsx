@@ -47,6 +47,7 @@ export default async function SearchPage(props: {
                     alt={article.title} 
                     fill 
                     className="object-cover group-hover:scale-105 transition-transform duration-500" 
+                    unoptimized={article.imageUrl?.toLowerCase().endsWith('.gif')}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-zinc-400 font-bold uppercase tracking-widest text-xs">

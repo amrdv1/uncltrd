@@ -51,6 +51,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
             fill
             className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
             priority={isHero}
+            unoptimized={image.toLowerCase().endsWith('.gif')}
           />
           {trackRating !== undefined && trackRating > 0 && adminRating !== undefined && adminRating > 0 && (
             <div className="absolute bottom-6 right-6 flex items-center gap-2 z-20">
@@ -90,6 +91,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
             alt={title}
             fill
             className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
+            unoptimized={image.toLowerCase().endsWith('.gif')}
           />
         </div>
         <div className="flex flex-col justify-center py-2">
@@ -117,6 +119,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
             alt={title}
             fill
             className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
+            unoptimized={image.toLowerCase().endsWith('.gif')}
           />
         </div>
         <div className="flex flex-col flex-1">
@@ -154,6 +157,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
           alt={title}
           fill
           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
+          unoptimized={image.toLowerCase().endsWith('.gif')}
         />
         {trackRating !== undefined && trackRating > 0 && adminRating !== undefined && adminRating > 0 && (
           <div className="absolute top-4 right-4 flex flex-col gap-2 z-20">

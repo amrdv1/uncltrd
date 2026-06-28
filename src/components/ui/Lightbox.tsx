@@ -28,6 +28,7 @@ export function Lightbox({ src, alt, children }: { src: string; alt: string; chi
               alt={alt} 
               fill 
               className="object-contain" 
+              unoptimized={src.toLowerCase().endsWith('.gif')}
             />
           </div>
         </div>
