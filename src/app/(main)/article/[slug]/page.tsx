@@ -288,7 +288,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                     const total = Math.round(rating.text + rating.beats + rating.sound + rating.vibe + rating.charisma);
                     return (
                       <div key={rating.id} className="w-full h-full shrink-0 snap-start bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 transition-colors flex flex-col">
-                        <div className="flex justify-between items-start mb-6">
+                        <div className="flex justify-between items-start mb-4">
                           <div className="flex items-center gap-4">
                             <div className="w-14 h-14 shrink-0 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-black dark:text-white font-bold text-xl uppercase overflow-hidden relative shadow-inner">
                               {rating.user.image ? (
@@ -304,29 +304,30 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                           </div>
                           
                           <div className="text-right shrink-0 ml-2">
-                            <div className="text-4xl font-black text-black dark:text-white mb-2" style={{ fontFamily: "var(--font-space-grotesk)"}}>{total}</div>
-                            <div className="flex gap-1 text-[10px] font-bold text-zinc-500 justify-end">
-                              <div className="group/tooltip relative cursor-help">
-                                <span className="text-blue-500">{rating.text}</span>
-                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Текст / Рими</div>
-                              </div>
-                              <div className="group/tooltip relative cursor-help">
-                                <span className="text-blue-500">{rating.beats}</span>
-                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Біт</div>
-                              </div>
-                              <div className="group/tooltip relative cursor-help">
-                                <span className="text-blue-500">{rating.sound}</span>
-                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Звучання</div>
-                              </div>
-                              <div className="group/tooltip relative cursor-help">
-                                <span className="text-accent">{rating.vibe}</span>
-                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Вайб</div>
-                              </div>
-                              <div className="group/tooltip relative cursor-help">
-                                <span className="text-accent">{rating.charisma}</span>
-                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Харизма</div>
-                              </div>
-                            </div>
+                            <div className="text-4xl font-black text-black dark:text-white" style={{ fontFamily: "var(--font-space-grotesk)"}}>{total}</div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex justify-between gap-1 text-[8px] sm:text-[10px] font-bold text-center mb-6 bg-zinc-50 dark:bg-zinc-900/50 py-2 px-1 rounded-xl">
+                          <div className="flex-1">
+                            <div className="text-zinc-400 uppercase tracking-tighter mb-0.5">Текст</div>
+                            <div className="text-blue-500 text-xs sm:text-sm">{rating.text}</div>
+                          </div>
+                          <div className="flex-1 border-l border-zinc-200 dark:border-zinc-800">
+                            <div className="text-zinc-400 uppercase tracking-tighter mb-0.5">Біт</div>
+                            <div className="text-blue-500 text-xs sm:text-sm">{rating.beats}</div>
+                          </div>
+                          <div className="flex-1 border-l border-zinc-200 dark:border-zinc-800">
+                            <div className="text-zinc-400 uppercase tracking-tighter mb-0.5">Звук</div>
+                            <div className="text-blue-500 text-xs sm:text-sm">{rating.sound}</div>
+                          </div>
+                          <div className="flex-1 border-l border-zinc-200 dark:border-zinc-800">
+                            <div className="text-zinc-400 uppercase tracking-tighter mb-0.5">Вайб</div>
+                            <div className="text-accent text-xs sm:text-sm">{rating.vibe}</div>
+                          </div>
+                          <div className="flex-1 border-l border-zinc-200 dark:border-zinc-800">
+                            <div className="text-zinc-400 uppercase tracking-tighter mb-0.5">Харизма</div>
+                            <div className="text-accent text-xs sm:text-sm">{rating.charisma}</div>
                           </div>
                         </div>
                         
