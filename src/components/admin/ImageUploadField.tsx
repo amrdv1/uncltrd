@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Upload, Loader2, Image as ImageIcon } from "lucide-react";
 
 export function ImageUploadField({ 
   name, 
@@ -46,15 +45,12 @@ export function ImageUploadField({
   return (
     <div className="flex space-x-2">
       <div className="relative flex-1">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <ImageIcon size={16} className="text-zinc-400" />
-        </div>
         <input 
           name={name}
           type="text" 
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className={`pl-10 ${className}`}
+          className={`${className}`}
           placeholder={placeholder}
         />
       </div>
@@ -71,9 +67,9 @@ export function ImageUploadField({
         type="button"
         onClick={() => fileInputRef.current?.click()}
         disabled={isUploading}
-        className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-xl flex items-center justify-center font-bold uppercase disabled:opacity-50 hover:bg-accent transition-colors"
+        className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-xl flex items-center justify-center font-bold uppercase disabled:opacity-50 hover:bg-accent transition-colors text-[10px]"
       >
-        {isUploading ? <Loader2 size={20} className="animate-spin" /> : <Upload size={20} />}
+        {isUploading ? "..." : "ЗАВАНТАЖИТИ"}
       </button>
     </div>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Plus, Trash, Upload, Loader2 } from "lucide-react";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 
 export function MediaInputManager({ initialMedia = [] }: { initialMedia?: any[] }) {
@@ -61,7 +60,7 @@ export function MediaInputManager({ initialMedia = [] }: { initialMedia?: any[] 
       <div className="flex items-center justify-between">
         <label className="block text-sm font-bold text-zinc-800 uppercase">Додаткові Медіа (Галерея)</label>
         <button type="button" onClick={addMedia} className="text-xs bg-zinc-200 hover:bg-zinc-300 text-black px-3 py-1 rounded font-bold uppercase flex items-center">
-          <Plus size={14} className="mr-1" /> Додати
+          + Додати
         </button>
       </div>
 
@@ -99,9 +98,9 @@ export function MediaInputManager({ initialMedia = [] }: { initialMedia?: any[] 
               type="button"
               onClick={() => fileInputRefs.current[index]?.click()}
               disabled={uploadingIndex === index}
-              className="px-3 py-2 bg-black text-white rounded flex items-center justify-center text-xs font-bold uppercase disabled:opacity-50"
+              className="px-3 py-2 bg-black text-white rounded flex items-center justify-center text-[10px] font-bold uppercase disabled:opacity-50"
             >
-              {uploadingIndex === index ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+              {uploadingIndex === index ? "..." : "Завантажити"}
             </button>
           </div>
 
