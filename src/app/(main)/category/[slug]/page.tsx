@@ -87,8 +87,7 @@ export default async function CategoryPage(props: {
     } else {
       // view === "all"
       if (sortParam === "oldest") orderBy = { trackReview: { releaseDate: "asc" } };
-      else if (sortParam === "best") orderBy = { trackReview: { adminTotal: "desc" } };
-      else if (sortParam === "worst") orderBy = { trackReview: { adminTotal: "asc" } };
+      // "best" and "worst" will be sorted in JS after fetching to ensure they match the dynamically calculated scores.
     }
 
     if (typeParam !== "ALL") {
@@ -109,7 +108,7 @@ export default async function CategoryPage(props: {
     }
   }
 
-  const articles = await db.article.findMany({
+  let articles = await db.article.findMany({
     where: whereClause,
     orderBy,
     include: { 
@@ -124,6 +123,33 @@ export default async function CategoryPage(props: {
       }
     },
   });
+
+  if (isReviewsCategory && viewParam === "all") {
+    if (sortParam === "best" || sortParam === "worst") {
+      articles.sort((a, b) => {
+        const getScore = (article: any) => {
+          let admScore = article.trackReview?.adminTotal || 0;
+          const adminRatings = article.userRatings?.filter((r: any) => r.user?.role === 'ADMIN') || [];
+          if (adminRatings.length > 0) {
+            const sum = adminRatings.reduce((acc: number, r: any) => acc + (r.text + r.beats + r.sound + r.vibe + r.charisma), 0);
+            admScore = Math.round(sum / adminRatings.length);
+          }
+          return admScore;
+        };
+        const scoreA = getScore(a);
+        const scoreB = getScore(b);
+        
+        if (scoreA === scoreB) {
+          // fallback to release date
+          const dateA = a.trackReview?.releaseDate?.getTime() || 0;
+          const dateB = b.trackReview?.releaseDate?.getTime() || 0;
+          return dateB - dateA; // always newer first for ties
+        }
+        
+        return sortParam === "best" ? scoreB - scoreA : scoreA - scoreB;
+      });
+    }
+  }
 
   return (
     <div className="flex flex-col pb-24">
