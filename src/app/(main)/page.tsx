@@ -156,7 +156,7 @@ export default async function Home() {
           </div>
           
           <div className="flex justify-start xl:justify-center">
-            <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 hide-scrollbar snap-x snap-mandatory overscroll-x-contain touch-pan-x scroll-pl-4 sm:scroll-pl-0">
+            <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 hide-scrollbar snap-x snap-proximity overscroll-x-contain touch-pan-x scroll-pl-4 sm:scroll-pl-0">
               {reviews.map((review, i) => (
                 <FadeIn key={review.id} delay={i * 0.1} className="w-[65vw] sm:w-full shrink-0 snap-start flex">
                   {review.trackReview && (() => {

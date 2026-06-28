@@ -46,7 +46,7 @@ export function Carousel({ children, className, itemWidth = 300 }: CarouselProps
       <div 
         ref={scrollContainerRef}
         onScroll={checkScroll}
-        className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-6 pb-4 -mx-4 px-4 scroll-pl-4 md:mx-0 md:px-0 md:scroll-pl-0 hide-scrollbar overscroll-x-contain touch-pan-x"
+        className="flex overflow-x-auto snap-x snap-proximity gap-4 md:gap-6 pb-4 -mx-4 px-4 scroll-pl-4 md:mx-0 md:px-0 md:scroll-pl-0 hide-scrollbar overscroll-x-contain touch-pan-x"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {React.Children.map(children, (child) => (
