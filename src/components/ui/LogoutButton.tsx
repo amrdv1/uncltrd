@@ -46,30 +46,23 @@ export function LogoutButton({ className, children }: { className?: string; chil
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="bg-white dark:bg-[#111] p-8 md:p-12 rounded-[2rem] shadow-2xl max-w-sm w-full border border-black/5 dark:border-white/10 text-center relative overflow-hidden"
+                className="bg-white dark:bg-[#111] p-8 rounded-3xl shadow-xl max-w-sm w-full border border-zinc-200 dark:border-zinc-800 text-center relative overflow-hidden"
               >
-                {/* Decorative element */}
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-red-500 to-orange-500"></div>
+                <h3 className="text-xl font-black uppercase tracking-tighter mb-2 text-black dark:text-white" style={{ fontFamily: "var(--font-space-grotesk)" }}>Вихід з акаунту</h3>
+                <p className="text-zinc-500 mb-8 font-medium text-sm">Ви дійсно хочете вийти?</p>
                 
-                <div className="w-16 h-16 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center mx-auto mb-6 text-red-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                </div>
-                
-                <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 text-black dark:text-white" style={{ fontFamily: "var(--font-space-grotesk)" }}>ВИХІД</h3>
-                <p className="text-zinc-500 mb-8 font-medium text-sm">Ви дійсно хочете вийти з акаунту?</p>
-                
-                <div className="flex flex-col gap-3">
-                  <button
-                    onClick={handleLogout}
-                    className="px-6 py-3.5 rounded-xl bg-red-500 text-white font-bold uppercase tracking-widest text-xs hover:bg-red-600 transition-colors w-full shadow-lg shadow-red-500/20 active:scale-[0.98]"
-                  >
-                    ВИЙТИ З АКАУНТУ
-                  </button>
+                <div className="flex gap-3">
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="px-6 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white font-bold uppercase tracking-widest text-xs hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors w-full active:scale-[0.98]"
+                    className="flex-1 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white font-bold uppercase tracking-widest text-xs hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
                   >
                     СКАСУВАТИ
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold uppercase tracking-widest text-xs hover:bg-red-600 transition-colors"
+                  >
+                    ВИЙТИ
                   </button>
                 </div>
               </motion.div>
