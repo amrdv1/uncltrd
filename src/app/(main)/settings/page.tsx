@@ -73,8 +73,18 @@ export default async function SettingsPage() {
               name="image" 
               type="url" 
               defaultValue={user.image || ""}
-              className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white text-black dark:text-white text-lg transition-colors" 
+              className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white text-black dark:text-white text-lg transition-colors mb-4" 
               placeholder="https://example.com/avatar.png"
+            />
+            
+            <label className="block text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-2 uppercase tracking-wide">
+              Або завантажте з пристрою
+            </label>
+            <input 
+              name="avatarFile" 
+              type="file" 
+              accept="image/*"
+              className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white text-black dark:text-white transition-colors cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-accent file:text-white hover:file:bg-black transition-all"
             />
           </div>
 

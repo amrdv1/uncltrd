@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { formatImageUrl } from "@/lib/utils";
 
 export async function createArticle(formData: FormData) {
   const session = await auth();
@@ -62,6 +63,8 @@ export async function createArticle(formData: FormData) {
     mediaFiles.unshift({ type: "AUDIO", url: listenUrl });
   }
 
+  let imageUrl = formData.get("imageUrl") as string | null;
+  imageUrl = formatImageUrl(imageUrl);
 
   await db.article.create({
     data: {
@@ -74,14 +77,14 @@ export async function createArticle(formData: FormData) {
       status: "PUBLISHED",
       isTrackReview: isReview,
       media: mediaFiles.length > 0 ? {
-        create: mediaFiles.map((m: any) => ({ url: m.url, type: m.type }))
+        create: mediaFiles.map((m: any) => ({ url: formatImageUrl(m.url), type: m.type }))
       } : undefined,
       // @ts-ignore
       trackReview: isReview ? {
         create: {
           artistName: formData.get("artistName") as string || "",
           trackName: formData.get("trackName") as string || "",
-          coverUrl: formData.get("coverUrl") as string || null,
+          coverUrl: formatImageUrl(formData.get("coverUrl") as string) || null,
           releaseType: formData.get("releaseType") as string || "SINGLE",
           releaseDate: formData.get("releaseDate") ? new Date(formData.get("releaseDate") as string) : new Date(),
           adminText: parseInt(formData.get("adminText") as string) || 0,
@@ -131,7 +134,6 @@ export async function updateArticle(id: string, formData: FormData) {
 
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
-  const imageUrl = formData.get("imageUrl") as string;
   const categoryId = formData.get("categoryId") as string;
 
   const mediaFilesJson = formData.get("mediaFiles") as string;
@@ -146,6 +148,9 @@ export async function updateArticle(id: string, formData: FormData) {
   if (listenUrl) {
     mediaFiles.unshift({ type: "AUDIO", url: listenUrl });
   }
+
+  let imageUrl = formData.get("imageUrl") as string | null;
+  imageUrl = formatImageUrl(imageUrl);
 
   const isReview = formData.get("isTrackReview") === "on" || formData.get("isTrackReview") === "true";
 
@@ -167,7 +172,7 @@ export async function updateArticle(id: string, formData: FormData) {
       isTrackReview: isReview,
       media: {
         deleteMany: {}, // Clear old media
-        create: mediaFiles.map((m: any) => ({ url: m.url, type: m.type }))
+        create: mediaFiles.map((m: any) => ({ url: formatImageUrl(m.url), type: m.type }))
       },
     },
   });
@@ -180,7 +185,7 @@ export async function updateArticle(id: string, formData: FormData) {
         articleId: id,
         artistName: formData.get("artistName") as string || "",
         trackName: formData.get("trackName") as string || "",
-        coverUrl: formData.get("coverUrl") as string || null,
+        coverUrl: formatImageUrl(formData.get("coverUrl") as string) || null,
         adminText: parseInt(formData.get("adminText") as string) || 0,
         adminBeats: parseInt(formData.get("adminBeats") as string) || 0,
         adminSound: parseInt(formData.get("adminSound") as string) || 0,
@@ -196,7 +201,7 @@ export async function updateArticle(id: string, formData: FormData) {
         // @ts-ignore
         artistName: formData.get("artistName") as string || "",
         trackName: formData.get("trackName") as string || "",
-        coverUrl: formData.get("coverUrl") as string || null,
+        coverUrl: formatImageUrl(formData.get("coverUrl") as string) || null,
         releaseType: formData.get("releaseType") as string || "SINGLE",
         releaseDate: formData.get("releaseDate") ? new Date(formData.get("releaseDate") as string) : new Date(),
         adminText: parseInt(formData.get("adminText") as string) || 0,

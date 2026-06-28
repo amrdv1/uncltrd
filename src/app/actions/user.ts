@@ -3,6 +3,9 @@
 import { db } from "@/lib/db";
 import { auth, signOut } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { formatImageUrl } from "@/lib/utils";
+import fs from "fs/promises";
+import path from "path";
 
 export async function updateProfile(formData: FormData) {
   const session = await auth();
@@ -11,7 +14,26 @@ export async function updateProfile(formData: FormData) {
   }
 
   const name = formData.get("name") as string;
-  const image = formData.get("image") as string;
+  let image = formData.get("image") as string;
+  
+  const file = formData.get("avatarFile") as File;
+  if (file && file.size > 0) {
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    
+    // Save to public/uploads
+    const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
+    const publicPath = path.join(process.cwd(), 'public', 'uploads');
+    
+    try {
+      await fs.mkdir(publicPath, { recursive: true });
+    } catch (e) {}
+    
+    await fs.writeFile(path.join(publicPath, filename), buffer);
+    image = `/uploads/${filename}`;
+  }
+
+  image = formatImageUrl(image) || "";
 
   if (name && name !== session.user.name) {
     const existingName = await db.user.findFirst({
