@@ -288,25 +288,25 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                           <div className="text-right shrink-0 ml-2">
                             <div className="text-4xl font-black text-black dark:text-white mb-2" style={{ fontFamily: "var(--font-space-grotesk)"}}>{total}</div>
                             <div className="flex gap-1 text-[10px] font-bold text-zinc-500 justify-end">
-                              <div className="group relative cursor-help">
+                              <div className="group/tooltip relative cursor-help">
                                 <span className="text-blue-500">{rating.text}</span>
-                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Текст / Рими</div>
+                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Текст / Рими</div>
                               </div>
-                              <div className="group relative cursor-help">
+                              <div className="group/tooltip relative cursor-help">
                                 <span className="text-blue-500">{rating.beats}</span>
-                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Біт</div>
+                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Біт</div>
                               </div>
-                              <div className="group relative cursor-help">
+                              <div className="group/tooltip relative cursor-help">
                                 <span className="text-blue-500">{rating.sound}</span>
-                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Звучання</div>
+                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Звучання</div>
                               </div>
-                              <div className="group relative cursor-help">
+                              <div className="group/tooltip relative cursor-help">
                                 <span className="text-accent">{rating.vibe}</span>
-                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Вайб</div>
+                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Вайб</div>
                               </div>
-                              <div className="group relative cursor-help">
+                              <div className="group/tooltip relative cursor-help">
                                 <span className="text-accent">{rating.charisma}</span>
-                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Харизма</div>
+                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Харизма</div>
                               </div>
                             </div>
                           </div>
