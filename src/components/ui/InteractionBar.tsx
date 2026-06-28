@@ -118,7 +118,7 @@ export function InteractionBar({ articleId, initialLikes, initialComments, curre
                     {new Date(comment.createdAt).toLocaleDateString("uk-UA")}
                   </span>
                 </div>
-                <p className="text-zinc-700 dark:text-zinc-300">{comment.content}</p>
+                <p className="text-zinc-700 dark:text-zinc-300 break-words overflow-hidden">{comment.content}</p>
               </div>
             </div>
           ))}

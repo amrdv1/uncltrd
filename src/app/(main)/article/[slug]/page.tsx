@@ -331,7 +331,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                           </div>
                         </div>
                         
-                        <p className="text-zinc-700 dark:text-zinc-300 text-base leading-relaxed whitespace-pre-wrap flex-1">{rating.content}</p>
+                        <p className="text-zinc-700 dark:text-zinc-300 text-base leading-relaxed whitespace-pre-wrap break-words overflow-hidden flex-1">{rating.content}</p>
                       </div>
                     );
                   })}
