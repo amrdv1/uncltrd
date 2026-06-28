@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Users, FileText, Settings, LayoutDashboard, BookOpen, LogOut } from "lucide-react";
 import { auth } from "@/lib/auth";
-import { LogoutButton } from "@/components/ui/LogoutButton";
 
 export default async function AdminLayout({
   children,
@@ -78,10 +77,10 @@ export default async function AdminLayout({
           <Settings size={20} />
           <span className="text-[10px] font-bold uppercase mt-1">Налаштування</span>
         </Link>
-        <LogoutButton className="flex flex-col items-center p-2 text-red-500 hover:text-red-600 dark:text-red-500 dark:hover:text-red-600">
+        <Link href="/" className="flex flex-col items-center p-2 text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-500">
           <LogOut size={20} />
-          <span className="text-[10px] font-bold uppercase mt-1">Вийти</span>
-        </LogoutButton>
+          <span className="text-[10px] font-bold uppercase mt-1">На сайт</span>
+        </Link>
       </nav>
 
       {/* Admin Content */}
