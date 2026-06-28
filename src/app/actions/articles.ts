@@ -25,7 +25,7 @@ export async function createArticle(formData: FormData) {
   }
 
   const content = formData.get("content") as string;
-  const imageUrl = formData.get("imageUrl") as string;
+
   let categoryId = formData.get("categoryId") as string;
   
   if (isReview && !categoryId) {
@@ -77,7 +77,7 @@ export async function createArticle(formData: FormData) {
       status: "PUBLISHED",
       isTrackReview: isReview,
       media: mediaFiles.length > 0 ? {
-        create: mediaFiles.map((m: any) => ({ url: formatImageUrl(m.url), type: m.type }))
+        create: mediaFiles.map((m: any) => ({ url: formatImageUrl(m.url) as string, type: m.type }))
       } : undefined,
       // @ts-ignore
       trackReview: isReview ? {
@@ -172,7 +172,7 @@ export async function updateArticle(id: string, formData: FormData) {
       isTrackReview: isReview,
       media: {
         deleteMany: {}, // Clear old media
-        create: mediaFiles.map((m: any) => ({ url: formatImageUrl(m.url), type: m.type }))
+        create: mediaFiles.map((m: any) => ({ url: formatImageUrl(m.url) as string, type: m.type }))
       },
     },
   });
