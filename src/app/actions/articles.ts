@@ -106,7 +106,7 @@ export async function createArticle(formData: FormData) {
     if (cat) revalidatePath(`/category/${cat.slug}`);
   }
   
-  redirect(`/article/${slug}`);
+  redirect(`/article/${encodeURIComponent(slug)}`);
 }
 
 export async function updateArticle(id: string, formData: FormData) {
@@ -217,14 +217,14 @@ export async function updateArticle(id: string, formData: FormData) {
 
   revalidatePath("/admin-panel/articles");
   revalidatePath("/");
-  revalidatePath(`/article/${article.slug}`);
+  revalidatePath(`/article/${encodeURIComponent(article.slug)}`);
   if (categoryId || article.categoryId) {
     const catId = categoryId || article.categoryId;
     const cat = await db.category.findUnique({ where: { id: catId } });
     if (cat) revalidatePath(`/category/${cat.slug}`);
   }
 
-  redirect(`/article/${article.slug}`);
+  redirect(`/article/${encodeURIComponent(article.slug)}`);
 }
 
 export async function deleteArticle(id: string) {
