@@ -6,6 +6,7 @@ import { notFound, redirect } from "next/navigation";
 import { FadeIn } from "@/components/ui/FadeIn";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
+import { Lock, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default async function CategoryPage(props: { 
   params: Promise<{ slug: string }>,
@@ -33,25 +34,28 @@ export default async function CategoryPage(props: {
   const userRole = session?.user?.role || "USER";
   const isAdminOrEditor = userRole === "ADMIN" || userRole === "EDITOR";
   
-  const now = new Date();
-  const dayOfWeek = now.getDay(); 
-  const isBeforeFriday = dayOfWeek >= 1 && dayOfWeek <= 4; 
-  const isRestrictedWeekView = isReviewsCategory && isBeforeFriday && !isAdminOrEditor;
+  // Date calculation for the current week's release cycle
+  // Use Kyiv timezone to avoid UTC offset issues
+  const nowStr = new Date().toLocaleString("en-US", { timeZone: "Europe/Kyiv" });
+  const currentDate = new Date(nowStr);
+  
+  const currentDayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay(); // 1 (Mon) to 7 (Sun)
+  const isBeforeFriday = currentDayOfWeek >= 1 && currentDayOfWeek <= 4; 
+  
+  const weekOffset = parseInt(searchParams.offset as string) || 0;
+  const isRestrictedWeekView = isReviewsCategory && isBeforeFriday && weekOffset === 0 && !isAdminOrEditor;
 
-  let viewParam = (searchParams.view as string) || (isRestrictedWeekView ? "all" : "week");
-  
-  if (isRestrictedWeekView && viewParam === "week") {
-    redirect(`?view=all`);
-  }
-  
+  const viewParam = (searchParams.view as string) || "week"; // "week" or "all"
   const sortParam = (searchParams.sort as string) || "newest";
   const typeParam = (searchParams.type as string) || "ALL";
   const searchParam = (searchParams.q as string) || "";
 
-  const buildHref = (view: string, type: string) => {
+  const buildHref = (view: string, type: string, offset?: number) => {
     let url = `?view=${view}&type=${type}`;
     if (view === "all" && sortParam !== "newest") url += `&sort=${sortParam}`;
     if (searchParam) url += `&q=${encodeURIComponent(searchParam)}`;
+    const finalOffset = offset !== undefined ? offset : weekOffset;
+    if (finalOffset !== 0) url += `&offset=${finalOffset}`;
     return url;
   };
 
@@ -63,17 +67,11 @@ export default async function CategoryPage(props: {
     whereClause.categoryId = category.id;
   }
 
-  // Date calculation for the current week's release cycle
-  // Use Kyiv timezone to avoid UTC offset issues
-  const nowStr = new Date().toLocaleString("en-US", { timeZone: "Europe/Kyiv" });
-  const now = new Date(nowStr);
+  const daysSinceMonday = currentDayOfWeek - 1;
 
-  const dayOfWeek = now.getDay() === 0 ? 7 : now.getDay(); // 1 (Mon) to 7 (Sun)
-  const daysSinceMonday = dayOfWeek - 1;
-
-  const monday = new Date(now);
+  const monday = new Date(currentDate);
   monday.setHours(0, 0, 0, 0);
-  monday.setDate(monday.getDate() - daysSinceMonday);
+  monday.setDate(monday.getDate() - daysSinceMonday + (weekOffset * 7));
 
   const friday = new Date(monday);
   friday.setDate(monday.getDate() + 4);
@@ -195,7 +193,20 @@ export default async function CategoryPage(props: {
 
             {viewParam === "week" ? (
               <div className="mb-12 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 transition-colors w-full">
-                <div className="flex flex-wrap gap-2 w-full xl:w-auto">
+                {/* Week Navigation */}
+                <div className="flex items-center gap-4 bg-white dark:bg-black rounded-full border border-zinc-200 dark:border-zinc-800 p-1 w-full xl:w-auto justify-between xl:justify-start">
+                  <Link href={buildHref("week", typeParam, Math.min(weekOffset + 1, 0))} className={`p-2 rounded-full transition-colors ${weekOffset === 0 ? "opacity-30 pointer-events-none text-zinc-500" : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-black dark:hover:text-white"}`}>
+                    <ChevronLeft size={16} />
+                  </Link>
+                  <span className="font-bold uppercase tracking-widest text-[10px] min-w-[100px] text-center">
+                    {weekOffset === 0 ? "Цей тиждень" : weekOffset === -1 ? "Минулий тиждень" : `${Math.abs(weekOffset)} тижнів тому`}
+                  </span>
+                  <Link href={buildHref("week", typeParam, weekOffset - 1)} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-black dark:hover:text-white">
+                    <ChevronRight size={16} />
+                  </Link>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 w-full xl:w-auto mt-4 xl:mt-0">
                   <Link href={buildHref("week", "ALL")} className={`px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-xs transition-colors ${typeParam === "ALL" ? "bg-black text-white dark:bg-white dark:text-black" : "bg-white dark:bg-black text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:border-black dark:hover:border-white"}`}>Всі</Link>
                   <Link href={buildHref("week", "ALBUM")} className={`px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-xs transition-colors ${typeParam === "ALBUM" ? "bg-black text-white dark:bg-white dark:text-black" : "bg-white dark:bg-black text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:border-black dark:hover:border-white"}`}>Альбоми</Link>
                   <Link href={buildHref("week", "EP")} className={`px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-xs transition-colors ${typeParam === "EP" ? "bg-black text-white dark:bg-white dark:text-black" : "bg-white dark:bg-black text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:border-black dark:hover:border-white"}`}>EP</Link>
@@ -254,7 +265,18 @@ export default async function CategoryPage(props: {
           </>
         )}
 
-        {articles.length > 0 ? (
+        {isRestrictedWeekView && viewParam === "week" ? (
+          <div className="py-24 text-center">
+            <div className="inline-block p-6 bg-zinc-100 dark:bg-zinc-900 rounded-3xl mb-4">
+              <Lock size={32} className="text-zinc-400" />
+            </div>
+            <h3 className="text-2xl font-black uppercase tracking-tighter font-serif mb-2">Ця вкладка відкриється у п'ятницю</h3>
+            <p className="text-zinc-500 font-medium">Поки що ви можете переглянути усі огляди!</p>
+            <Link href={buildHref("all", "ALL")} className="mt-8 inline-block bg-black text-white dark:bg-white dark:text-black px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs transition-transform hover:scale-105">
+              Дивитись усі огляди
+            </Link>
+          </div>
+        ) : articles.length > 0 ? (
           category.slug === "news" || category.name.toLowerCase() === "новини" || (isReviewsCategory && viewParam === "week") ? (
             <div className="w-full">
               <Carousel itemWidth={300} className="w-full">

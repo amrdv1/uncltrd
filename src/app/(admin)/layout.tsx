@@ -33,15 +33,17 @@ export default async function AdminLayout({
             <span className="font-medium text-sm">Articles</span>
           </Link>
           {isAdmin && (
-            <Link href="/admin-panel/users" className="flex items-center space-x-3 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 px-4 py-3 rounded-xl transition-all hover:translate-x-1 group">
-              <Users size={18} className="group-hover:text-green-500 transition-colors" />
-              <span className="font-medium text-sm">Users</span>
-            </Link>
+            <>
+              <Link href="/admin-panel/users" className="flex items-center space-x-3 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 px-4 py-3 rounded-xl transition-all hover:translate-x-1 group">
+                <Users size={18} className="group-hover:text-green-500 transition-colors" />
+                <span className="font-medium text-sm">Users</span>
+              </Link>
+              <Link href="/admin-panel/settings" className="flex items-center space-x-3 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 px-4 py-3 rounded-xl transition-all hover:translate-x-1 group">
+                <Settings size={18} className="group-hover:text-purple-500 transition-colors" />
+                <span className="font-medium text-sm">Settings</span>
+              </Link>
+            </>
           )}
-          <Link href="/admin-panel/settings" className="flex items-center space-x-3 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 px-4 py-3 rounded-xl transition-all hover:translate-x-1 group">
-            <Settings size={18} className="group-hover:text-purple-500 transition-colors" />
-            <span className="font-medium text-sm">Settings</span>
-          </Link>
           <div className="pt-4 mt-4 border-t border-zinc-200 dark:border-zinc-800/50">
             <Link href="/admin-panel/guide" className="flex items-center space-x-3 text-accent hover:text-black dark:hover:text-white bg-accent/5 dark:bg-accent/10 hover:bg-accent/10 dark:hover:bg-accent/20 border border-accent/20 px-4 py-3 rounded-xl transition-all hover:scale-[1.02] group shadow-sm">
               <BookOpen size={18} className="animate-pulse" />
