@@ -125,8 +125,9 @@ export function InteractionBar({ articleId, initialLikes, initialComments, curre
           {comments.length === 0 && <p className="text-zinc-400 italic">Ще немає коментарів. Будьте першим!</p>}
         </div>
       </div>
+    </div>
       
-      {mounted && createPortal(
+    {mounted && createPortal(
         <AnimatePresence>
           {showLoginAlert && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
