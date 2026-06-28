@@ -63,7 +63,7 @@ export default async function CategoryPage(props: {
 
   let orderBy: any = { createdAt: "desc" };
 
-  if (isReviewsCategory && viewParam === "week") {
+  if (isReviewsCategory) {
     orderBy = { trackReview: { releaseDate: "desc" } };
   }
 
@@ -82,7 +82,7 @@ export default async function CategoryPage(props: {
       };
     } else {
       // view === "all"
-      if (sortParam === "oldest") orderBy = { createdAt: "asc" };
+      if (sortParam === "oldest") orderBy = { trackReview: { releaseDate: "asc" } };
       else if (sortParam === "best") orderBy = { trackReview: { adminTotal: "desc" } };
       else if (sortParam === "worst") orderBy = { trackReview: { adminTotal: "asc" } };
     }
@@ -112,6 +112,9 @@ export default async function CategoryPage(props: {
       author: true, 
       category: true, 
       trackReview: true,
+      userRatings: {
+        include: { user: true }
+      },
       _count: {
         select: { comments: true, likes: true }
       }
@@ -210,16 +213,37 @@ export default async function CategoryPage(props: {
               <Carousel itemWidth={300} className="w-full">
                 {articles.map((article, i) => (
                   <FadeIn key={article.id} delay={(i % 12) * 0.1} className="w-full h-full flex">
-                    {article.isTrackReview && article.trackReview ? (
-                      <TrackCard
-                        title={article.trackReview.trackName}
-                        artist={article.trackReview.artistName}
-                        coverUrl={article.trackReview.coverUrl || "https://images.unsplash.com/photo-1493225457124-a1a2a5956093?auto=format&fit=crop&q=80&w=1600"}
-                        slug={article.slug}
-                        publicScore={article.trackReview.totalScore !== null ? Math.round(article.trackReview.totalScore) : undefined}
-                        adminScore={(article.trackReview as any).adminTotal !== null && (article.trackReview as any).adminTotal !== undefined ? Math.round((article.trackReview as any).adminTotal) : undefined}
-                      />
-                    ) : (
+                    {article.isTrackReview && article.trackReview ? (() => {
+                      let pubScore = article.trackReview?.totalScore || 0;
+                      let admScore = (article.trackReview as any)?.adminTotal || 0;
+                      
+                      const adminRatings = article.userRatings?.filter((r: any) => r.user?.role === 'ADMIN') || [];
+                      if (adminRatings.length > 0) {
+                        const sum = adminRatings.reduce((acc: number, r: any) => acc + (r.text + r.beats + r.sound + r.vibe + r.charisma), 0);
+                        admScore = Math.round(sum / adminRatings.length);
+                      }
+                      
+                      const publicRatings = article.userRatings?.filter((r: any) => r.user?.role !== 'ADMIN') || [];
+                      if (publicRatings.length > 0) {
+                        const sumText = publicRatings.reduce((sum: number, r: any) => sum + r.text, 0) / publicRatings.length;
+                        const sumBeats = publicRatings.reduce((sum: number, r: any) => sum + r.beats, 0) / publicRatings.length;
+                        const sumSound = publicRatings.reduce((sum: number, r: any) => sum + r.sound, 0) / publicRatings.length;
+                        const sumVibe = publicRatings.reduce((sum: number, r: any) => sum + r.vibe, 0) / publicRatings.length;
+                        const sumCharisma = publicRatings.reduce((sum: number, r: any) => sum + r.charisma, 0) / publicRatings.length;
+                        pubScore = Math.round(sumText + sumBeats + sumSound + sumVibe + sumCharisma);
+                      }
+
+                      return (
+                        <TrackCard
+                          title={article.trackReview!.trackName}
+                          artist={article.trackReview!.artistName}
+                          coverUrl={article.trackReview!.coverUrl || "https://images.unsplash.com/photo-1493225457124-a1a2a5956093?auto=format&fit=crop&q=80&w=1600"}
+                          slug={article.slug}
+                          publicScore={publicRatings.length > 0 ? pubScore : undefined}
+                          adminScore={adminRatings.length > 0 || admScore > 0 ? admScore : undefined}
+                        />
+                      );
+                    })() : (
                       <StoryCard
                         size="carousel"
                         category={article.category?.name || "Новина"}
@@ -241,16 +265,37 @@ export default async function CategoryPage(props: {
 
                 return (
                   <FadeIn key={article.id} delay={(i % 12) * 0.1} className={colSpan}>
-                    {article.isTrackReview && article.trackReview ? (
-                      <TrackCard
-                        title={article.trackReview.trackName}
-                        artist={article.trackReview.artistName}
-                        coverUrl={article.trackReview.coverUrl || "https://images.unsplash.com/photo-1493225457124-a1a2a5956093?auto=format&fit=crop&q=80&w=1600"}
-                        slug={article.slug}
-                        publicScore={article.trackReview.totalScore !== null ? Math.round(article.trackReview.totalScore) : undefined}
-                        adminScore={(article.trackReview as any).adminTotal !== null && (article.trackReview as any).adminTotal !== undefined ? Math.round((article.trackReview as any).adminTotal) : undefined}
-                      />
-                    ) : (
+                    {article.isTrackReview && article.trackReview ? (() => {
+                      let pubScore = article.trackReview?.totalScore || 0;
+                      let admScore = (article.trackReview as any)?.adminTotal || 0;
+                      
+                      const adminRatings = article.userRatings?.filter((r: any) => r.user?.role === 'ADMIN') || [];
+                      if (adminRatings.length > 0) {
+                        const sum = adminRatings.reduce((acc: number, r: any) => acc + (r.text + r.beats + r.sound + r.vibe + r.charisma), 0);
+                        admScore = Math.round(sum / adminRatings.length);
+                      }
+                      
+                      const publicRatings = article.userRatings?.filter((r: any) => r.user?.role !== 'ADMIN') || [];
+                      if (publicRatings.length > 0) {
+                        const sumText = publicRatings.reduce((sum: number, r: any) => sum + r.text, 0) / publicRatings.length;
+                        const sumBeats = publicRatings.reduce((sum: number, r: any) => sum + r.beats, 0) / publicRatings.length;
+                        const sumSound = publicRatings.reduce((sum: number, r: any) => sum + r.sound, 0) / publicRatings.length;
+                        const sumVibe = publicRatings.reduce((sum: number, r: any) => sum + r.vibe, 0) / publicRatings.length;
+                        const sumCharisma = publicRatings.reduce((sum: number, r: any) => sum + r.charisma, 0) / publicRatings.length;
+                        pubScore = Math.round(sumText + sumBeats + sumSound + sumVibe + sumCharisma);
+                      }
+
+                      return (
+                        <TrackCard
+                          title={article.trackReview!.trackName}
+                          artist={article.trackReview!.artistName}
+                          coverUrl={article.trackReview!.coverUrl || "https://images.unsplash.com/photo-1493225457124-a1a2a5956093?auto=format&fit=crop&q=80&w=1600"}
+                          slug={article.slug}
+                          publicScore={publicRatings.length > 0 ? pubScore : undefined}
+                          adminScore={adminRatings.length > 0 || admScore > 0 ? admScore : undefined}
+                        />
+                      );
+                    })() : (
                       <StoryCard
                         size={size}
                         category={article.category?.name || "Новина"}

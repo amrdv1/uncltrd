@@ -121,6 +121,21 @@ export async function submitTrackRating(articleId: string, formData: FormData) {
     });
   }
 
+  // Calculate admin score dynamically
+  const adminRatings = await db.userRating.findMany({
+    where: { articleId, user: { role: "ADMIN" } }
+  });
+
+  if (adminRatings.length > 0) {
+    const sum = adminRatings.reduce((acc: number, r: any) => acc + (r.text + r.beats + r.sound + r.vibe + r.charisma), 0);
+    const adminTotal = Math.round(sum / adminRatings.length);
+    
+    await db.trackReview.update({
+      where: { articleId },
+      data: { adminTotal }
+    });
+  }
+
   const article = await db.article.findUnique({ where: { id: articleId } });
   if (article) {
     revalidatePath(`/article/${article.slug}`);

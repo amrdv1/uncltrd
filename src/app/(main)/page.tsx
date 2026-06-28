@@ -40,7 +40,14 @@ export default async function Home() {
 
   const reviews = await db.article.findMany({
     where: { status: "PUBLISHED", isTrackReview: true },
-    include: { category: true, author: true, trackReview: true },
+    include: { 
+      category: true, 
+      author: true, 
+      trackReview: true,
+      userRatings: {
+        include: { user: true }
+      }
+    },
     orderBy: { createdAt: "desc" },
     take: 3
   });
@@ -152,17 +159,38 @@ export default async function Home() {
             <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 hide-scrollbar snap-x snap-mandatory overscroll-x-contain touch-pan-x scroll-pl-4 sm:scroll-pl-0">
               {reviews.map((review, i) => (
                 <FadeIn key={review.id} delay={i * 0.1} className="w-[65vw] sm:w-full shrink-0 snap-start flex">
-                  {review.trackReview && (
-                    <TrackCard
-                      title={review.trackReview.trackName}
-                      artist={review.trackReview.artistName}
-                      coverUrl={review.trackReview.coverUrl || PLACEHOLDER_IMAGES[i]}
-                      slug={review.slug}
-                      publicScore={review.trackReview.totalScore !== null ? Math.round(review.trackReview.totalScore) : undefined}
-                      adminScore={(review.trackReview as any)?.adminTotal !== null && (review.trackReview as any)?.adminTotal !== undefined ? Math.round((review.trackReview as any)?.adminTotal) : undefined}
-                      compact={true}
-                    />
-                  )}
+                  {review.trackReview && (() => {
+                    let pubScore = review.trackReview?.totalScore || 0;
+                    let admScore = (review.trackReview as any)?.adminTotal || 0;
+                    
+                    const adminRatings = (review as any).userRatings?.filter((r: any) => r.user?.role === 'ADMIN') || [];
+                    if (adminRatings.length > 0) {
+                      const sum = adminRatings.reduce((acc: number, r: any) => acc + (r.text + r.beats + r.sound + r.vibe + r.charisma), 0);
+                      admScore = Math.round(sum / adminRatings.length);
+                    }
+                    
+                    const publicRatings = (review as any).userRatings?.filter((r: any) => r.user?.role !== 'ADMIN') || [];
+                    if (publicRatings.length > 0) {
+                      const sumText = publicRatings.reduce((sum: number, r: any) => sum + r.text, 0) / publicRatings.length;
+                      const sumBeats = publicRatings.reduce((sum: number, r: any) => sum + r.beats, 0) / publicRatings.length;
+                      const sumSound = publicRatings.reduce((sum: number, r: any) => sum + r.sound, 0) / publicRatings.length;
+                      const sumVibe = publicRatings.reduce((sum: number, r: any) => sum + r.vibe, 0) / publicRatings.length;
+                      const sumCharisma = publicRatings.reduce((sum: number, r: any) => sum + r.charisma, 0) / publicRatings.length;
+                      pubScore = Math.round(sumText + sumBeats + sumSound + sumVibe + sumCharisma);
+                    }
+
+                    return (
+                      <TrackCard
+                        title={review.trackReview!.trackName}
+                        artist={review.trackReview!.artistName}
+                        coverUrl={review.trackReview!.coverUrl || PLACEHOLDER_IMAGES[i]}
+                        slug={review.slug}
+                        publicScore={publicRatings.length > 0 ? pubScore : undefined}
+                        adminScore={adminRatings.length > 0 || admScore > 0 ? admScore : undefined}
+                        compact={true}
+                      />
+                    );
+                  })()}
                 </FadeIn>
               ))}
             </div>
