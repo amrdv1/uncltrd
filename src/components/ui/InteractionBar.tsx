@@ -125,6 +125,40 @@ export function InteractionBar({ articleId, initialLikes, initialComments, curre
           {comments.length === 0 && <p className="text-zinc-400 italic">Ще немає коментарів. Будьте першим!</p>}
         </div>
       </div>
-    </div>
+      
+      {mounted && createPortal(
+        <AnimatePresence>
+          {showLoginAlert && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                className="bg-white dark:bg-[#111] p-8 rounded-3xl shadow-xl max-w-sm w-full border border-zinc-200 dark:border-zinc-800 text-center relative overflow-hidden"
+              >
+                <h3 className="text-xl font-black uppercase tracking-tighter mb-2 text-black dark:text-white" style={{ fontFamily: "var(--font-space-grotesk)" }}>Потрібна авторизація</h3>
+                <p className="text-zinc-500 mb-8 font-medium text-sm">Ви повинні увійти, щоб голосувати за статтю.</p>
+                
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowLoginAlert(false)}
+                    className="flex-1 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white font-bold uppercase tracking-widest text-xs hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                  >
+                    ЗРОЗУМІЛО
+                  </button>
+                  <Link
+                    href="/login"
+                    className="flex-1 py-3 rounded-xl bg-accent text-white font-bold uppercase tracking-widest text-xs hover:bg-black transition-colors flex items-center justify-center"
+                  >
+                    УВІЙТИ
+                  </Link>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+    </>
   );
 }
