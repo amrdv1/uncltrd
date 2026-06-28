@@ -138,7 +138,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
     return (
       <div className="bg-white dark:bg-[#050505] min-h-screen pt-8 pb-20 text-black dark:text-white font-sans transition-colors">
         <div className="max-w-6xl mx-auto px-6">
-          <Link href={article.category ? `/category/${article.category.slug}` : "/"} className="inline-flex items-center text-[#2A75FF] hover:text-black dark:hover:text-white transition mb-6 font-bold uppercase tracking-widest text-xs">
+          <Link href={article.category ? `/category/${article.category.slug}${(article.category.slug === 'reviews' || article.category.name.toLowerCase() === 'огляди') ? '?view=all' : ''}` : "/"} className="inline-flex items-center text-[#2A75FF] hover:text-black dark:hover:text-white transition mb-6 font-bold uppercase tracking-widest text-xs">
             <ArrowLeft size={14} className="mr-2" />
             НАЗАД
           </Link>
@@ -337,9 +337,9 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-8">
-      <Link href="/" className="inline-flex items-center text-zinc-500 hover:text-black transition mb-8 font-bold uppercase tracking-widest text-xs">
+      <Link href={article.category ? `/category/${article.category.slug}${(article.category.slug === 'reviews' || article.category.name.toLowerCase() === 'огляди') ? '?view=all' : ''}` : "/"} className="inline-flex items-center text-zinc-500 hover:text-black dark:hover:text-white transition mb-8 font-bold uppercase tracking-widest text-xs">
         <ArrowLeft size={14} className="mr-2" />
-        На головну
+        НАЗАД
       </Link>
 
       <div className="mb-10">
