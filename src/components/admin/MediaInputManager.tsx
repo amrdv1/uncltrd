@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Trash } from "lucide-react";
+import { useState, useRef } from "react";
+import { Plus, Trash, Upload, Loader2 } from "lucide-react";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 
 export function MediaInputManager({ initialMedia = [] }: { initialMedia?: any[] }) {
   const [media, setMedia] = useState<{ url: string; type: string }[]>(initialMedia);
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const addMedia = () => {
     setMedia([...media, { url: "", type: "IMAGE" }]);
@@ -19,6 +21,39 @@ export function MediaInputManager({ initialMedia = [] }: { initialMedia?: any[] 
 
   const removeMedia = (index: number) => {
     setMedia(media.filter((_, i) => i !== index));
+  };
+
+  const handleUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingIndex(index);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Upload failed");
+
+      const data = await res.json();
+      
+      const newMedia = [...media];
+      newMedia[index].url = data.url;
+      if (file.type.startsWith('video/')) {
+        newMedia[index].type = "VIDEO";
+      } else {
+        newMedia[index].type = "IMAGE";
+      }
+      setMedia(newMedia);
+    } catch (err) {
+      alert("Помилка завантаження файлу");
+    } finally {
+      setUploadingIndex(null);
+    }
   };
 
   return (
@@ -43,13 +78,32 @@ export function MediaInputManager({ initialMedia = [] }: { initialMedia?: any[] 
             <option value="VIDEO">Відео</option>
           </select>
           
-          <input 
-            type="url" 
-            value={item.url} 
-            onChange={(e) => updateMedia(index, "url", e.target.value)}
-            placeholder="URL посилання..."
-            className="px-3 py-2 border border-zinc-300 rounded text-sm outline-none flex-1"
-          />
+          <div className="flex-1 flex space-x-2">
+            <input 
+              type="url" 
+              value={item.url} 
+              onChange={(e) => updateMedia(index, "url", e.target.value)}
+              placeholder="URL посилання..."
+              className="px-3 py-2 border border-zinc-300 rounded text-sm outline-none flex-1"
+            />
+            
+            <input 
+              type="file" 
+              className="hidden" 
+              ref={(el) => { fileInputRefs.current[index] = el; }}
+              accept="image/*,video/*"
+              onChange={(e) => handleUpload(index, e)}
+            />
+            
+            <button
+              type="button"
+              onClick={() => fileInputRefs.current[index]?.click()}
+              disabled={uploadingIndex === index}
+              className="px-3 py-2 bg-black text-white rounded flex items-center justify-center text-xs font-bold uppercase disabled:opacity-50"
+            >
+              {uploadingIndex === index ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+            </button>
+          </div>
 
           <ConfirmDeleteButton 
             onConfirm={() => removeMedia(index)} 

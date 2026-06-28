@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Key } from "lucide-react";
 import { updateArticle, grantEditPermission, deleteArticle } from "@/app/actions/articles";
 import { MediaInputManager } from "@/components/admin/MediaInputManager";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { TrackReviewManager } from "@/components/admin/TrackReviewManager";
 import { FadeIn } from "@/components/ui/FadeIn";
 
@@ -70,9 +71,8 @@ export default async function EditArticlePage(props: { params: Promise<{ id: str
           {!article.isTrackReview ? (
             <div>
               <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest">URL Обкладинки (Необов'язково)</label>
-              <input 
+              <ImageUploadField 
                 name="imageUrl" 
-                type="url" 
                 defaultValue={article.imageUrl || ""}
                 className="w-full px-5 py-4 bg-zinc-50 dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:border-accent text-black dark:text-white transition-colors" 
               />

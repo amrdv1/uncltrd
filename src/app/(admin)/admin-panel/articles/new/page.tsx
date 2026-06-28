@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { db } from "@/lib/db";
 import { MediaInputManager } from "@/components/admin/MediaInputManager";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { FadeIn } from "@/components/ui/FadeIn";
 
 export default async function NewArticlePage() {
@@ -34,13 +35,12 @@ export default async function NewArticlePage() {
 
           <div>
             <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest">URL Обкладинки (Необов'язково)</label>
-            <input 
+            <ImageUploadField 
               name="imageUrl" 
-              type="url" 
-              className="w-full px-5 py-4 bg-zinc-50 dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:border-accent text-black dark:text-white transition-colors placeholder:text-zinc-400 dark:placeholder:text-zinc-700" 
+              className="w-full px-5 py-4 bg-zinc-50 dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:border-accent text-black dark:text-white transition-colors placeholder:text-zinc-400 dark:placeholder:text-zinc-700"
               placeholder="https://example.com/image.jpg"
             />
-            <p className="text-[10px] text-zinc-500 mt-2 font-bold uppercase tracking-widest">Рекомендується співвідношення сторін 21:9 або 16:9 для новин.</p>
+            <p className="text-[10px] text-zinc-500 mt-2 font-bold uppercase tracking-widest">Рекомендується співвідношення сторін 21:9 або 16:9 для новин. Можна вибрати файл з пристрою.</p>
           </div>
 
           <div className="bg-zinc-50 dark:bg-[#151515] p-8 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-inner">
