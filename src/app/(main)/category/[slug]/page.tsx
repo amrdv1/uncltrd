@@ -181,11 +181,9 @@ export default async function CategoryPage(props: {
         {isReviewsCategory && (
           <>
             <div className="flex flex-wrap gap-4 mb-8 border-b border-zinc-200 dark:border-zinc-800">
-              {!isRestrictedWeekView && (
-                <Link href={buildHref("week", typeParam)} className={`pb-4 px-2 md:px-6 font-bold uppercase tracking-widest text-xs md:text-sm border-b-2 transition-colors ${viewParam === "week" ? "border-black dark:border-white text-black dark:text-white" : "border-transparent text-zinc-500 hover:text-black dark:hover:text-white"}`}>
-                  Релізи ({formattedFriday})
-                </Link>
-              )}
+              <Link href={buildHref("week", typeParam)} className={`pb-4 px-2 md:px-6 font-bold uppercase tracking-widest text-xs md:text-sm border-b-2 transition-colors ${viewParam === "week" ? "border-black dark:border-white text-black dark:text-white" : "border-transparent text-zinc-500 hover:text-black dark:hover:text-white"}`}>
+                Релізи ({formattedFriday})
+              </Link>
               <Link href={buildHref("all", typeParam)} className={`pb-4 px-2 md:px-6 font-bold uppercase tracking-widest text-xs md:text-sm border-b-2 transition-colors ${viewParam === "all" ? "border-black dark:border-white text-black dark:text-white" : "border-transparent text-zinc-500 hover:text-black dark:hover:text-white"}`}>
                 Усі огляди
               </Link>
