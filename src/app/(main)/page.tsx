@@ -158,8 +158,8 @@ export default async function Home() {
                       artist={review.trackReview.artistName}
                       coverUrl={review.trackReview.coverUrl || PLACEHOLDER_IMAGES[i]}
                       slug={review.slug}
-                      publicScore={Math.round(review.trackReview.totalScore || 0)}
-                      adminScore={Math.round((review.trackReview as any)?.adminTotal || 0)}
+                      publicScore={review.trackReview.totalScore !== null ? Math.round(review.trackReview.totalScore) : undefined}
+                      adminScore={(review.trackReview as any)?.adminTotal !== null && (review.trackReview as any)?.adminTotal !== undefined ? Math.round((review.trackReview as any)?.adminTotal) : undefined}
                       compact={true}
                     />
                   )}

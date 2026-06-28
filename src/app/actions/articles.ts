@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function createArticle(formData: FormData) {
   const session = await auth();
@@ -104,6 +105,8 @@ export async function createArticle(formData: FormData) {
     const cat = await db.category.findUnique({ where: { id: categoryId } });
     if (cat) revalidatePath(`/category/${cat.slug}`);
   }
+  
+  redirect(`/article/${slug}`);
 }
 
 export async function updateArticle(id: string, formData: FormData) {
@@ -194,6 +197,8 @@ export async function updateArticle(id: string, formData: FormData) {
         artistName: formData.get("artistName") as string || "",
         trackName: formData.get("trackName") as string || "",
         coverUrl: formData.get("coverUrl") as string || null,
+        releaseType: formData.get("releaseType") as string || "SINGLE",
+        releaseDate: formData.get("releaseDate") ? new Date(formData.get("releaseDate") as string) : new Date(),
         adminText: parseInt(formData.get("adminText") as string) || 0,
         adminBeats: parseInt(formData.get("adminBeats") as string) || 0,
         adminSound: parseInt(formData.get("adminSound") as string) || 0,
@@ -218,6 +223,8 @@ export async function updateArticle(id: string, formData: FormData) {
     const cat = await db.category.findUnique({ where: { id: catId } });
     if (cat) revalidatePath(`/category/${cat.slug}`);
   }
+
+  redirect(`/article/${article.slug}`);
 }
 
 export async function deleteArticle(id: string) {

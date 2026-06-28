@@ -54,10 +54,10 @@ export function TrackCard({
       <div className={cn("flex items-center justify-between", compact ? "mb-3" : "mb-4")}>
         <div className="flex items-center gap-1">
           <div className="w-8 h-8 shrink-0 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-xs shadow-lg" title="Оцінка користувачів">
-            {publicScore || "-"}
+            {publicScore !== undefined && publicScore !== null ? publicScore : "-"}
           </div>
           <div className="w-8 h-8 shrink-0 rounded-full bg-transparent border border-zinc-600 text-white font-black flex items-center justify-center text-xs shadow-lg" title="Оцінка редакції">
-            {adminScore || "-"}
+            {adminScore !== undefined && adminScore !== null ? adminScore : "-"}
           </div>
         </div>
       </div>

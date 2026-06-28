@@ -63,6 +63,10 @@ export default async function CategoryPage(props: {
 
   let orderBy: any = { createdAt: "desc" };
 
+  if (isReviewsCategory && viewParam === "week") {
+    orderBy = { trackReview: { releaseDate: "desc" } };
+  }
+
   if (isReviewsCategory) {
     if (viewParam === "week") {
       const sunday = new Date(monday);
@@ -212,8 +216,8 @@ export default async function CategoryPage(props: {
                         artist={article.trackReview.artistName}
                         coverUrl={article.trackReview.coverUrl || "https://images.unsplash.com/photo-1493225457124-a1a2a5956093?auto=format&fit=crop&q=80&w=1600"}
                         slug={article.slug}
-                        publicScore={Math.round(article.trackReview.totalScore || 0)}
-                        adminScore={Math.round((article.trackReview as any).adminTotal || 0)}
+                        publicScore={article.trackReview.totalScore !== null ? Math.round(article.trackReview.totalScore) : undefined}
+                        adminScore={(article.trackReview as any).adminTotal !== null && (article.trackReview as any).adminTotal !== undefined ? Math.round((article.trackReview as any).adminTotal) : undefined}
                       />
                     ) : (
                       <StoryCard
@@ -243,8 +247,8 @@ export default async function CategoryPage(props: {
                         artist={article.trackReview.artistName}
                         coverUrl={article.trackReview.coverUrl || "https://images.unsplash.com/photo-1493225457124-a1a2a5956093?auto=format&fit=crop&q=80&w=1600"}
                         slug={article.slug}
-                        publicScore={Math.round(article.trackReview.totalScore || 0)}
-                        adminScore={Math.round((article.trackReview as any).adminTotal || 0)}
+                        publicScore={article.trackReview.totalScore !== null ? Math.round(article.trackReview.totalScore) : undefined}
+                        adminScore={(article.trackReview as any).adminTotal !== null && (article.trackReview as any).adminTotal !== undefined ? Math.round((article.trackReview as any).adminTotal) : undefined}
                       />
                     ) : (
                       <StoryCard
