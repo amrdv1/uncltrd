@@ -39,7 +39,13 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <form action={handleSubmit} className="space-y-4">
+        <form 
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(new FormData(e.currentTarget));
+          }} 
+          className="space-y-4"
+        >
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1">Ім'я</label>
             <input 
@@ -47,7 +53,7 @@ export default function RegisterPage() {
               type="text" 
               required
               className="w-full px-4 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black transition-all"
-              placeholder="Іван Іванов"
+              placeholder="Микола Миколчук"
             />
           </div>
           <div>
@@ -67,7 +73,7 @@ export default function RegisterPage() {
                 name="password"
                 type={showPassword ? "text" : "password"} 
                 required
-                className="w-full px-4 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black transition-all"
+                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black transition-all ${error && error.includes("Пароль") ? "border-red-500 bg-red-50" : "border-zinc-300"}`}
                 placeholder="••••••••"
               />
               <button

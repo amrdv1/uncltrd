@@ -17,7 +17,7 @@ export async function register(formData: FormData) {
     return { error: "Всі поля обов'язкові" };
   }
 
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
   if (!passwordRegex.test(password)) {
     return { error: "Пароль має містити мінімум 8 символів, велику букву, цифру та спеціальний символ" };
   }
