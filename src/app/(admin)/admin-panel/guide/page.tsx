@@ -23,7 +23,7 @@ export default function GuidePage() {
           
           <div className="text-zinc-600 dark:text-zinc-300">
             <p className="text-base mb-6">
-              Ви можете вставляти завантажені медіафайли прямо у текст статті. Для цього використовується спеціальна команда <code className="bg-zinc-100 dark:bg-white/10 text-black dark:text-white px-2 py-1 rounded-md">[media:НОМЕР]</code>.
+              Ви можете вставляти завантажені медіафайли прямо у текст статті. Для цього використовується спеціальна команда <code className="bg-zinc-100 dark:bg-white/10 text-black dark:text-white px-2 py-1 rounded-md">[media:НОМЕР]</code>. Також ви можете завантажувати файли з комп'ютера/телефону або вставляти посилання (наприклад з <strong className="text-black dark:text-white">Google Диску</strong>).
             </p>
             
             <div className="bg-zinc-50 dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 my-6">
@@ -47,6 +47,14 @@ export default function GuidePage() {
             <div className="flex items-start gap-4 mt-6 bg-amber-500/10 text-amber-600 dark:text-amber-500 p-5 rounded-2xl border border-amber-500/20">
               <AlertCircle size={20} className="shrink-0 mt-0.5" />
               <p className="text-sm font-medium leading-relaxed m-0"><strong className="text-amber-700 dark:text-amber-400 uppercase tracking-widest text-[10px] block mb-1">Важливо</strong> Якщо ви завантажили медіа, але не використали команду <code className="bg-amber-500/20 px-1 py-0.5 rounded text-xs">[media:X]</code> у тексті, цей файл взагалі не буде показаний на сторінці статті!</p>
+            </div>
+
+            <div className="bg-zinc-50 dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 mt-6">
+              <h4 className="font-bold mb-4 uppercase tracking-widest text-[10px] text-zinc-500">Google Диск та завантаження файлів:</h4>
+              <ul className="text-sm font-medium space-y-3 text-zinc-600 dark:text-zinc-300 list-disc pl-5 marker:text-black dark:marker:text-white">
+                <li><strong className="text-black dark:text-white">Google Диск:</strong> Якщо у вас є посилання на фото з Google Диску (наприклад <code className="bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded text-[10px]">drive.google.com/file/d/...</code>), просто вставте його у поле URL. Система автоматично перетворить його так, щоб картинка відображалась на сайті!</li>
+                <li><strong className="text-black dark:text-white">Завантаження з пристрою:</strong> У профілі, статтях та оглядах з'явилася можливість завантажувати обкладинки, галерею та аватарки прямо з вашого комп'ютера або телефону, натиснувши кнопку завантаження.</li>
+              </ul>
             </div>
           </div>
         </section>
@@ -90,6 +98,13 @@ export default function GuidePage() {
                 <h4 className="font-bold mb-2 text-black dark:text-white">Цитати</h4>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">Починайте цитату зі знаку більше <code className="bg-zinc-200 dark:bg-black px-1 rounded">{">"}</code> :</p>
                 <code className="text-[10px] font-mono bg-zinc-200 dark:bg-black p-1.5 rounded text-accent block">{">"} "Цей альбом змінив моє життя", — сказав артист.</code>
+              </div>
+              <div className="bg-zinc-50 dark:bg-[#151515] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 md:col-span-2">
+                <h4 className="font-bold mb-2 text-black dark:text-white">Вбудовані плеєри (Embeds)</h4>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">Вставляйте посилання на YouTube, Spotify або Apple Music прямо в текст за допомогою цих тегів (кожен з нового рядка):</p>
+                <code className="text-[10px] font-mono bg-zinc-200 dark:bg-black p-1.5 rounded text-accent block break-all">[youtube:https://youtube.com/watch?v=...]</code>
+                <code className="text-[10px] font-mono bg-zinc-200 dark:bg-black p-1.5 rounded text-accent block break-all mt-1">[spotify:https://open.spotify.com/album/...]</code>
+                <code className="text-[10px] font-mono bg-zinc-200 dark:bg-black p-1.5 rounded text-accent block break-all mt-1">[apple:https://music.apple.com/us/album/...]</code>
               </div>
             </div>
           </div>
