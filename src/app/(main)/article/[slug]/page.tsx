@@ -10,6 +10,7 @@ import { Lightbox } from "@/components/ui/Lightbox";
 import { RatingSliders } from "@/components/ui/RatingSliders";
 import { CustomAudioPlayer } from "@/components/ui/CustomAudioPlayer";
 import { SoundCloudPlayer } from "@/components/ui/SoundCloudPlayer";
+import { Carousel } from "@/components/ui/Carousel";
 
 const parseMarkdown = (text: string) => {
   if (!text) return "";
@@ -260,60 +261,62 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
               </span>
             </div>
 
-            <div className="space-y-6">
+            <div className="w-full">
               {article.userRatings.filter((r: any) => r.content).length === 0 ? (
                 <p className="text-zinc-500 font-medium text-lg">Поки немає рецензій. Будьте першим!</p>
               ) : (
-                article.userRatings.filter((r: any) => r.content).map((rating: any) => {
-                  const total = Math.round(rating.text + rating.beats + rating.sound + rating.vibe + rating.charisma);
-                  return (
-                    <div key={rating.id} className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 transition-colors">
-                      <div className="flex justify-between items-start mb-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-black dark:text-white font-bold text-xl uppercase overflow-hidden relative shadow-inner">
-                            {rating.user.image ? (
-                              <Image src={rating.user.image} alt="Avatar" fill className="object-cover" />
-                            ) : (
-                              (rating.user.name || rating.user.email)[0]
-                            )}
+                <Carousel itemWidth={320} className="w-full">
+                  {article.userRatings.filter((r: any) => r.content).map((rating: any) => {
+                    const total = Math.round(rating.text + rating.beats + rating.sound + rating.vibe + rating.charisma);
+                    return (
+                      <div key={rating.id} className="w-full h-full shrink-0 snap-start bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 transition-colors flex flex-col">
+                        <div className="flex justify-between items-start mb-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 shrink-0 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-black dark:text-white font-bold text-xl uppercase overflow-hidden relative shadow-inner">
+                              {rating.user.image ? (
+                                <Image src={rating.user.image} alt="Avatar" fill className="object-cover" />
+                              ) : (
+                                (rating.user.name || rating.user.email)[0]
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-black dark:text-white text-base uppercase tracking-widest truncate">{rating.user.name || rating.user.email}</p>
+                              <p className="text-sm text-zinc-500 truncate">{rating.createdAt.toLocaleDateString("uk-UA")}</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-bold text-black dark:text-white text-base uppercase tracking-widest">{rating.user.name || rating.user.email}</p>
-                            <p className="text-sm text-zinc-500">{rating.createdAt.toLocaleDateString("uk-UA")}</p>
+                          
+                          <div className="text-right shrink-0 ml-2">
+                            <div className="text-4xl font-black text-black dark:text-white mb-2" style={{ fontFamily: "var(--font-space-grotesk)"}}>{total}</div>
+                            <div className="flex gap-1 text-[10px] font-bold text-zinc-500 justify-end">
+                              <div className="group relative cursor-help">
+                                <span className="text-blue-500">{rating.text}</span>
+                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Текст / Рими</div>
+                              </div>
+                              <div className="group relative cursor-help">
+                                <span className="text-blue-500">{rating.beats}</span>
+                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Біт</div>
+                              </div>
+                              <div className="group relative cursor-help">
+                                <span className="text-blue-500">{rating.sound}</span>
+                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Звучання</div>
+                              </div>
+                              <div className="group relative cursor-help">
+                                <span className="text-accent">{rating.vibe}</span>
+                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Вайб</div>
+                              </div>
+                              <div className="group relative cursor-help">
+                                <span className="text-accent">{rating.charisma}</span>
+                                <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Харизма</div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         
-                        <div className="text-right">
-                          <div className="text-4xl font-black text-black dark:text-white mb-2" style={{ fontFamily: "var(--font-space-grotesk)"}}>{total}</div>
-                          <div className="flex gap-2 text-xs font-bold text-zinc-500 justify-end">
-                            <div className="group relative cursor-help">
-                              <span className="text-blue-500">{rating.text}</span>
-                              <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Текст / Рими</div>
-                            </div>
-                            <div className="group relative cursor-help">
-                              <span className="text-blue-500">{rating.beats}</span>
-                              <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Біт</div>
-                            </div>
-                            <div className="group relative cursor-help">
-                              <span className="text-blue-500">{rating.sound}</span>
-                              <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Звучання</div>
-                            </div>
-                            <div className="group relative cursor-help">
-                              <span className="text-accent">{rating.vibe}</span>
-                              <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Вайб</div>
-                            </div>
-                            <div className="group relative cursor-help">
-                              <span className="text-accent">{rating.charisma}</span>
-                              <div className="absolute bottom-full mb-2 right-0 bg-zinc-800 text-white text-[10px] px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity shadow-xl z-50">Харизма</div>
-                            </div>
-                          </div>
-                        </div>
+                        <p className="text-zinc-700 dark:text-zinc-300 text-base leading-relaxed whitespace-pre-wrap flex-1">{rating.content}</p>
                       </div>
-                      
-                      <p className="text-zinc-700 dark:text-zinc-300 text-base leading-relaxed whitespace-pre-wrap">{rating.content}</p>
-                    </div>
-                  );
-                })
+                    );
+                  })}
+                </Carousel>
               )}
             </div>
           </div>
