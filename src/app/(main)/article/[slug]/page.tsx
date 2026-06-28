@@ -55,10 +55,14 @@ const renderContentWithMedia = (content: string, media: any[]) => {
       if (mediaItem) {
         if (mediaItem.type === "VIDEO") {
           let youtubeId = null;
+          let instagramUrl = null;
+          
           if (mediaItem.url.includes("youtube.com/watch")) {
             youtubeId = new URL(mediaItem.url).searchParams.get("v");
           } else if (mediaItem.url.includes("youtu.be/")) {
             youtubeId = mediaItem.url.split("youtu.be/")[1]?.split("?")[0];
+          } else if (mediaItem.url.includes("instagram.com/")) {
+            instagramUrl = mediaItem.url.split('?')[0].replace(/\/$/, '') + '/embed';
           }
 
           if (youtubeId) {
@@ -70,6 +74,20 @@ const renderContentWithMedia = (content: string, media: any[]) => {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="w-full h-full"
+                ></iframe>
+              </div>
+            );
+          }
+          
+          if (instagramUrl) {
+            return (
+              <div key={index} className="my-8 rounded-2xl overflow-hidden shadow-xl mx-auto w-full max-w-sm md:max-w-md border border-zinc-200 dark:border-zinc-800 bg-white">
+                <iframe
+                  src={instagramUrl}
+                  className="w-full aspect-[9/16] min-h-[600px] border-none"
+                  scrolling="no"
+                  allowTransparency
+                  allow="encrypted-media"
                 ></iframe>
               </div>
             );
