@@ -32,7 +32,9 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  minimumScale: 1,
   userScalable: false,
+  themeColor: "#000000",
 };
 
 export default async function RootLayout({
@@ -55,8 +57,22 @@ export default async function RootLayout({
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: `:root, body { --accent: ${accentCookie}; }` }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              document.addEventListener('gesturestart', function (e) {
+                e.preventDefault();
+              });
+              document.addEventListener('touchmove', function(e) {
+                if (e.touches.length > 1) {
+                  e.preventDefault();
+                }
+              }, { passive: false });
+            `
+          }}
+        />
       </head>
-      <body className="antialiased bg-background text-foreground selection:bg-accent selection:text-white min-h-screen">
+      <body className="antialiased bg-background text-foreground selection:bg-accent selection:text-white min-h-screen overflow-x-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
