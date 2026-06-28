@@ -75,7 +75,7 @@ export function RatingSliders({ articleId, initialUserRating, totalScores, curre
   };
 
   return (
-    <div className="bg-zinc-50 dark:bg-[#111] rounded-2xl p-6 lg:p-10 border border-zinc-200 dark:border-zinc-800 shadow-2xl relative overflow-hidden transition-colors">
+    <div className="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-6 lg:p-10 border border-zinc-200 dark:border-zinc-800 shadow-2xl relative overflow-hidden transition-colors">
       {/* Background glow */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-accent opacity-5 blur-[100px] rounded-full pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 opacity-5 blur-[100px] rounded-full pointer-events-none" />

@@ -162,7 +162,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
             НАЗАД
           </Link>
           
-          <div className="bg-zinc-50 dark:bg-[#111] rounded-3xl p-6 lg:p-10 border border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col md:flex-row gap-8 lg:gap-12 relative overflow-hidden transition-colors">
+          <div className="bg-zinc-50 dark:bg-zinc-900 rounded-3xl p-6 lg:p-10 border border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col md:flex-row gap-8 lg:gap-12 relative overflow-hidden transition-colors">
             {/* Background glow */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-zinc-800 opacity-20 blur-[100px] rounded-full pointer-events-none" />
             
@@ -255,7 +255,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
           
           <div className="mt-12">
             {!session?.user ? (
-              <div className="bg-zinc-50 dark:bg-[#111] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 text-center transition-colors">
+              <div className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 text-center transition-colors">
                 <p className="text-zinc-500 dark:text-zinc-400 font-bold">Щоб залишити рецензію, <Link href="/login" className="text-black dark:text-white underline hover:text-accent">увійдіть у свій акаунт</Link></p>
               </div>
             ) : (
@@ -269,7 +269,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
             )}
           </div>
           
-          <div className="mt-16 bg-zinc-50 dark:bg-[#111] p-8 lg:p-12 rounded-3xl border border-zinc-200 dark:border-zinc-800 transition-colors">
+          <div className="mt-16 bg-zinc-50 dark:bg-zinc-900 p-8 lg:p-12 rounded-3xl border border-zinc-200 dark:border-zinc-800 transition-colors">
             <div className="flex items-center justify-between mb-10 border-b border-zinc-200 dark:border-zinc-800 pb-6">
               <h3 className="text-4xl font-black text-black dark:text-white tracking-tighter uppercase" style={{ fontFamily: "var(--font-space-grotesk)"}}>
                 Рецензії користувачів
@@ -363,7 +363,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
           </div>
           
           {article.content && (
-            <div className="mt-16 bg-zinc-50 dark:bg-[#111] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 lg:p-12 transition-colors">
+            <div className="mt-16 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 lg:p-12 transition-colors">
               <h3 className="text-2xl font-black text-black dark:text-white tracking-tighter uppercase mb-6" style={{ fontFamily: "var(--font-space-grotesk)"}}>
                 Опис / Редакційна думка
               </h3>
