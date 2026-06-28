@@ -220,7 +220,7 @@ export async function updateArticle(id: string, formData: FormData) {
   revalidatePath(`/article/${encodeURIComponent(article.slug)}`);
   if (categoryId || article.categoryId) {
     const catId = categoryId || article.categoryId;
-    const cat = await db.category.findUnique({ where: { id: catId } });
+    const cat = await db.category.findUnique({ where: { id: catId as string } });
     if (cat) revalidatePath(`/category/${cat.slug}`);
   }
 
