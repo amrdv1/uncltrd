@@ -50,7 +50,7 @@ export function Carousel({ children, className, itemWidth = 300 }: CarouselProps
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {React.Children.map(children, (child) => (
-          <div className="snap-start shrink-0 w-[88vw] sm:w-[300px] md:w-[320px] flex">
+          <div className="snap-start shrink-0 w-[90%] sm:w-[300px] md:w-[320px] flex">
             {child}
           </div>
         ))}

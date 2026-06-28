@@ -287,7 +287,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                   {article.userRatings.filter((r: any) => r.content).map((rating: any) => {
                     const total = Math.round(rating.text + rating.beats + rating.sound + rating.vibe + rating.charisma);
                     return (
-                      <div key={rating.id} className="w-full h-full shrink-0 snap-start bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 transition-colors flex flex-col">
+                      <div key={rating.id} className="w-full h-full shrink-0 snap-start bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-8 transition-colors flex flex-col">
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex items-center gap-4">
                             <div className="w-14 h-14 shrink-0 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-black dark:text-white font-bold text-xl uppercase overflow-hidden relative shadow-inner">
