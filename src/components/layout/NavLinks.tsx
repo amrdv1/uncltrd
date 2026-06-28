@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const NAV_LINKS = [
   { label: "Новини", href: "/news" },
@@ -49,29 +49,35 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
                     ▼
                   </motion.span>
                 </button>
-                <div
-                  className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                  }`}
-                >
-                  <ul className="overflow-hidden">
-                    <div className="pl-4 lg:pl-6 border-l-2 border-zinc-200 dark:border-zinc-800 ml-2 mt-2 mb-2 flex flex-col space-y-3 py-1">
-                      {link.subLinks.map((subLink) => (
-                        <li key={subLink.label}>
-                          <Link
-                            href={subLink.href}
-                            onClick={onLinkClick}
-                            className="group flex items-center text-xl font-bold uppercase tracking-tight text-zinc-500 dark:text-zinc-400 hover:text-accent transition-all"
-                          >
-                            <span className="transform transition-transform duration-300 ease-out group-hover:translate-x-3">
-                              {subLink.label}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </div>
-                  </ul>
-                </div>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <ul>
+                        <div className="pl-4 lg:pl-6 border-l-2 border-zinc-200 dark:border-zinc-800 ml-2 mt-2 mb-2 flex flex-col space-y-3 py-1">
+                          {link.subLinks.map((subLink) => (
+                            <li key={subLink.label}>
+                              <Link
+                                href={subLink.href}
+                                onClick={onLinkClick}
+                                className="group flex items-center text-xl font-bold uppercase tracking-tight text-zinc-500 dark:text-zinc-400 hover:text-accent transition-all"
+                              >
+                                <span className="transform transition-transform duration-300 ease-out group-hover:translate-x-3">
+                                  {subLink.label}
+                                </span>
+                              </Link>
+                            </li>
+                          ))}
+                        </div>
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <Link

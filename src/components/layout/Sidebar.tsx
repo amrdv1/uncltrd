@@ -108,7 +108,7 @@ export async function Sidebar() {
         </nav>
 
       {/* Logo placed at the bottom */}
-      <div className="sticky bottom-0 p-8 mt-auto bg-transparent z-10 border-t border-zinc-100 dark:border-zinc-800 transition-colors">
+      <div className="sticky bottom-0 p-8 mt-auto bg-white dark:bg-card z-10 border-t border-zinc-100 dark:border-zinc-800 transition-colors">
         <Link href="/">
           <Image
             src="/logo.svg"

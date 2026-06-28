@@ -32,7 +32,7 @@ export function AnimatedTabs({ tabs, defaultTabId }: { tabs: Tab[], defaultTabId
                 layoutId="activeCategoryTabIndicator"
                 className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-black dark:bg-white z-10"
                 initial={false}
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
               />
             )}
           </Link>
