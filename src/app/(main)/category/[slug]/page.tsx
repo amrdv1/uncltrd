@@ -7,6 +7,8 @@ import { FadeIn } from "@/components/ui/FadeIn";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { Lock, ChevronLeft, ChevronRight } from "lucide-react";
+import { AnimatedTabs } from "@/components/ui/AnimatedTabs";
+import { AnimatedTabContent } from "@/components/ui/AnimatedTabContent";
 
 export default async function CategoryPage(props: { 
   params: Promise<{ slug: string }>,
@@ -180,17 +182,19 @@ export default async function CategoryPage(props: {
 
       <div className="max-w-[1600px] mx-auto px-4 md:px-6 lg:px-12 w-full">
         {isReviewsCategory && (
-          <>
-            <div className="flex flex-wrap gap-4 mb-8 border-b border-zinc-200 dark:border-zinc-800">
-              <Link href={buildHref("all", typeParam)} className={`pb-4 px-2 md:px-6 font-bold uppercase tracking-widest text-xs md:text-sm border-b-2 transition-colors ${viewParam === "all" ? "border-black dark:border-white text-black dark:text-white" : "border-transparent text-zinc-500 hover:text-black dark:hover:text-white"}`}>
-                Усі огляди
-              </Link>
-              <Link href={buildHref("week", typeParam)} className={`pb-4 px-2 md:px-6 font-bold uppercase tracking-widest text-xs md:text-sm border-b-2 transition-colors ${viewParam === "week" ? "border-black dark:border-white text-black dark:text-white" : "border-transparent text-zinc-500 hover:text-black dark:hover:text-white"}`}>
-                Релізи ({formattedFriday})
-              </Link>
-            </div>
+          <AnimatedTabs
+            defaultTabId="all"
+            tabs={[
+              { id: "all", label: "Усі огляди", href: buildHref("all", typeParam) },
+              { id: "week", label: `Релізи (${formattedFriday})`, href: buildHref("week", typeParam) }
+            ]}
+          />
+        )}
 
-            {viewParam === "week" ? (
+        <AnimatedTabContent viewKey={viewParam}>
+          {isReviewsCategory && (
+            <>
+              {viewParam === "week" ? (
               <div className="mb-12 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 transition-colors w-full">
                 {/* Week Navigation */}
                 <div className="flex items-center gap-4 bg-white dark:bg-black rounded-full border border-zinc-200 dark:border-zinc-800 p-1 w-full xl:w-auto justify-between xl:justify-start">
@@ -261,8 +265,8 @@ export default async function CategoryPage(props: {
                 </div>
               </div>
             )}
-          </>
-        )}
+            </>
+          )}
 
         {isRestrictedWeekView && viewParam === "week" ? (
           <div className="py-24 text-center">
@@ -383,6 +387,7 @@ export default async function CategoryPage(props: {
             У цій категорії поки немає публікацій.
           </div>
         )}
+            </AnimatedTabContent>
       </div>
     </div>
   );
