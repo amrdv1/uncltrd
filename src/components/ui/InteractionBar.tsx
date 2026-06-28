@@ -138,7 +138,7 @@ export function InteractionBar({ articleId, initialLikes, initialComments, curre
                 className="bg-white dark:bg-[#111] p-8 rounded-3xl shadow-xl max-w-sm w-full border border-zinc-200 dark:border-zinc-800 text-center relative overflow-hidden"
               >
                 <h3 className="text-xl font-black uppercase tracking-tighter mb-2 text-black dark:text-white" style={{ fontFamily: "var(--font-space-grotesk)" }}>Потрібна авторизація</h3>
-                <p className="text-zinc-500 mb-8 font-medium text-sm">Ви повинні увійти, щоб голосувати за статтю.</p>
+                <p className="text-zinc-500 mb-8 font-medium text-sm">Ви повинні увійти, щоб лайкнути статтю.</p>
                 
                 <div className="flex gap-3">
                   <button
