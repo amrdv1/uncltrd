@@ -110,7 +110,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
 
   if (size === "carousel") {
     return (
-      <Link href={`/article/${slug}`} className={cn("group flex flex-col w-full h-full bg-white/10 dark:bg-zinc-900/30 backdrop-blur-xl p-4 rounded-[2rem] border border-white/10 transition-all duration-500 hover:-translate-y-2 hover:bg-white/20 dark:hover:bg-zinc-800/50 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] active:scale-[0.98]", className)}>
+      <Link href={`/article/${slug}`} className={cn("group flex flex-col w-full h-full bg-zinc-100 dark:bg-[#111] backdrop-blur-xl p-4 rounded-[2rem] border border-black/5 dark:border-white/10 transition-all duration-500 hover:-translate-y-2 hover:bg-zinc-200 dark:hover:bg-[#222] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] active:scale-[0.98]", className)}>
         <div className="relative w-full aspect-square overflow-hidden shadow-sm group-hover:shadow-lg transition-shadow duration-500 shrink-0 rounded-xl mb-4">
           <Image
             src={image}
@@ -124,7 +124,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
             <span className="text-[10px] font-bold uppercase tracking-widest text-accent font-serif">{category}</span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{date}</span>
           </div>
-          <h3 className="text-xl font-black text-white uppercase tracking-tighter leading-tight group-hover:text-zinc-300 transition-colors" style={{ fontFamily: "var(--font-space-grotesk)"}}>
+          <h3 className="text-xl font-black text-black dark:text-white uppercase tracking-tighter leading-tight group-hover:text-accent transition-colors" style={{ fontFamily: "var(--font-space-grotesk)"}}>
             {title}
           </h3>
         </div>
