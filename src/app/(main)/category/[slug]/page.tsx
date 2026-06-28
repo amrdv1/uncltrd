@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { StoryCard } from "@/components/ui/StoryCard";
 import { TrackCard } from "@/components/ui/TrackCard";
 import { Carousel } from "@/components/ui/Carousel";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { FadeIn } from "@/components/ui/FadeIn";
 import Link from "next/link";
 
@@ -20,6 +20,10 @@ export default async function CategoryPage(props: {
 
   if (!category) {
     notFound();
+  }
+
+  if (category.slug === "news" || category.name.toLowerCase() === "новини") {
+    redirect("/news");
   }
 
   const isReviewsCategory = category.slug === "reviews" || category.name.toLowerCase() === "огляди";
