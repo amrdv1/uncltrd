@@ -250,7 +250,6 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                   </button>
                 )}
               </div>
-              </div>
               
               {/* Mobile-only Editorial Rating Breakdown */}
               {(adminRatings.length > 0 || adminTotal > 0) && (
