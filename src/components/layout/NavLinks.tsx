@@ -35,7 +35,8 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
           <li key={link.label}>
             {link.subLinks ? (
               <div className="flex flex-col">
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.97, originX: 0 }}
                   onClick={() => toggleDropdown(link.label)}
                   className="flex items-center justify-between w-full text-left text-2xl font-extrabold uppercase tracking-tighter hover:text-accent transition-colors py-2 text-black dark:text-white"
                 >
@@ -48,7 +49,7 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
                   >
                     ▼
                   </motion.span>
-                </button>
+                </motion.button>
                 <div
                   className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
                     isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
@@ -61,11 +62,16 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
                           <Link
                             href={subLink.href}
                             onClick={onLinkClick}
-                            className="group flex items-center text-xl font-bold uppercase tracking-tight text-zinc-500 dark:text-zinc-400 hover:text-accent transition-all"
+                            className="block w-full"
                           >
-                            <span className="transform transition-transform duration-300 ease-out group-hover:translate-x-3">
-                              {subLink.label}
-                            </span>
+                            <motion.div 
+                              whileTap={{ scale: 0.95, originX: 0 }}
+                              className="group flex items-center text-xl font-bold uppercase tracking-tight text-zinc-500 dark:text-zinc-400 hover:text-accent transition-all"
+                            >
+                              <span className="transform transition-transform duration-300 ease-out group-hover:translate-x-3">
+                                {subLink.label}
+                              </span>
+                            </motion.div>
                           </Link>
                         </li>
                       ))}
@@ -77,11 +83,16 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
               <Link
                 href={link.href!}
                 onClick={onLinkClick}
-                className="group flex items-center text-2xl font-extrabold uppercase tracking-tighter hover:text-accent transition-all py-2 text-black dark:text-white"
+                className="block w-full"
               >
-                <span className="transform transition-transform duration-300 ease-out group-hover:translate-x-3">
-                  {link.label}
-                </span>
+                <motion.div
+                  whileTap={{ scale: 0.97, originX: 0 }}
+                  className="group flex items-center text-2xl font-extrabold uppercase tracking-tighter hover:text-accent transition-all py-2 text-black dark:text-white"
+                >
+                  <span className="transform transition-transform duration-300 ease-out group-hover:translate-x-3">
+                    {link.label}
+                  </span>
+                </motion.div>
               </Link>
             )}
           </li>
