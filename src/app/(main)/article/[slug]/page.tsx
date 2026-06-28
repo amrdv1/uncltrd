@@ -250,6 +250,39 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                   </button>
                 )}
               </div>
+              </div>
+              
+              {/* Mobile-only Editorial Rating Breakdown */}
+              {(adminRatings.length > 0 || adminTotal > 0) && (
+                <div className="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-8 w-full block md:hidden">
+                  <div className="font-bold uppercase tracking-widest text-zinc-500 mb-4 text-[10px]">Оцінка редакції</div>
+                  {adminRatings.length > 0 ? (
+                    <div className="space-y-4">
+                      {adminRatings.map((r: any) => (
+                        <div key={r.id} className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                          <div className="flex items-center gap-3">
+                            {r.user.image ? (
+                              <img src={r.user.image} alt={r.user.name} className="w-8 h-8 rounded-full object-cover" />
+                            ) : (
+                              <div className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-xs font-black">{r.user.name?.[0] || "A"}</div>
+                            )}
+                            <span className="font-bold text-sm uppercase tracking-widest">{r.user.name || r.user.email?.split('@')[0]}</span>
+                          </div>
+                          <span className="font-black text-xl text-accent">{r.text + r.beats + r.sound + r.vibe + r.charisma}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-4 w-full">
+                      <div className="flex justify-between items-center text-sm"><span className="text-zinc-500 font-bold uppercase tracking-widest">Текст / Рими</span><span className="font-black text-lg text-blue-500">{(article.trackReview as any).adminText}</span></div>
+                      <div className="flex justify-between items-center text-sm"><span className="text-zinc-500 font-bold uppercase tracking-widest">Біт</span><span className="font-black text-lg text-blue-500">{(article.trackReview as any).adminBeats}</span></div>
+                      <div className="flex justify-between items-center text-sm"><span className="text-zinc-500 font-bold uppercase tracking-widest">Звучання</span><span className="font-black text-lg text-blue-500">{(article.trackReview as any).adminSound}</span></div>
+                      <div className="flex justify-between items-center text-sm"><span className="text-zinc-500 font-bold uppercase tracking-widest">Вайб</span><span className="font-black text-lg text-accent">{(article.trackReview as any).adminVibe}</span></div>
+                      <div className="flex justify-between items-center text-sm"><span className="text-zinc-500 font-bold uppercase tracking-widest">Харизма</span><span className="font-black text-lg text-accent">{(article.trackReview as any).adminCharisma}</span></div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
           
