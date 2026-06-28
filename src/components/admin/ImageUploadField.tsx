@@ -51,7 +51,7 @@ export function ImageUploadField({
         </div>
         <input 
           name={name}
-          type="url" 
+          type="text" 
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           className={`pl-10 ${className}`}

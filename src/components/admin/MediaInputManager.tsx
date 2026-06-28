@@ -80,7 +80,7 @@ export function MediaInputManager({ initialMedia = [] }: { initialMedia?: any[] 
           
           <div className="flex-1 flex space-x-2">
             <input 
-              type="url" 
+              type="text" 
               value={item.url} 
               onChange={(e) => updateMedia(index, "url", e.target.value)}
               placeholder="URL посилання..."
