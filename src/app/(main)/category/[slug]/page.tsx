@@ -42,7 +42,8 @@ export default async function CategoryPage(props: {
   const currentDayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay(); // 1 (Mon) to 7 (Sun)
   const isBeforeFriday = currentDayOfWeek >= 1 && currentDayOfWeek <= 4; 
   
-  const weekOffset = parseInt(searchParams.offset as string) || 0;
+  const parsedOffset = parseInt(searchParams.offset as string) || 0;
+  const weekOffset = Math.max(Math.min(parsedOffset, 0), -3);
   const isRestrictedWeekView = isReviewsCategory && isBeforeFriday && weekOffset === 0 && !isAdminOrEditor;
 
   const viewParam = (searchParams.view as string) || "week"; // "week" or "all"
@@ -199,7 +200,7 @@ export default async function CategoryPage(props: {
                   <span className="font-bold uppercase tracking-widest text-[10px] min-w-[100px] text-center">
                     {weekOffset === 0 ? "Цей тиждень" : weekOffset === -1 ? "Минулий тиждень" : `${Math.abs(weekOffset)} тижнів тому`}
                   </span>
-                  <Link href={buildHref("week", typeParam, weekOffset - 1)} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-black dark:hover:text-white">
+                  <Link href={buildHref("week", typeParam, Math.max(weekOffset - 1, -3))} className={`p-2 rounded-full transition-colors ${weekOffset <= -3 ? "opacity-30 pointer-events-none text-zinc-500" : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-black dark:hover:text-white"}`}>
                     <ChevronRight size={16} />
                   </Link>
                 </div>
