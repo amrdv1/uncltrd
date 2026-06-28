@@ -83,7 +83,7 @@ export default function LoginPage() {
                 id="email"
                 type="email" 
                 className="w-full px-4 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black"
-                placeholder="admin@uncultured.media"
+                placeholder="user@example.com"
               />
             </div>
             <div>
