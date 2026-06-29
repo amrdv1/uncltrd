@@ -308,11 +308,11 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                             </div>
                             <div className="min-w-0 flex-1 flex flex-col justify-center">
                               <p className="font-bold text-black dark:text-white text-base uppercase tracking-widest truncate" title={rating.user.name || rating.user.email}>{rating.user.name || rating.user.email}</p>
-                              <div className="flex items-center gap-2 mt-0.5">
+                              <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                                 {isEditorial && (
                                   <span className="bg-accent text-white text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-[3px] shrink-0">Редакція</span>
                                 )}
-                                <p className="text-xs text-zinc-500 truncate">{rating.createdAt.toLocaleDateString("uk-UA")}</p>
+                                <p className="text-[11px] text-zinc-500 shrink-0">{rating.createdAt.toLocaleDateString("uk-UA")}</p>
                               </div>
                             </div>
                           </div>
