@@ -298,7 +298,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                     return (
                       <div key={rating.id} className={`w-full h-full shrink-0 snap-start bg-white dark:bg-black border ${isEditorial ? 'border-accent shadow-[0_0_20px_rgba(255,0,0,0.05)] dark:shadow-[0_0_20px_rgba(255,0,0,0.15)]' : 'border-zinc-200 dark:border-zinc-800'} rounded-2xl p-5 sm:p-8 transition-colors flex flex-col relative`}>
                         <div className="flex justify-between items-start mb-4">
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-4 flex-1 min-w-0">
                             <div className="w-14 h-14 shrink-0 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-black dark:text-white font-bold text-xl uppercase overflow-hidden relative shadow-inner">
                               {rating.user.image ? (
                                 <Image src={rating.user.image} alt="Avatar" fill className="object-cover" />
@@ -306,8 +306,8 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                                 (rating.user.name || rating.user.email)[0]
                               )}
                             </div>
-                            <div className="min-w-0 flex flex-col justify-center">
-                              <div className="flex items-center gap-2 mb-0.5">
+                            <div className="min-w-0 flex-1 flex flex-col justify-center">
+                              <div className="flex items-center gap-2 mb-0.5 min-w-0">
                                 <p className="font-bold text-black dark:text-white text-base uppercase tracking-widest truncate">{rating.user.name || rating.user.email}</p>
                                 {isEditorial && (
                                   <span className="bg-accent text-white text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-sm shrink-0">Редакція</span>
