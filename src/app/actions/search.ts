@@ -6,21 +6,25 @@ export async function findTrackMedia(artist: string, track: string) {
   let listenUrl = null;
   let releaseDate = null;
 
-  // 1. Apple Music Search
+  // 1. Apple Music Search (Broad search for albums/songs)
   try {
-    const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=10`);
+    const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=10`);
     if (res.ok) {
       const data = await res.json();
       if (data.results && data.results.length > 0) {
         // Try to find exact artist match if possible to avoid wrong covers
         const exactMatch = data.results.find((r: any) => 
-          r.artistName.toLowerCase().includes(artist.toLowerCase()) || 
-          artist.toLowerCase().includes(r.artistName.toLowerCase())
+          r.artistName?.toLowerCase().includes(artist.toLowerCase()) || 
+          artist.toLowerCase().includes(r.artistName?.toLowerCase() || "")
         );
         const bestMatch = exactMatch || data.results[0];
         
-        coverUrl = bestMatch.artworkUrl100.replace("100x100bb", "600x600bb");
-        listenUrl = bestMatch.trackViewUrl;
+        if (bestMatch.artworkUrl100) {
+          coverUrl = bestMatch.artworkUrl100.replace("100x100bb", "600x600bb");
+        }
+        if (bestMatch.trackViewUrl || bestMatch.collectionViewUrl) {
+          listenUrl = bestMatch.trackViewUrl || bestMatch.collectionViewUrl;
+        }
         
         if (bestMatch.releaseDate) {
           releaseDate = new Date(bestMatch.releaseDate).toISOString().split('T')[0];
@@ -31,19 +35,27 @@ export async function findTrackMedia(artist: string, track: string) {
     console.error("Apple Music search failed", e);
   }
 
-  // 2. Spotify Fallback via DuckDuckGo
-  if (!listenUrl || !coverUrl) {
+  // 2. Deezer API Fallback for Cover URL
+  if (!coverUrl) {
     try {
-      const ddgRes = await fetch(`https://html.duckduckgo.com/html/?q=site:open.spotify.com/track+${encodeURIComponent(query)}`, {
-        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
-      });
-      const ddgHtml = await ddgRes.text();
-      const spotifyMatch = ddgHtml.match(/open\.spotify\.com%2Ftrack%2F([a-zA-Z0-9]+)/);
-      if (spotifyMatch && !listenUrl) {
-        listenUrl = `https://open.spotify.com/track/${spotifyMatch[1]}`;
+      const dzRes = await fetch(`https://api.deezer.com/search?q=${encodeURIComponent(query)}`);
+      if (dzRes.ok) {
+        const dzData = await dzRes.json();
+        if (dzData.data && dzData.data.length > 0) {
+          const exactMatch = dzData.data.find((r: any) => 
+            r.artist?.name?.toLowerCase().includes(artist.toLowerCase())
+          );
+          const bestMatch = exactMatch || dzData.data[0];
+          
+          if (bestMatch.album && bestMatch.album.cover_xl) {
+            coverUrl = bestMatch.album.cover_xl;
+          } else if (bestMatch.album && bestMatch.album.cover_big) {
+            coverUrl = bestMatch.album.cover_big;
+          }
+        }
       }
     } catch (e) {
-      console.error("Spotify DDG search failed", e);
+      console.error("Deezer search failed", e);
     }
   }
 
@@ -94,46 +106,6 @@ export async function findTrackMedia(artist: string, track: string) {
       }
     } catch (e) {
       console.error("YouTube date fallback failed", e);
-    }
-  }
-
-  // 5. Genius Fallback via DuckDuckGo for Cover URL
-  if (!coverUrl) {
-    try {
-      const ddgRes = await fetch(`https://html.duckduckgo.com/html/?q=site:genius.com+${encodeURIComponent(query)}`, {
-        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
-      });
-      const ddgHtml = await ddgRes.text();
-      const geniusMatch = ddgHtml.match(/genius\.com%2F([^&"']+)/);
-      if (geniusMatch) {
-        const geniusUrl = `https://genius.com/${decodeURIComponent(geniusMatch[1])}`;
-        const gRes = await fetch(geniusUrl, {
-          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
-        });
-        const gHtml = await gRes.text();
-        const coverMatch = gHtml.match(/<meta property="og:image" content="([^"]+)"/);
-        if (coverMatch) {
-          coverUrl = coverMatch[1];
-        }
-      }
-    } catch (e) {
-      console.error("Genius fallback failed", e);
-    }
-  }
-
-  // 6. SoundCloud Fallback via DuckDuckGo for Listen URL
-  if (!listenUrl) {
-    try {
-      const ddgRes = await fetch(`https://html.duckduckgo.com/html/?q=site:soundcloud.com+${encodeURIComponent(query)}`, {
-        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
-      });
-      const ddgHtml = await ddgRes.text();
-      const scMatch = ddgHtml.match(/soundcloud\.com%2F([^&"']+)/);
-      if (scMatch) {
-        listenUrl = `https://soundcloud.com/${decodeURIComponent(scMatch[1])}`;
-      }
-    } catch (e) {
-      console.error("SoundCloud fallback failed", e);
     }
   }
 
