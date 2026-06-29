@@ -1,18 +1,19 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
-import { Plus, Edit2, Trash2, Pin } from "lucide-react";
+import { Plus, Edit2, Trash2, Pin, Search } from "lucide-react";
 import { deleteArticle } from "@/app/actions/articles";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import { PinButton } from "@/components/ui/PinButton";
 import { FadeIn } from "@/components/ui/FadeIn";
 
-export default async function AdminArticlesPage(props: { searchParams?: Promise<{ tab?: string }> }) {
+export default async function AdminArticlesPage(props: { searchParams?: Promise<{ tab?: string, q?: string }> }) {
   const session = await auth();
   if (!session?.user) return null;
 
   const searchParams = props.searchParams ? await props.searchParams : {};
   const tab = searchParams.tab || 'all';
+  const q = searchParams.q || '';
 
   const isAdmin = session.user.role === "ADMIN";
   const userId = session.user.id;
@@ -20,7 +21,10 @@ export default async function AdminArticlesPage(props: { searchParams?: Promise<
   // Admins see all, Editors see all but we can highlight their own, or let's just fetch all 
   // but only let them edit ones they own or have permission to
   const articles = await db.article.findMany({
-    where: tab === 'reviews' ? { isTrackReview: true } : tab === 'articles' ? { isTrackReview: false } : undefined,
+    where: {
+      ...(tab === 'reviews' ? { isTrackReview: true } : tab === 'articles' ? { isTrackReview: false } : {}),
+      ...(q ? { title: { contains: q, mode: 'insensitive' } } : {})
+    },
     include: {
       author: true,
       allowedEditors: true,
@@ -52,16 +56,30 @@ export default async function AdminArticlesPage(props: { searchParams?: Promise<
         </div>
       </div>
 
-      <div className="flex gap-6 mb-6 px-2 border-b border-zinc-200 dark:border-zinc-800">
-        <Link href="?tab=all" className={`font-bold uppercase tracking-widest text-xs pb-3 border-b-2 transition-colors -mb-[1px] ${tab === 'all' ? 'border-accent text-black dark:text-white' : 'border-transparent text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-black dark:hover:text-white'}`}>
-          Всі матеріали
-        </Link>
-        <Link href="?tab=articles" className={`font-bold uppercase tracking-widest text-xs pb-3 border-b-2 transition-colors -mb-[1px] ${tab === 'articles' ? 'border-accent text-black dark:text-white' : 'border-transparent text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-black dark:hover:text-white'}`}>
-          Статті
-        </Link>
-        <Link href="?tab=reviews" className={`font-bold uppercase tracking-widest text-xs pb-3 border-b-2 transition-colors -mb-[1px] ${tab === 'reviews' ? 'border-accent text-black dark:text-white' : 'border-transparent text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-black dark:hover:text-white'}`}>
-          Огляди
-        </Link>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 px-2 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="flex gap-6">
+          <Link href={`?tab=all${q ? `&q=${q}` : ''}`} className={`font-bold uppercase tracking-widest text-xs pb-3 border-b-2 transition-colors -mb-[1px] ${tab === 'all' ? 'border-accent text-black dark:text-white' : 'border-transparent text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-black dark:hover:text-white'}`}>
+            Всі матеріали
+          </Link>
+          <Link href={`?tab=articles${q ? `&q=${q}` : ''}`} className={`font-bold uppercase tracking-widest text-xs pb-3 border-b-2 transition-colors -mb-[1px] ${tab === 'articles' ? 'border-accent text-black dark:text-white' : 'border-transparent text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-black dark:hover:text-white'}`}>
+            Статті
+          </Link>
+          <Link href={`?tab=reviews${q ? `&q=${q}` : ''}`} className={`font-bold uppercase tracking-widest text-xs pb-3 border-b-2 transition-colors -mb-[1px] ${tab === 'reviews' ? 'border-accent text-black dark:text-white' : 'border-transparent text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-black dark:hover:text-white'}`}>
+            Огляди
+          </Link>
+        </div>
+        
+        <form method="GET" action="/admin-panel/articles" className="relative w-full sm:w-auto pb-2 sm:-mb-[1px]">
+          {tab !== 'all' && <input type="hidden" name="tab" value={tab} />}
+          <Search size={14} className="absolute left-3 top-2.5 sm:top-2 text-zinc-400" />
+          <input 
+            type="text" 
+            name="q"
+            defaultValue={q}
+            placeholder="ПОШУК..." 
+            className="pl-9 pr-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg outline-none focus:border-accent focus:bg-white dark:focus:bg-black transition-all w-full sm:w-48 placeholder:text-zinc-400"
+          />
+        </form>
       </div>
 
       <div className="bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-800 overflow-hidden">
