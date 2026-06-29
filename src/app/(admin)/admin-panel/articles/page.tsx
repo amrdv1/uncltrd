@@ -7,9 +7,12 @@ import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import { PinButton } from "@/components/ui/PinButton";
 import { FadeIn } from "@/components/ui/FadeIn";
 
-export default async function AdminArticlesPage() {
+export default async function AdminArticlesPage(props: { searchParams?: Promise<{ tab?: string }> }) {
   const session = await auth();
   if (!session?.user) return null;
+
+  const searchParams = props.searchParams ? await props.searchParams : {};
+  const tab = searchParams.tab || 'all';
 
   const isAdmin = session.user.role === "ADMIN";
   const userId = session.user.id;
@@ -17,6 +20,7 @@ export default async function AdminArticlesPage() {
   // Admins see all, Editors see all but we can highlight their own, or let's just fetch all 
   // but only let them edit ones they own or have permission to
   const articles = await db.article.findMany({
+    where: tab === 'reviews' ? { isTrackReview: true } : tab === 'articles' ? { isTrackReview: false } : undefined,
     include: {
       author: true,
       allowedEditors: true,
@@ -46,6 +50,18 @@ export default async function AdminArticlesPage() {
             <span>Новий Огляд</span>
           </Link>
         </div>
+      </div>
+
+      <div className="flex gap-6 mb-6 px-2 border-b border-zinc-200 dark:border-zinc-800">
+        <Link href="?tab=all" className={`font-bold uppercase tracking-widest text-xs pb-3 border-b-2 transition-colors -mb-[1px] ${tab === 'all' ? 'border-accent text-black dark:text-white' : 'border-transparent text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-black dark:hover:text-white'}`}>
+          Всі матеріали
+        </Link>
+        <Link href="?tab=articles" className={`font-bold uppercase tracking-widest text-xs pb-3 border-b-2 transition-colors -mb-[1px] ${tab === 'articles' ? 'border-accent text-black dark:text-white' : 'border-transparent text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-black dark:hover:text-white'}`}>
+          Статті
+        </Link>
+        <Link href="?tab=reviews" className={`font-bold uppercase tracking-widest text-xs pb-3 border-b-2 transition-colors -mb-[1px] ${tab === 'reviews' ? 'border-accent text-black dark:text-white' : 'border-transparent text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-black dark:hover:text-white'}`}>
+          Огляди
+        </Link>
       </div>
 
       <div className="bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-800 overflow-hidden">
