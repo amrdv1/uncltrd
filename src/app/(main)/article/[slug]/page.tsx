@@ -191,10 +191,12 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
             <div className="flex-1 flex flex-col justify-center z-10 min-w-0">
               <h1 className={`${
                 article.trackReview.trackName.length > 20 
-                  ? "text-4xl md:text-5xl lg:text-6xl" 
+                  ? "text-3xl md:text-4xl lg:text-5xl" 
                   : article.trackReview.trackName.length > 12 
-                    ? "text-5xl md:text-6xl lg:text-7xl" 
-                    : "text-5xl md:text-7xl lg:text-8xl"
+                    ? "text-4xl md:text-5xl lg:text-5xl" 
+                    : article.trackReview.trackName.length > 8
+                      ? "text-4xl md:text-5xl lg:text-6xl"
+                      : "text-5xl md:text-6xl lg:text-7xl"
               } font-black uppercase tracking-tighter leading-tight mb-4 break-words`} style={{ fontFamily: "var(--font-space-grotesk)"}}>
                 {article.trackReview.trackName}
               </h1>
