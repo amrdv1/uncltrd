@@ -178,3 +178,7 @@ export async function newVerification(token: string) {
 
   return { success: "Електронну пошту підтверджено!" };
 }
+
+export async function loginWithGoogle() {
+  await signIn("google");
+}

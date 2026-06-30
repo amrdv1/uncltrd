@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { register } from "@/app/actions/auth";
+import { register, loginWithGoogle } from "@/app/actions/auth";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -103,11 +103,7 @@ export default function RegisterPage() {
           </div>
         </div>
         
-        <form action={async () => {
-          "use server";
-          const { signIn } = await import("@/lib/auth");
-          await signIn("google");
-        }}>
+        <form action={loginWithGoogle}>
           <button 
             type="submit" 
             className="w-full bg-white text-black font-bold py-3 rounded-md border border-zinc-300 hover:bg-zinc-50 transition-all flex items-center justify-center gap-2"
