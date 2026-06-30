@@ -236,7 +236,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                     : article.trackReview.trackName.length > 8
                       ? "text-4xl md:text-5xl lg:text-6xl"
                       : "text-5xl md:text-6xl lg:text-7xl"
-              } font-black uppercase tracking-tighter leading-tight mb-4 break-words`} style={{ fontFamily: "var(--font-space-grotesk)"}}>
+              } font-black uppercase tracking-tighter leading-tight mb-4 break-words font-antapani`}>
                 {article.trackReview.trackName}
               </h1>
               
@@ -359,7 +359,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                           </div>
                           
                           <div className="text-right shrink-0 ml-2">
-                            <div className="text-4xl font-black text-black dark:text-white md:mb-2" style={{ fontFamily: "var(--font-space-grotesk)"}}>{total}</div>
+                            <div className="text-4xl font-black text-black dark:text-white md:mb-2 font-antapani">{total}</div>
                             <div className="hidden md:flex gap-1 text-[10px] font-bold text-zinc-500 justify-end">
                               <div className="group/tooltip relative cursor-help">
                                 <span className="text-blue-500">{rating.text}</span>
@@ -419,7 +419,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
           
           {article.content && (
             <div className="mt-16 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 lg:p-12 transition-colors">
-              <h3 className="text-2xl font-black text-black dark:text-white tracking-tighter uppercase mb-6" style={{ fontFamily: "var(--font-space-grotesk)"}}>
+              <h3 className="text-2xl font-black text-black dark:text-white tracking-tighter uppercase mb-6 font-antapani">
                 Опис / Редакційна думка
               </h3>
               <div className="prose dark:prose-invert prose-lg max-w-none">
@@ -453,7 +453,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
           </span>
         </div>
         
-        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] font-serif mb-6" style={{ fontFamily: "var(--font-space-grotesk)"}}>
+        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] font-antapani mb-6">
           {article.title}
         </h1>
         
@@ -482,7 +482,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
         </div>
       )}
 
-      <div className="prose prose-lg prose-zinc dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:font-black prose-headings:font-serif prose-headings:uppercase prose-headings:tracking-tighter transition-colors">
+      <div className="prose prose-lg prose-zinc dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:font-black prose-headings:font-antapani prose-headings:uppercase prose-headings:tracking-tighter transition-colors">
         <div className="whitespace-pre-wrap font-medium text-lg leading-relaxed text-zinc-800 dark:text-zinc-200 transition-colors">
           {renderContentWithMedia(article.content, article.media)}
         </div>
