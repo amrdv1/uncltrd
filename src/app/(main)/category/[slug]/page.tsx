@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { db } from "@/lib/db";
 import { StoryCard } from "@/components/ui/StoryCard";
 import { TrackCard } from "@/components/ui/TrackCard";
@@ -9,6 +10,40 @@ import { auth } from "@/lib/auth";
 import { Lock, ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatedTabs } from "@/components/ui/AnimatedTabs";
 import { AnimatedTabContent } from "@/components/ui/AnimatedTabContent";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
+  const siteUrl = "https://uncultured.media";
+  const url = `${siteUrl}/category/${slug}`;
+  
+  const categories: Record<string, string> = {
+    singles: "Сингли",
+    albums: "Альбоми",
+    clips: "Кліпи",
+    reviews: "Огляди",
+    playlists: "Плейлисти"
+  };
+
+  const title = categories[slug] ? `${categories[slug]} | uncultured.` : `Категорія ${slug} | uncultured.`;
+  const description = categories[slug] 
+    ? `Останні ${categories[slug].toLowerCase()} та новини на uncultured.`
+    : `Усі матеріали з категорії ${slug} на uncultured.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "website",
+    },
+    alternates: {
+      canonical: url,
+    }
+  };
+}
 
 export default async function CategoryPage(props: { 
   params: Promise<{ slug: string }>,

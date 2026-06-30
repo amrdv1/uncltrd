@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -113,6 +114,44 @@ const renderContentWithMedia = (content: string, media: any[]) => {
     return <div key={index} dangerouslySetInnerHTML={{ __html: parseMarkdown(part) }} />;
   });
 };
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const article = await db.article.findUnique({
+    where: { slug: resolvedParams.slug, status: "PUBLISHED" },
+    include: { author: true }
+  });
+
+  if (!article) return {};
+
+  const siteUrl = "https://uncultured.media";
+  const url = `${siteUrl}/article/${article.slug}`;
+  const images = article.imageUrl ? [article.imageUrl] : [`${siteUrl}/logo-black.png`];
+  const description = article.content.substring(0, 160).replace(/[#*`_[\]()]/g, '').trim() + "...";
+
+  return {
+    title: article.title,
+    description: description,
+    openGraph: {
+      title: article.title,
+      description: description,
+      url,
+      type: "article",
+      publishedTime: article.createdAt.toISOString(),
+      authors: [article.author.name || "uncultured."],
+      images: images.map(img => ({ url: img })),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: description,
+      images,
+    },
+    alternates: {
+      canonical: url,
+    }
+  };
+}
 
 export default async function ArticlePage(props: { params: Promise<{ slug: string }> }) {
   const params = await props.params;

@@ -1,6 +1,21 @@
+import { Metadata } from "next";
 import { db } from "@/lib/db";
 import { StoryCard } from "@/components/ui/StoryCard";
 import { Carousel } from "@/components/ui/Carousel";
+
+export const metadata: Metadata = {
+  title: "Новини | uncultured.",
+  description: "Стрічка усіх найсвіжіших публікацій, новин, релізів та оглядів зі світу українського хіп-хопу та андеграунд-культури на uncultured.",
+  openGraph: {
+    title: "Новини | uncultured.",
+    description: "Стрічка усіх найсвіжіших публікацій, новин, релізів та оглядів зі світу українського хіп-хопу та андеграунд-культури на uncultured.",
+    url: "https://uncultured.media/news",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://uncultured.media/news",
+  }
+};
 
 export default async function NewsPage() {
   const articles = await db.article.findMany({

@@ -19,11 +19,71 @@ const spaceGrotesk = Space_Grotesk({
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getSiteConfig();
+  const siteUrl = "https://uncultured.media";
+  
   return {
-    title: "uncultured.",
-    description: config.description,
+    metadataBase: new URL(siteUrl),
+    title: {
+      default: "uncultured.",
+      template: "%s | uncultured.",
+    },
+    description: config.description || "Головний голос сучасного хіп-хопу та андеграунд-культури.",
+    keywords: [
+      "uncultured",
+      "uncultured media",
+      "український реп",
+      "хіп-хоп",
+      "андеграунд",
+      "музика",
+      "релізи",
+      "огляди",
+      "новини музики",
+      "uncultured ua"
+    ],
+    authors: [{ name: "uncultured." }],
+    creator: "uncultured.",
+    publisher: "uncultured.",
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    openGraph: {
+      title: "uncultured.",
+      description: config.description || "Головний голос сучасного хіп-хопу та андеграунд-культури.",
+      url: siteUrl,
+      siteName: "uncultured.",
+      images: [
+        {
+          url: `${siteUrl}/logo-black.png`,
+          width: 1200,
+          height: 630,
+          alt: "uncultured. media",
+        },
+      ],
+      locale: "uk_UA",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "uncultured.",
+      description: config.description || "Головний голос сучасного хіп-хопу та андеграунд-культури.",
+      images: [`${siteUrl}/logo-black.png`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
     icons: {
       icon: "/favicon.ico?v=2",
+      apple: "/apple-touch-icon.png",
     },
   };
 }
