@@ -4,10 +4,10 @@ import { StoryCard } from "@/components/ui/StoryCard";
 import { Carousel } from "@/components/ui/Carousel";
 
 export const metadata: Metadata = {
-  title: "Новини | uncultured.",
+  title: "Новини",
   description: "Стрічка усіх найсвіжіших публікацій, новин, релізів та оглядів зі світу українського хіп-хопу та андеграунд-культури на uncultured.",
   openGraph: {
-    title: "Новини | uncultured.",
+    title: "Новини",
     description: "Стрічка усіх найсвіжіших публікацій, новин, релізів та оглядів зі світу українського хіп-хопу та андеграунд-культури на uncultured.",
     url: "https://uncultured.media/news",
     type: "website",

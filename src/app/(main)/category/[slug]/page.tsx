@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     playlists: "Плейлисти"
   };
 
-  const title = categories[slug] ? `${categories[slug]} | uncultured.` : `Категорія ${slug} | uncultured.`;
+  const title = categories[slug] ? categories[slug] : `Категорія ${slug}`;
   const description = categories[slug] 
     ? `Останні ${categories[slug].toLowerCase()} та новини на uncultured.`
     : `Усі матеріали з категорії ${slug} на uncultured.`;
