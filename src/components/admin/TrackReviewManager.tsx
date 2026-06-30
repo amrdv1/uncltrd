@@ -219,7 +219,7 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
 
           {coverUrl && (
             <div className="relative w-32 h-32 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-sm mt-4">
-              <Image src={coverUrl} alt="Cover Preview" fill className="object-cover" unoptimized={coverUrl.toLowerCase().endsWith('.gif')} />
+              <Image src={coverUrl} alt="Cover Preview" fill className="object-cover" unoptimized={coverUrl.toLowerCase().endsWith('.gif') || coverUrl.includes('tiktokcdn.com') || coverUrl.includes('byteimg.com')} />
             </div>
           )}
 

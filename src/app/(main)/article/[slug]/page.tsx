@@ -102,7 +102,7 @@ const renderContentWithMedia = (content: string, media: any[]) => {
           return (
             <div key={index} className="my-8 relative w-full aspect-video md:aspect-[21/9] bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800">
               <Lightbox src={mediaItem.url} alt={`Media ${part}`}>
-                <Image src={mediaItem.url} alt={`Media ${part}`} fill className="object-cover" unoptimized={mediaItem.url.toLowerCase().endsWith('.gif')} />
+                <Image src={mediaItem.url} alt={`Media ${part}`} fill className="object-cover" unoptimized={mediaItem.url.toLowerCase().endsWith('.gif') || mediaItem.url.includes('tiktokcdn.com') || mediaItem.url.includes('byteimg.com')} />
               </Lightbox>
             </div>
           );
@@ -180,7 +180,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
             
             {cleanCoverUrl ? (
               <div className="relative w-full md:w-72 lg:w-96 aspect-square flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 z-10 transition-colors">
-                <Image src={cleanCoverUrl} alt="Cover" fill className="object-cover" priority unoptimized={cleanCoverUrl.toLowerCase().endsWith('.gif')} />
+                <Image src={cleanCoverUrl} alt="Cover" fill className="object-cover" priority unoptimized={cleanCoverUrl.toLowerCase().endsWith('.gif') || cleanCoverUrl.includes('tiktokcdn.com') || cleanCoverUrl.includes('byteimg.com')} />
               </div>
             ) : (
               <div className="w-full md:w-72 lg:w-96 aspect-square flex-shrink-0 rounded-2xl bg-zinc-200 dark:bg-zinc-900 flex items-center justify-center border border-zinc-200 dark:border-zinc-800 z-10 transition-colors">
@@ -437,7 +437,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
               fill 
               className="object-cover hover:scale-105 transition duration-700" 
               priority
-              unoptimized={article.imageUrl.toLowerCase().endsWith('.gif')}
+              unoptimized={article.imageUrl.toLowerCase().endsWith('.gif') || article.imageUrl.includes('tiktokcdn.com') || article.imageUrl.includes('byteimg.com')}
             />
           </Lightbox>
         </div>
