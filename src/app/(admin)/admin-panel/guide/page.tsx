@@ -50,10 +50,12 @@ export default function GuidePage() {
             </div>
 
             <div className="bg-zinc-50 dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 mt-6">
-              <h4 className="font-bold mb-4 uppercase tracking-widest text-[10px] text-zinc-500">Google Диск та завантаження файлів:</h4>
+              <h4 className="font-bold mb-4 uppercase tracking-widest text-[10px] text-zinc-500">Завантаження та Конвертація Файлів:</h4>
               <ul className="text-sm font-medium space-y-3 text-zinc-600 dark:text-zinc-300 list-disc pl-5 marker:text-black dark:marker:text-white">
-                <li><strong className="text-black dark:text-white">Google Диск:</strong> Якщо у вас є посилання на фото з Google Диску (наприклад <code className="bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded text-[10px]">drive.google.com/file/d/...</code>), просто вставте його у поле URL. Система автоматично перетворить його так, щоб картинка відображалась на сайті!</li>
-                <li><strong className="text-black dark:text-white">Завантаження з пристрою:</strong> У профілі, статтях та оглядах з'явилася можливість завантажувати обкладинки, галерею та аватарки прямо з вашого комп'ютера або телефону, натиснувши кнопку завантаження.</li>
+                <li><strong className="text-black dark:text-white">Завантаження з пристрою:</strong> У профілі, статтях та оглядах є можливість завантажувати обкладинки, галерею та аватарки прямо з вашого пристрою.</li>
+                <li><strong className="text-black dark:text-white">Конвертор GIF:</strong> Якщо у вас є коротке відео (.mp4, .mov), яке ви хочете використати як "живу" обкладинку (щоб вона працювала навіть на iPhone в режимі економії енергії), перейдіть у вкладку <strong className="text-pink-500">GIF Конвертор</strong> в меню адмінки. Сервер автоматично перетворить відео на справжню гіфку!</li>
+                <li><strong className="text-black dark:text-white">Аудіо-треки для Оглядів:</strong> Щоб в огляді запрацювала кнопка "СЛУХАТИ", вам потрібно додати посилання на трек (Spotify, Soundcloud) або завантажити MP3/WAV у розділ "Галерея / Медіа" під час створення статті, обравши для цього медіа тип <strong className="text-blue-500">AUDIO</strong>.</li>
+                <li><strong className="text-black dark:text-white">Google Диск:</strong> Якщо у вас є посилання на фото з Google Диску, просто вставте його у поле URL. Система автоматично перетворить його так, щоб картинка відображалась на сайті.</li>
               </ul>
             </div>
           </div>
