@@ -1,6 +1,15 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
+import { writeFile, mkdir, unlink } from 'fs/promises';
+import { existsSync } from 'fs';
 import path from 'path';
+import ffmpeg from 'fluent-ffmpeg';
+import ffmpegStatic from 'ffmpeg-static';
+
+if (ffmpegStatic && existsSync(ffmpegStatic)) {
+  ffmpeg.setFfmpegPath(ffmpegStatic);
+} else {
+  console.log("Could not find ffmpeg-static binary, relying on system ffmpeg");
+}
 
 export async function POST(request: Request) {
   try {
@@ -48,8 +57,37 @@ export async function POST(request: Request) {
     const filePath = path.join(uploadDir, filename);
     await writeFile(filePath, buffer);
     
-    const finalUrl = `/uploads/${filename}`;
-    const finalFilename = filename;
+    let finalUrl = `/uploads/${filename}`;
+    let finalFilename = filename;
+
+    const convertToGif = formData.get('convertToGif') === 'true';
+
+    if (isVideo && convertToGif) {
+      const gifFilename = `${uniqueSuffix}.gif`;
+      const gifFilePath = path.join(uploadDir, gifFilename);
+      
+      await new Promise<void>((resolve, reject) => {
+        ffmpeg(filePath)
+          .outputOptions([
+            '-vf', 'fps=12,scale=800:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
+            '-loop', '0'
+          ])
+          .toFormat('gif')
+          .on('end', () => resolve())
+          .on('error', (err) => reject(err))
+          .save(gifFilePath);
+      });
+
+      // Cleanup original video
+      try {
+        await unlink(filePath);
+      } catch (e) {
+        console.error('Failed to delete original video:', e);
+      }
+
+      finalUrl = `/uploads/${gifFilename}`;
+      finalFilename = gifFilename;
+    }
 
     return NextResponse.json({ url: finalUrl, filename: finalFilename });
   } catch (error) {

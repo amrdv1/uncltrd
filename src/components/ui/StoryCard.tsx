@@ -45,25 +45,14 @@ export function StoryCard({ category, title, image, date, author, size = "medium
     return (
       <Link href={`/article/${slug}`} className={cn("w-full group block relative overflow-hidden rounded-[2rem] ring-1 ring-black/10 dark:ring-white/10 shadow-lg hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] dark:hover:shadow-accent/20 transition-all duration-500 hover:-translate-y-2", className)}>
         <div className={cn("relative w-full overflow-hidden bg-zinc-100", aspectClass)}>
-          {image.match(/\.(mp4|webm|mov)$/i) ? (
-            <video 
-              src={image} 
-              autoPlay 
-              loop 
-              muted 
-              playsInline
-              className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
-            />
-          ) : (
-            <Image
-              src={image}
-              alt={title}
-              fill
-              className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
-              priority={isHero}
-              unoptimized={image.toLowerCase().endsWith('.gif') || image.includes('tiktokcdn.com') || image.includes('byteimg.com')}
-            />
-          )}
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
+            priority={isHero}
+            unoptimized={image.toLowerCase().endsWith('.gif') || image.includes('tiktokcdn.com') || image.includes('byteimg.com')}
+          />
           {trackRating !== undefined && trackRating > 0 && adminRating !== undefined && adminRating > 0 && (
             <div className="absolute bottom-6 right-6 flex items-center gap-2 z-20">
               <div className="w-10 h-10 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow-lg border-2 border-zinc-900" title="Оцінка користувачів">

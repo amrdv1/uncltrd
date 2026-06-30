@@ -219,11 +219,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
             
             {cleanCoverUrl ? (
               <div className="relative w-full md:w-72 lg:w-96 aspect-square flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 z-10 transition-colors">
-                {cleanCoverUrl.match(/\.(mp4|webm|mov)$/i) ? (
-                  <video src={cleanCoverUrl} autoPlay loop muted playsInline className="object-cover w-full h-full" />
-                ) : (
-                  <Image src={cleanCoverUrl} alt="Cover" fill className="object-cover" priority unoptimized={cleanCoverUrl.toLowerCase().endsWith('.gif') || cleanCoverUrl.includes('tiktokcdn.com') || cleanCoverUrl.includes('byteimg.com')} />
-                )}
+                <Image src={cleanCoverUrl} alt="Cover" fill className="object-cover" priority unoptimized={cleanCoverUrl.toLowerCase().endsWith('.gif') || cleanCoverUrl.includes('tiktokcdn.com') || cleanCoverUrl.includes('byteimg.com')} />
               </div>
             ) : (
               <div className="w-full md:w-72 lg:w-96 aspect-square flex-shrink-0 rounded-2xl bg-zinc-200 dark:bg-zinc-900 flex items-center justify-center border border-zinc-200 dark:border-zinc-800 z-10 transition-colors">
@@ -474,18 +470,14 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
       {article.imageUrl && (
         <div className="relative w-full aspect-[21/9] mb-12 bg-zinc-100 rounded-xl overflow-hidden shadow-sm">
           <Lightbox src={article.imageUrl} alt={article.title}>
-            {article.imageUrl.match(/\.(mp4|webm|mov)$/i) ? (
-              <video src={article.imageUrl} autoPlay loop muted playsInline className="w-full h-full object-cover hover:scale-105 transition duration-700" />
-            ) : (
-              <Image 
-                src={article.imageUrl} 
-                alt={article.title} 
-                fill 
-                className="object-cover hover:scale-105 transition duration-700" 
-                priority
-                unoptimized={article.imageUrl.toLowerCase().endsWith('.gif') || article.imageUrl.includes('tiktokcdn.com') || article.imageUrl.includes('byteimg.com')}
-              />
-            )}
+            <Image 
+              src={article.imageUrl} 
+              alt={article.title} 
+              fill 
+              className="object-cover hover:scale-105 transition duration-700" 
+              priority
+              unoptimized={article.imageUrl.toLowerCase().endsWith('.gif') || article.imageUrl.includes('tiktokcdn.com') || article.imageUrl.includes('byteimg.com')}
+            />
           </Lightbox>
         </div>
       )}
