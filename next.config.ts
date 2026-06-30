@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    serverComponentsExternalPackages: ['fluent-ffmpeg', 'ffmpeg-static'],
+    outputFileTracingIncludes: {
+      '/api/upload': ['./node_modules/ffmpeg-static/**/*'],
+    },
+  },
 };
 
 export default nextConfig;
