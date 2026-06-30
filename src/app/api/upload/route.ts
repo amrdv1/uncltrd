@@ -39,7 +39,6 @@ export async function POST(request: Request) {
       const uploadStream = cloudinary.uploader.upload_stream(
         { 
           resource_type: resourceType,
-          folder: 'uncultured',
         },
         (error, result) => {
           if (error) reject(error);
