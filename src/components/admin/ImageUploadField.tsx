@@ -25,7 +25,6 @@ export function ImageUploadField({
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("convertToGif", "true");
 
       const res = await fetch("/api/upload", {
         method: "POST",

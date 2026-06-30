@@ -34,12 +34,23 @@ export function TrackCard({
     <Link href={`/article/${slug}`} className={cn("group flex flex-col w-full h-full bg-[#111] rounded-xl transition-all duration-500 hover:-translate-y-2 hover:bg-[#151515] border border-zinc-800 hover:border-accent/50 hover:shadow-[0_20px_40px_-15px_rgba(255,51,102,0.15)] active:scale-[0.98]", compact ? "p-3" : "p-4", className)}>
       {/* Cover Image */}
       <div className={cn("relative w-full aspect-square overflow-hidden shadow-sm group-hover:shadow-lg transition-shadow duration-500 shrink-0", compact ? "rounded-lg mb-3" : "rounded-xl mb-4")}>
-        <Image 
-          src={coverUrl} 
-          alt={title} 
-          fill 
-          className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-105" 
-        />
+        {coverUrl.match(/\.(mp4|webm|mov)$/i) ? (
+          <video 
+            src={coverUrl} 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-105"
+          />
+        ) : (
+          <Image 
+            src={coverUrl} 
+            alt={title} 
+            fill 
+            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-105" 
+          />
+        )}
         <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md w-7 h-7 rounded-full flex items-center justify-center text-white shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <Play size={12} fill="currentColor" className="ml-0.5" />
         </div>
