@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Users, FileText, Settings, LayoutDashboard, BookOpen, LogOut } from "lucide-react";
+import { Users, FileText, Settings, LayoutDashboard, BookOpen, LogOut, Image as ImageIcon } from "lucide-react";
 import { auth } from "@/lib/auth";
 
 export default async function AdminLayout({
@@ -31,6 +31,10 @@ export default async function AdminLayout({
           <Link href="/admin-panel/articles" className="flex items-center space-x-3 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 px-4 py-3 rounded-xl transition-all hover:translate-x-1 group">
             <FileText size={18} className="group-hover:text-blue-500 transition-colors" />
             <span className="font-medium text-sm">Articles</span>
+          </Link>
+          <Link href="/admin-panel/gif-converter" className="flex items-center space-x-3 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 px-4 py-3 rounded-xl transition-all hover:translate-x-1 group">
+            <ImageIcon size={18} className="group-hover:text-pink-500 transition-colors" />
+            <span className="font-medium text-sm">GIF Конвертор</span>
           </Link>
           {isAdmin && (
             <>
@@ -68,6 +72,10 @@ export default async function AdminLayout({
         <Link href="/admin-panel/articles" className="flex flex-col items-center p-2 text-zinc-500 hover:text-blue-500 dark:text-zinc-400 dark:hover:text-blue-500">
           <FileText size={20} />
           <span className="text-[10px] font-bold uppercase mt-1">Статті</span>
+        </Link>
+        <Link href="/admin-panel/gif-converter" className="flex flex-col items-center p-2 text-zinc-500 hover:text-pink-500 dark:text-zinc-400 dark:hover:text-pink-500">
+          <ImageIcon size={20} />
+          <span className="text-[10px] font-bold uppercase mt-1">GIF</span>
         </Link>
         {isAdmin && (
           <Link href="/admin-panel/users" className="flex flex-col items-center p-2 text-zinc-500 hover:text-green-500 dark:text-zinc-400 dark:hover:text-green-500">
