@@ -60,7 +60,7 @@ export default function GifConverterPage() {
     if (!resultUrl) return;
     
     // In dev, window.location.origin is fine. We can also just copy the absolute path
-    const fullUrl = window.location.origin + resultUrl;
+    const fullUrl = resultUrl.startsWith('http') ? resultUrl : window.location.origin + resultUrl;
     navigator.clipboard.writeText(fullUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -164,7 +164,7 @@ export default function GifConverterPage() {
                     <input 
                       type="text" 
                       readOnly 
-                      value={window.location.origin + resultUrl} 
+                      value={resultUrl.startsWith('http') ? resultUrl : window.location.origin + resultUrl} 
                       className="w-full bg-zinc-50 dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 pr-14 outline-none text-sm font-medium"
                     />
                     <button 
