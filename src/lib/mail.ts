@@ -1,8 +1,20 @@
-const UNIONE_API_KEY = process.env.UNIONE_API_KEY || "66zm4npearqngw48q9u1rbw88di353m6mokmb1wy";
-const FROM_EMAIL = process.env.EMAIL_FROM || "info@uncultured.media"; // UniOne requires verified sender
+import nodemailer from "nodemailer";
 
-const sendEmailUniOne = async (to: string, subject: string, html: string) => {
-  if (!UNIONE_API_KEY) {
+const SMTP_EMAIL = process.env.SMTP_EMAIL;
+const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.zoho.eu",
+  port: 465,
+  secure: true,
+  auth: {
+    user: SMTP_EMAIL,
+    pass: SMTP_PASSWORD,
+  },
+});
+
+const sendEmailNodemailer = async (to: string, subject: string, html: string) => {
+  if (!SMTP_EMAIL || !SMTP_PASSWORD) {
     console.log(`\n\n---------------------------------`);
     console.log(`📧 EMAIL TO ${to}:`);
     console.log(`Subject: ${subject}`);
@@ -11,39 +23,20 @@ const sendEmailUniOne = async (to: string, subject: string, html: string) => {
     return;
   }
 
-  const url = 'https://eu1.unione.io/en/transactional/api/v1/email/send.json';
-  
-  const data = {
-    message: {
-      recipients: [{ email: to }],
-      body: { html },
-      subject: subject,
-      from_email: FROM_EMAIL,
-      from_name: "Uncultured"
-    }
-  };
-
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': UNIONE_API_KEY
-      },
-      body: JSON.stringify(data)
+    await transporter.sendMail({
+      from: `"Uncultured" <${SMTP_EMAIL}>`,
+      to,
+      subject,
+      html,
     });
-
-    const result = await response.json();
-    if (result.status !== 'success') {
-      console.error("UniOne Email Error:", result);
-    }
   } catch (error) {
-    console.error("Failed to send email via UniOne:", error);
+    console.error("Failed to send email via Zoho SMTP:", error);
   }
 };
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
-  await sendEmailUniOne(
+  await sendEmailNodemailer(
     email,
     "Ваш код для двофакторної автентифікації",
     `<p>Ваш код 2FA: <strong>${token}</strong></p>`
@@ -52,7 +45,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/new-password?token=${token}`;
-  await sendEmailUniOne(
+  await sendEmailNodemailer(
     email,
     "Скидання пароля",
     `<p>Натисніть <a href="${resetLink}">тут</a> щоб скинути пароль.</p>`
@@ -61,7 +54,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
 export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL}/new-verification?token=${token}`;
-  await sendEmailUniOne(
+  await sendEmailNodemailer(
     email,
     "Підтвердіть вашу електронну пошту",
     `
