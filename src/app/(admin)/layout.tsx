@@ -2,14 +2,28 @@ import Link from "next/link";
 import { Users, FileText, Settings, LayoutDashboard, BookOpen, LogOut, Image as ImageIcon } from "lucide-react";
 import { auth } from "@/lib/auth";
 
+import { redirect } from "next/navigation";
+
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const session = await auth();
+  
+  // 1. Check if user is logged in at all
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   const allowedEmails = ["gokrai@uncultured.media", "leanoplav@uncultured.media", "skyti@uncultured.media"];
   const isAdmin = session?.user?.role === "ADMIN" || allowedEmails.includes(session?.user?.email?.toLowerCase() || "");
+  const isEditor = session?.user?.role === "EDITOR";
+
+  // 2. Block access for normal users (must be ADMIN or EDITOR)
+  if (!isAdmin && !isEditor) {
+    redirect("/"); // Redirect unauthorized users to the main page
+  }
 
   return (
     <div className="flex min-h-screen bg-zinc-50 dark:bg-[#050505] text-zinc-900 dark:text-white selection:bg-accent selection:text-white transition-colors">
