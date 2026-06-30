@@ -115,7 +115,7 @@ export async function Sidebar() {
             alt="Uncultured Logo"
             width={240}
             height={60}
-            className="animate-logo-pulse origin-left dark:invert transition-all"
+            className="animate-logo-pulse dark:invert transition-all"
           />
         </Link>
       </div>

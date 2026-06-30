@@ -12,7 +12,7 @@ export function Footer() {
               alt="Uncultured Logo"
               width={240}
               height={60}
-              className="mb-6 animate-logo-pulse origin-left invert brightness-0"
+              className="mb-6 animate-logo-pulse invert brightness-0"
             />
           </Link>
           <p className="text-zinc-400 max-w-sm mb-8 text-lg">
