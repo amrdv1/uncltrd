@@ -3,12 +3,17 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { db } from "@/lib/db"
 import bcrypt from "bcryptjs"
+import GoogleProvider from "next-auth/providers/google"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -58,8 +63,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       });
 
       // Prevent sign in without email verification
-      // if (!existingUser?.emailVerified) return false;
-      
+      if (!existingUser.emailVerified) {
+        return false;
+      }
       if (!existingUser) return false;
 
       // Check 2FA

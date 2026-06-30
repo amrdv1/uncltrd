@@ -52,7 +52,7 @@ export async function register(formData: FormData) {
   const verificationToken = await generateVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
-  return { redirectUrl: "/login?success=Акаунт+успішно+створено,+тепер+увійдіть" };
+  return { redirectUrl: "/login?success=Акаунт+успішно+створено,+перевірте+пошту+для+підтвердження!" };
 }
 
 export async function login(formData: FormData, code?: string) {
@@ -72,11 +72,11 @@ export async function login(formData: FormData, code?: string) {
   }
 
   // Check if email is verified
-  // if (!existingUser.emailVerified) {
-  //   const verificationToken = await generateVerificationToken(existingUser.email);
-  //   await sendVerificationEmail(verificationToken.email, verificationToken.token);
-  //   return { success: "Лист для підтвердження надіслано на вашу пошту!" };
-  // }
+  if (!existingUser.emailVerified) {
+    const verificationToken = await generateVerificationToken(existingUser.email);
+    await sendVerificationEmail(verificationToken.email, verificationToken.token);
+    return { success: "Лист для підтвердження надіслано на вашу пошту!" };
+  }
 
   // Two Factor Authentication
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
