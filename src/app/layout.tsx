@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { getSiteConfig } from "@/app/actions/config";
@@ -17,7 +18,11 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
-
+const antapani = localFont({
+  src: "./fonts/Antapani-ExtraBold.otf",
+  variable: "--font-antapani",
+  display: "swap",
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getSiteConfig();
@@ -116,7 +121,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${antapani.variable}`} suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: `:root, body { --accent: ${accentCookie}; }` }} />
         <script

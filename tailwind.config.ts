@@ -54,6 +54,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", "sans-serif"],
         serif: ["var(--font-space-grotesk)", "sans-serif"],
+        antapani: ["var(--font-antapani)", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
