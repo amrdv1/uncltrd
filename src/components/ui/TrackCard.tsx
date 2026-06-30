@@ -13,6 +13,7 @@ interface TrackCardProps {
   className?: string;
   tags?: string[];
   compact?: boolean;
+  listenUrl?: string;
 }
 
 export function TrackCard({ 
@@ -23,7 +24,9 @@ export function TrackCard({
   publicScore, 
   adminScore, 
   className,
-  compact = false
+  tags,
+  compact = false,
+  listenUrl
 }: TrackCardProps) {
   return (
     <Link href={`/article/${slug}`} className={cn("group flex flex-col w-full h-full bg-[#111] rounded-xl transition-all duration-500 hover:-translate-y-2 hover:bg-[#151515] border border-zinc-800 hover:border-accent/50 hover:shadow-[0_20px_40px_-15px_rgba(255,51,102,0.15)] active:scale-[0.98]", compact ? "p-3" : "p-4", className)}>
@@ -64,9 +67,15 @@ export function TrackCard({
 
       {/* Action Buttons Row */}
       <div className="flex items-center gap-2 mt-auto">
-        <div className="flex-1 bg-white text-black py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all pointer-events-none">
-          <Play size={12} fill="currentColor" /> Слухати
-        </div>
+        {listenUrl ? (
+          <a href={listenUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="flex-1 bg-white text-black py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all">
+            <Play size={12} fill="currentColor" /> Слухати
+          </a>
+        ) : (
+          <div className="flex-1 bg-white text-black py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all opacity-50 cursor-not-allowed">
+            <Music size={12} /> Немає лінку
+          </div>
+        )}
       </div>
     </Link>
   );

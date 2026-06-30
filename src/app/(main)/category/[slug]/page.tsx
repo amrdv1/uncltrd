@@ -370,6 +370,7 @@ export default async function CategoryPage(props: {
                           slug={article.slug}
                           publicScore={publicRatings.length > 0 ? pubScore : undefined}
                           adminScore={adminRatings.length > 0 || admScore > 0 ? admScore : undefined}
+                          listenUrl={article.trackReview!.listenUrl || undefined}
                         />
                       );
                     })() : (
@@ -422,6 +423,7 @@ export default async function CategoryPage(props: {
                           slug={article.slug}
                           publicScore={publicRatings.length > 0 ? pubScore : undefined}
                           adminScore={adminRatings.length > 0 || admScore > 0 ? admScore : undefined}
+                          listenUrl={article.trackReview!.listenUrl || undefined}
                         />
                       );
                     })() : (

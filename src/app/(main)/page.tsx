@@ -187,6 +187,7 @@ export default async function Home() {
                         slug={review.slug}
                         publicScore={publicRatings.length > 0 ? pubScore : undefined}
                         adminScore={adminRatings.length > 0 || admScore > 0 ? admScore : undefined}
+                        listenUrl={review.trackReview!.listenUrl || undefined}
                         compact={true}
                       />
                     );
