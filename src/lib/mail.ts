@@ -34,11 +34,24 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
 };
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/new-password?token=${token}`;
+  const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/new-password?token=${token}`;
   await sendEmailResend(
     email,
     "Скидання пароля",
-    `<p>Натисніть <a href="${resetLink}">тут</a> щоб скинути пароль.</p>`
+    `
+      <div style="font-family: Arial, sans-serif; max-w-md: 600px; margin: 0 auto; text-align: center; padding: 40px 20px;">
+        <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">UNCULTURED.</h1>
+        <p style="font-size: 16px; color: #555; margin-bottom: 30px;">
+          Ви отримали цей лист, оскільки надійшов запит на скидання пароля для вашого акаунта.
+        </p>
+        <a href="${resetLink}" style="display: inline-block; background-color: #000; color: #fff; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+          Скинути пароль
+        </a>
+        <p style="font-size: 14px; color: #888; margin-top: 30px;">
+          Якщо ви не запитували скидання пароля, просто проігноруйте цей лист. Посилання дійсне протягом 1 години.
+        </p>
+      </div>
+    `
   );
 };
 
