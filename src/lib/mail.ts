@@ -1,20 +1,10 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const SMTP_EMAIL = process.env.SMTP_EMAIL;
-const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
+const resend = new Resend(process.env.RESEND_API_KEY);
+const fromEmail = "info@uncultured.media"; // Must be verified in Resend
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.zoho.eu",
-  port: 587,
-  secure: false, // upgrade later with STARTTLS
-  auth: {
-    user: SMTP_EMAIL,
-    pass: SMTP_PASSWORD,
-  },
-});
-
-const sendEmailNodemailer = async (to: string, subject: string, html: string) => {
-  if (!SMTP_EMAIL || !SMTP_PASSWORD) {
+const sendEmailResend = async (to: string, subject: string, html: string) => {
+  if (!process.env.RESEND_API_KEY) {
     console.log(`\n\n---------------------------------`);
     console.log(`📧 EMAIL TO ${to}:`);
     console.log(`Subject: ${subject}`);
@@ -24,19 +14,19 @@ const sendEmailNodemailer = async (to: string, subject: string, html: string) =>
   }
 
   try {
-    await transporter.sendMail({
-      from: `"Uncultured" <${SMTP_EMAIL}>`,
+    await resend.emails.send({
+      from: `Uncultured <${fromEmail}>`,
       to,
       subject,
       html,
     });
   } catch (error) {
-    console.error("Failed to send email via Zoho SMTP:", error);
+    console.error("Failed to send email via Resend:", error);
   }
 };
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
-  await sendEmailNodemailer(
+  await sendEmailResend(
     email,
     "Ваш код для двофакторної автентифікації",
     `<p>Ваш код 2FA: <strong>${token}</strong></p>`
@@ -45,7 +35,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/new-password?token=${token}`;
-  await sendEmailNodemailer(
+  await sendEmailResend(
     email,
     "Скидання пароля",
     `<p>Натисніть <a href="${resetLink}">тут</a> щоб скинути пароль.</p>`
@@ -54,7 +44,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
 export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL}/new-verification?token=${token}`;
-  await sendEmailNodemailer(
+  await sendEmailResend(
     email,
     "Підтвердіть вашу електронну пошту",
     `
