@@ -63,22 +63,14 @@ export default async function SettingsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-2 uppercase tracking-wide">
-              Аватарка (URL)
-            </label>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-2">
-              Вставте пряме посилання на картинку (наприклад з Imgur чи Unsplash)
-            </p>
             <input 
               name="image" 
-              type="url" 
-              defaultValue={user.image || ""}
-              className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white text-black dark:text-white text-lg transition-colors mb-4" 
-              placeholder="https://example.com/avatar.png"
+              type="hidden" 
+              value={user.image || ""}
             />
             
             <label className="block text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-2 uppercase tracking-wide">
-              Або завантажте з пристрою
+              Аватарка
             </label>
             <input 
               name="avatarFile" 
