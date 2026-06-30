@@ -42,7 +42,7 @@ export function TrackCard({
       
       {/* Title & Artist */}
       <div className={compact ? "mb-2" : "mb-4"}>
-        <h3 className={cn("text-white font-bold leading-tight mb-1 truncate group-hover:text-accent transition-colors", compact ? "text-base" : "text-lg")} style={{ fontFamily: "var(--font-space-grotesk)"}}>
+        <h3 className={cn("text-white font-bold leading-tight mb-1 truncate group-hover:text-accent transition-colors font-antapani", compact ? "text-base" : "text-lg")}>
           {title}
         </h3>
         <p className="text-zinc-500 text-sm font-medium truncate uppercase tracking-widest text-[10px]">
