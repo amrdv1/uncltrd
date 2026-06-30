@@ -38,7 +38,7 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
                 <motion.button
                   whileTap={{ scale: 0.97, originX: 0 }}
                   onClick={() => toggleDropdown(link.label)}
-                  className="flex items-center justify-between w-full text-left text-2xl font-extrabold uppercase tracking-tighter hover:text-accent transition-colors py-2 text-black dark:text-white"
+                  className="flex items-center justify-between w-full text-left text-[22px] font-medium hover:text-accent transition-colors py-2 text-black dark:text-white font-onest"
                 >
                   {link.label}
                   <motion.span
@@ -66,7 +66,7 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
                           >
                             <motion.div 
                               whileTap={{ scale: 0.95, originX: 0 }}
-                              className="group flex items-center text-xl font-bold uppercase tracking-tight text-zinc-500 dark:text-zinc-400 hover:text-accent transition-all"
+                              className="group flex items-center text-[18px] font-normal text-black dark:text-white hover:text-accent transition-all font-onest"
                             >
                               <span className="transform transition-transform duration-300 ease-out group-hover:translate-x-3">
                                 {subLink.label}
@@ -87,7 +87,7 @@ export function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
               >
                 <motion.div
                   whileTap={{ scale: 0.97, originX: 0 }}
-                  className="group flex items-center text-2xl font-extrabold uppercase tracking-tighter hover:text-accent transition-all py-2 text-black dark:text-white"
+                  className="group flex items-center text-[22px] font-medium hover:text-accent transition-all py-2 text-black dark:text-white font-onest"
                 >
                   <span className="transform transition-transform duration-300 ease-out group-hover:translate-x-3">
                     {link.label}
