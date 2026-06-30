@@ -52,6 +52,20 @@ export async function findTrackMedia(artist: string, track: string) {
           } else if (bestMatch.album && bestMatch.album.cover_big) {
             coverUrl = bestMatch.album.cover_big;
           }
+
+          if (!releaseDate && bestMatch.album?.id) {
+            try {
+              const albumRes = await fetch(`https://api.deezer.com/album/${bestMatch.album.id}`);
+              if (albumRes.ok) {
+                const albumData = await albumRes.json();
+                if (albumData.release_date) {
+                  releaseDate = albumData.release_date;
+                }
+              }
+            } catch (e) {
+              console.error("Deezer album fetch failed", e);
+            }
+          }
         }
       }
     } catch (e) {
@@ -64,7 +78,8 @@ export async function findTrackMedia(artist: string, track: string) {
     try {
       const ytRes = await fetch(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, {
         headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          "Cookie": "CONSENT=YES+cb.20210328-17-p0.en+FX+478"
         }
       });
       const html = await ytRes.text();
@@ -87,7 +102,10 @@ export async function findTrackMedia(artist: string, track: string) {
         videoId = new URL(listenUrl).searchParams.get("v");
       } else {
         const ytRes = await fetch(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, {
-          headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
+          headers: { 
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Cookie": "CONSENT=YES+cb.20210328-17-p0.en+FX+478"
+          }
         });
         const html = await ytRes.text();
         const match = html.match(/"videoId":"([^"]+)"/);
@@ -96,12 +114,19 @@ export async function findTrackMedia(artist: string, track: string) {
       
       if (videoId) {
         const vRes = await fetch(`https://www.youtube.com/watch?v=${videoId}`, {
-          headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
+          headers: { 
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Cookie": "CONSENT=YES+cb.20210328-17-p0.en+FX+478"
+          }
         });
         const vHtml = await vRes.text();
         const dateMatch = vHtml.match(/<meta itemprop="datePublished" content="([^"]+)">/);
+        const altDateMatch = vHtml.match(/"publishDate":"([^"]+)"/);
+        
         if (dateMatch) {
           releaseDate = new Date(dateMatch[1]).toISOString().split('T')[0];
+        } else if (altDateMatch) {
+          releaseDate = new Date(altDateMatch[1]).toISOString().split('T')[0];
         }
       }
     } catch (e) {
