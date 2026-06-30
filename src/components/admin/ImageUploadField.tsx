@@ -32,12 +32,15 @@ export function ImageUploadField({
         body: formData,
       });
 
-      if (!res.ok) throw new Error("Upload failed");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || "Upload failed");
+      }
 
       const data = await res.json();
       setUrl(data.url);
-    } catch (err) {
-      alert("Помилка завантаження файлу");
+    } catch (err: any) {
+      alert(`Помилка завантаження файлу: ${err.message}`);
     } finally {
       setIsUploading(false);
     }

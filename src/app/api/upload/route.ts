@@ -90,7 +90,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error uploading file:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
