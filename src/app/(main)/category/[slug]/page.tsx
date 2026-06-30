@@ -181,6 +181,7 @@ export default async function CategoryPage(props: {
       author: true, 
       category: true, 
       trackReview: true,
+      media: true,
       userRatings: {
         include: { user: true }
       },
@@ -370,7 +371,7 @@ export default async function CategoryPage(props: {
                           slug={article.slug}
                           publicScore={publicRatings.length > 0 ? pubScore : undefined}
                           adminScore={adminRatings.length > 0 || admScore > 0 ? admScore : undefined}
-                          listenUrl={article.trackReview!.listenUrl || undefined}
+                          listenUrl={(article as any).media?.find((m: any) => m.type === 'AUDIO')?.url || undefined}
                         />
                       );
                     })() : (
@@ -423,7 +424,7 @@ export default async function CategoryPage(props: {
                           slug={article.slug}
                           publicScore={publicRatings.length > 0 ? pubScore : undefined}
                           adminScore={adminRatings.length > 0 || admScore > 0 ? admScore : undefined}
-                          listenUrl={article.trackReview!.listenUrl || undefined}
+                          listenUrl={(article as any).media?.find((m: any) => m.type === 'AUDIO')?.url || undefined}
                         />
                       );
                     })() : (

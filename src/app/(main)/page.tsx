@@ -44,6 +44,7 @@ export default async function Home() {
       category: true, 
       author: true, 
       trackReview: true,
+      media: true,
       userRatings: {
         include: { user: true }
       }
@@ -187,7 +188,7 @@ export default async function Home() {
                         slug={review.slug}
                         publicScore={publicRatings.length > 0 ? pubScore : undefined}
                         adminScore={adminRatings.length > 0 || admScore > 0 ? admScore : undefined}
-                        listenUrl={review.trackReview!.listenUrl || undefined}
+                        listenUrl={(review as any).media?.find((m: any) => m.type === 'AUDIO')?.url || undefined}
                         compact={true}
                       />
                     );
