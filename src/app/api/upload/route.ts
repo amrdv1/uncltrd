@@ -1,15 +1,11 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir, unlink } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
-import ffmpeg from 'fluent-ffmpeg';
-import ffmpegStatic from 'ffmpeg-static';
+import { v2 as cloudinary } from 'cloudinary';
 
-if (ffmpegStatic && existsSync(ffmpegStatic)) {
-  ffmpeg.setFfmpegPath(ffmpegStatic);
-} else {
-  console.log("Could not find ffmpeg-static binary, relying on system ffmpeg");
-}
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(request: Request) {
   try {
@@ -32,64 +28,40 @@ export async function POST(request: Request) {
     }
 
     const isVideo = file.type.startsWith('video/');
+    const convertToGif = formData.get('convertToGif') === 'true';
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
-    // Create unique filename
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const originalExt = path.extname(file.name);
-    // Sanitize filename and use standard extension if missing
-    let ext = originalExt || (isVideo ? '.mp4' : '.png');
+    const resourceType = isVideo ? 'video' : 'image';
     
-    const filename = `${uniqueSuffix}${ext}`;
-    
-    // Save to public/uploads
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    
-    // Ensure dir exists
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (e) {
-      // Ignore if exists
-    }
-    
-    const filePath = path.join(uploadDir, filename);
-    await writeFile(filePath, buffer);
-    
-    let finalUrl = `/uploads/${filename}`;
-    let finalFilename = filename;
-
-    const convertToGif = formData.get('convertToGif') === 'true';
-
-    if (isVideo && convertToGif) {
-      const gifFilename = `${uniqueSuffix}.gif`;
-      const gifFilePath = path.join(uploadDir, gifFilename);
+    const uploadResult = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { 
+          resource_type: resourceType,
+          folder: 'uncultured',
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
       
-      await new Promise<void>((resolve, reject) => {
-        ffmpeg(filePath)
-          .outputOptions([
-            '-vf', 'fps=12,scale=800:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
-            '-loop', '0'
-          ])
-          .toFormat('gif')
-          .on('end', () => resolve())
-          .on('error', (err) => reject(err))
-          .save(gifFilePath);
-      });
+      uploadStream.end(buffer);
+    });
 
-      // Cleanup original video
-      try {
-        await unlink(filePath);
-      } catch (e) {
-        console.error('Failed to delete original video:', e);
-      }
+    const result = uploadResult as any;
+    let finalUrl = result.secure_url;
 
-      finalUrl = `/uploads/${gifFilename}`;
-      finalFilename = gifFilename;
+    // Cloudinary magic: Convert video to GIF on the fly using transformations!
+    if (isVideo && convertToGif) {
+      // Add transformations for optimized GIF rendering
+      finalUrl = finalUrl.replace('/upload/', '/upload/w_800,f_gif,fl_lossy,q_auto,e_loop/');
+      // Change extension
+      finalUrl = finalUrl.replace(/\.(mp4|webm|mov)$/i, '.gif');
     }
 
-    return NextResponse.json({ url: finalUrl, filename: finalFilename });
+    return NextResponse.json({ url: finalUrl, filename: result.public_id });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(
