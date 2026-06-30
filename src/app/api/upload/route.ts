@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
+import { writeFile, mkdir, unlink } from 'fs/promises';
 import path from 'path';
+import ffmpeg from 'fluent-ffmpeg';
+import ffmpegStatic from 'ffmpeg-static';
+
+if (ffmpegStatic) {
+  ffmpeg.setFfmpegPath(ffmpegStatic);
+}
 
 export async function POST(request: Request) {
   try {
@@ -22,6 +28,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const isVideo = file.type.startsWith('video/');
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
@@ -29,7 +37,7 @@ export async function POST(request: Request) {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     const originalExt = path.extname(file.name);
     // Sanitize filename and use standard extension if missing
-    let ext = originalExt || (file.type.startsWith('image/') ? '.png' : '.mp4');
+    let ext = originalExt || (isVideo ? '.mp4' : '.png');
     
     const filename = `${uniqueSuffix}${ext}`;
     
@@ -46,10 +54,39 @@ export async function POST(request: Request) {
     const filePath = path.join(uploadDir, filename);
     await writeFile(filePath, buffer);
     
-    // Return URL path
-    const fileUrl = `/uploads/${filename}`;
+    let finalUrl = `/uploads/${filename}`;
+    let finalFilename = filename;
+
+    const convertToGif = formData.get('convertToGif') === 'true';
+
+    if (isVideo && convertToGif) {
+      const gifFilename = `${uniqueSuffix}.gif`;
+      const gifFilePath = path.join(uploadDir, gifFilename);
+      
+      await new Promise<void>((resolve, reject) => {
+        ffmpeg(filePath)
+          .outputOptions([
+            '-vf', 'fps=12,scale=800:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
+            '-loop', '0'
+          ])
+          .toFormat('gif')
+          .on('end', () => resolve())
+          .on('error', (err) => reject(err))
+          .save(gifFilePath);
+      });
+
+      // Cleanup original video
+      try {
+        await unlink(filePath);
+      } catch (e) {
+        console.error('Failed to delete original video:', e);
+      }
+
+      finalUrl = `/uploads/${gifFilename}`;
+      finalFilename = gifFilename;
+    }
     
-    return NextResponse.json({ url: fileUrl, filename });
+    return NextResponse.json({ url: finalUrl, filename: finalFilename });
   } catch (error) {
     console.error('Error uploading file:', error);
     return NextResponse.json(
