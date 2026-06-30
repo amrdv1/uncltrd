@@ -45,7 +45,7 @@ export function TrackCard({
         <h3 className={cn("text-white font-bold leading-tight mb-1 truncate group-hover:text-accent transition-colors font-antapani", compact ? "text-base" : "text-lg")}>
           {title}
         </h3>
-        <p className="text-zinc-500 font-medium truncate text-xs font-antapani">
+        <p className="text-zinc-500 font-medium truncate text-sm font-antapani">
           {artist}
         </p>
       </div>
