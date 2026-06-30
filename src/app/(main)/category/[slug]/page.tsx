@@ -87,10 +87,12 @@ export default async function CategoryPage(props: {
   const sortParam = (searchParams.sort as string) || "newest";
   const typeParam = (searchParams.type as string) || "ALL";
   const searchParam = (searchParams.q as string) || "";
+  const yearParam = (searchParams.year as string) || "ALL";
 
   const buildHref = (view: string, type: string, offset?: number) => {
     let url = `?view=${view}&type=${type}`;
     if (view === "all" && sortParam !== "newest") url += `&sort=${sortParam}`;
+    if (view === "all" && yearParam !== "ALL") url += `&year=${yearParam}`;
     if (searchParam) url += `&q=${encodeURIComponent(searchParam)}`;
     const finalOffset = offset !== undefined ? offset : weekOffset;
     if (finalOffset !== 0) url += `&offset=${finalOffset}`;
@@ -139,6 +141,19 @@ export default async function CategoryPage(props: {
       // view === "all"
       if (sortParam === "oldest") orderBy = { trackReview: { releaseDate: "asc" } };
       // "best" and "worst" will be sorted in JS after fetching to ensure they match the dynamically calculated scores.
+      
+      if (yearParam !== "ALL") {
+        const year = parseInt(yearParam);
+        if (!isNaN(year)) {
+          whereClause.trackReview = {
+            ...whereClause.trackReview,
+            releaseDate: {
+              gte: new Date(`${year}-01-01T00:00:00.000Z`),
+              lte: new Date(`${year}-12-31T23:59:59.999Z`)
+            }
+          };
+        }
+      }
     }
 
     if (typeParam !== "ALL") {
@@ -287,6 +302,13 @@ export default async function CategoryPage(props: {
                       placeholder="ПОШУК..."
                       className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white px-4 py-2.5 rounded-xl font-bold uppercase tracking-widest text-xs outline-none focus:border-black dark:focus:border-white transition-colors w-full sm:w-64 placeholder:text-zinc-400"
                     />
+
+                    <select name="year" defaultValue={yearParam} className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white px-4 py-2.5 rounded-xl font-bold uppercase tracking-widest text-xs outline-none focus:border-black dark:focus:border-white transition-colors w-full sm:w-auto cursor-pointer">
+                      <option value="ALL">Всі роки</option>
+                      {Array.from({ length: currentDate.getFullYear() - 2021 }, (_, i) => currentDate.getFullYear() - i).map(year => (
+                        <option key={year} value={year.toString()}>{year}</option>
+                      ))}
+                    </select>
 
                     <select name="sort" defaultValue={sortParam} className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white px-4 py-2.5 rounded-xl font-bold uppercase tracking-widest text-xs outline-none focus:border-black dark:focus:border-white transition-colors w-full sm:w-auto cursor-pointer">
                       <option value="newest">Найновіші</option>
