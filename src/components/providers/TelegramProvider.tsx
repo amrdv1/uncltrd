@@ -28,6 +28,7 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
       if (tg && (tg.initData || window.location.hash.includes('tgWebAppData'))) {
         setIsTelegram(true);
         setWebApp(tg);
+        document.documentElement.classList.add("in-telegram");
         
         // Notify Telegram that the app is ready to be displayed
         tg.ready();
