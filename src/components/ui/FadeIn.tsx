@@ -32,9 +32,11 @@ export function FadeIn({ children, delay = 0, className, direction = "up" }: Fad
       }}
       viewport={{ once: true, margin: "50px" }}
       transition={{ 
-        duration: 0.25, 
-        delay: delay * 0.5, 
-        ease: [0.21, 0.47, 0.32, 0.98] // nice spring-like easeOut
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
+        mass: 1,
+        delay: delay * 0.1, // Faster stagger
       }}
       className={className}
     >

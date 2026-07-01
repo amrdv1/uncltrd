@@ -68,6 +68,10 @@
   * {
     @apply border-border;
   }
+  /* Force all CSS transitions to use a super smooth, Apple-like ease-out curve */
+  *, ::before, ::after {
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
   html, body {
     @apply bg-background text-foreground font-sans;
   }
