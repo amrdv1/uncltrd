@@ -28,13 +28,16 @@ export async function generateMetadata(): Promise<Metadata> {
   const config = await getSiteConfig();
   const siteUrl = "https://uncultured.media";
   
+  // Використовуємо затверджений SEO текст
+  const siteDescription = "Головний медіа-портал про сучасну українську та світову музику. Релізи, огляди, новини та ексклюзиви зсередини індустрії.";
+  
   return {
     metadataBase: new URL(siteUrl),
     title: {
       default: "uncultured.",
       template: "%s | uncultured.",
     },
-    description: config.description || "Головний голос сучасного хіп-хопу та андеграунд-культури.",
+    description: siteDescription,
     keywords: [
       "uncultured",
       "uncultured media",
@@ -57,7 +60,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       title: "uncultured.",
-      description: config.description || "Головний голос сучасного хіп-хопу та андеграунд-культури.",
+      description: siteDescription,
       url: siteUrl,
       siteName: "uncultured.",
       images: [
@@ -74,7 +77,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "uncultured.",
-      description: config.description || "Головний голос сучасного хіп-хопу та андеграунд-культури.",
+      description: siteDescription,
       images: [`${siteUrl}/logo-black.png`],
     },
     robots: {
@@ -89,7 +92,10 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     icons: {
-      icon: "/favicon.ico?v=2",
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml" },
+        { url: "/favicon.ico?v=2" }
+      ],
       apple: "/apple-touch-icon.png",
     },
   };
