@@ -4,8 +4,13 @@ import { db } from "@/lib/db";
 import { auth, signOut } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { formatImageUrl } from "@/lib/utils";
-import fs from "fs/promises";
-import path from "path";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function updateProfile(formData: FormData) {
   const session = await auth();
@@ -21,16 +26,22 @@ export async function updateProfile(formData: FormData) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
-    // Save to public/uploads
-    const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
-    const publicPath = path.join(process.cwd(), 'public', 'uploads');
+    // Upload to Cloudinary using base64
+    const base64Data = buffer.toString("base64");
+    const fileUri = `data:${file.type};base64,${base64Data}`;
     
     try {
-      await fs.mkdir(publicPath, { recursive: true });
-    } catch (e) {}
-    
-    await fs.writeFile(path.join(publicPath, filename), buffer);
-    image = `/uploads/${filename}`;
+      const uploadResult = await cloudinary.uploader.upload(fileUri, {
+        folder: "uncultured_avatars",
+        transformation: [
+          { width: 400, height: 400, crop: "fill", gravity: "face" }
+        ]
+      });
+      image = uploadResult.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      throw new Error("Не вдалося завантажити зображення");
+    }
   }
 
   image = formatImageUrl(image) || "";
@@ -52,7 +63,21 @@ export async function updateProfile(formData: FormData) {
     },
   });
 
-  // Revalidate to update sidebar UI
+  revalidatePath("/");
+  revalidatePath("/settings");
+}
+
+export async function deleteAvatar() {
+  const session = await auth();
+  if (!session?.user) {
+    throw new Error("Unauthorized");
+  }
+
+  await db.user.update({
+    where: { id: session.user.id },
+    data: { image: null }
+  });
+
   revalidatePath("/");
   revalidatePath("/settings");
 }
