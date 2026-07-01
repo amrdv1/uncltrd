@@ -1,9 +1,9 @@
 "use client";
 
-import { logout } from "@/app/actions/user";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { signOut } from "next-auth/react";
 
 export function LogoutButton({ className, children }: { className?: string; children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,8 +28,11 @@ export function LogoutButton({ className, children }: { className?: string; chil
     document.documentElement.classList.remove('dark');
     document.documentElement.classList.remove('light');
 
-    // Proceed with server logout
-    await logout();
+    // Close modal
+    setIsOpen(false);
+
+    // Proceed with next-auth client logout
+    await signOut({ callbackUrl: "/" });
   };
 
   return (
