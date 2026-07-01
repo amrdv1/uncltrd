@@ -23,11 +23,16 @@ export default auth((req) => {
     const isAdminOrEditor = role === "ADMIN" || role === "EDITOR"
 
     // If trying to access admin panel without correct permissions
-    if (!isLoggedIn || !isAdminOrEditor) {
-       // Allow access to login page on the admin subdomain
+    if (!isLoggedIn) {
+       // Not logged in -> go to login page
        if (url.pathname !== "/login") {
           return NextResponse.redirect(new URL("/login", req.url))
        }
+    } else if (!isAdminOrEditor) {
+       // Logged in but not an admin -> redirect to the main non-admin site
+       const mainUrl = new URL("/", req.url)
+       mainUrl.hostname = mainUrl.hostname.replace("admin.", "")
+       return NextResponse.redirect(mainUrl)
     }
 
     // Rewrite to the (admin) route group
