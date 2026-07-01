@@ -52,12 +52,103 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           role: user.role as string,
         } as any
       }
+    }),
+    CredentialsProvider({
+      id: "telegram",
+      name: "Telegram",
+      credentials: {
+        initData: { label: "Init Data", type: "text" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.initData) return null;
+
+        const initDataString = credentials.initData as string;
+        const initData = new URLSearchParams(initDataString);
+        const hash = initData.get("hash");
+        
+        if (!hash) return null;
+        
+        initData.delete("hash");
+
+        const dataToCheck = [...initData.entries()]
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([key, value]) => `${key}=${value}`)
+          .join("\n");
+
+        const botToken = process.env.TELEGRAM_BOT_TOKEN;
+        if (!botToken) {
+          console.error("TELEGRAM_BOT_TOKEN is not defined");
+          return null;
+        }
+
+        const encoder = new TextEncoder();
+        
+        const key1 = await crypto.subtle.importKey(
+          'raw',
+          encoder.encode('WebAppData'),
+          { name: 'HMAC', hash: 'SHA-256' },
+          false,
+          ['sign']
+        );
+        const secretKey = await crypto.subtle.sign('HMAC', key1, encoder.encode(botToken));
+
+        const key2 = await crypto.subtle.importKey(
+          'raw',
+          secretKey,
+          { name: 'HMAC', hash: 'SHA-256' },
+          false,
+          ['sign']
+        );
+        const calculatedHashBuffer = await crypto.subtle.sign('HMAC', key2, encoder.encode(dataToCheck));
+        const calculatedHashArray = Array.from(new Uint8Array(calculatedHashBuffer));
+        const calculatedHashHex = calculatedHashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        if (hash !== calculatedHashHex) {
+          console.error("Telegram hash validation failed");
+          return null;
+        }
+
+        const userStr = initData.get("user");
+        if (!userStr) return null;
+
+        const tgUser = JSON.parse(userStr);
+        const tgId = tgUser.id.toString();
+        const tgEmail = `tg_${tgId}@t.me`;
+
+        let user = await db.user.findUnique({
+          where: { email: tgEmail }
+        });
+
+        if (!user) {
+          user = await db.user.create({
+            data: {
+              email: tgEmail,
+              name: tgUser.first_name + (tgUser.last_name ? ` ${tgUser.last_name}` : ""),
+              emailVerified: new Date(),
+              image: tgUser.photo_url || null,
+            }
+          });
+        } else if (tgUser.photo_url && user.image !== tgUser.photo_url) {
+          // Update photo if changed
+          user = await db.user.update({
+            where: { id: user.id },
+            data: { image: tgUser.photo_url }
+          });
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        } as any;
+      }
     })
   ],
   callbacks: {
     async signIn({ user, account }) {
-      // Allow OAuth without email verification
-      if (account?.provider !== "credentials") return true;
+      // Allow OAuth and Telegram without email verification
+      if (account?.provider !== "credentials" && account?.provider !== "telegram") return true;
 
       const existingUser = await db.user.findUnique({
         where: { id: user.id }

@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import Script from "next/script";
+import { signIn, getSession } from "next-auth/react";
 
 interface TelegramContextType {
   webApp: any | null;
@@ -21,7 +22,7 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Only run if we are in the browser and Telegram WebApp is injected
-    const initTelegram = () => {
+    const initTelegram = async () => {
       const tg = (window as any).Telegram?.WebApp;
       // If initData is present, it means the app is running inside Telegram
       if (tg && (tg.initData || window.location.hash.includes('tgWebAppData'))) {
@@ -47,6 +48,23 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
           tg.setBackgroundColor(tg.colorScheme === "dark" ? "#000000" : "#ffffff");
         } catch (e) {
           console.error("Could not set TG colors", e);
+        }
+
+        // Seamless Authentication
+        if (tg.initData) {
+          try {
+            const session = await getSession();
+            if (!session?.user) {
+              await signIn("telegram", { 
+                initData: tg.initData, 
+                redirect: false 
+              });
+              // Reload to apply authenticated state globally
+              window.location.reload();
+            }
+          } catch (e) {
+            console.error("Seamless TG Auth failed", e);
+          }
         }
       }
     };
