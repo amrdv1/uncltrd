@@ -62,16 +62,25 @@ export function RatingSliders({ articleId, initialUserRating, totalScores, curre
     }
     
     setLoading(true);
-    const formData = new FormData();
-    formData.append("text", Math.round(text).toString());
-    formData.append("beats", Math.round(beats).toString());
-    formData.append("sound", Math.round(sound).toString());
-    formData.append("vibe", Math.round(vibe).toString());
-    formData.append("charisma", Math.round(charisma).toString());
-    if (content) formData.append("content", content);
-    
-    await submitTrackRating(articleId, formData);
-    setLoading(false);
+    try {
+      const formData = new FormData();
+      formData.append("text", Math.round(text).toString());
+      formData.append("beats", Math.round(beats).toString());
+      formData.append("sound", Math.round(sound).toString());
+      formData.append("vibe", Math.round(vibe).toString());
+      formData.append("charisma", Math.round(charisma).toString());
+      if (content) formData.append("content", content);
+      
+      const response = await submitTrackRating(articleId, formData);
+      if (response && response.error) {
+        alert("Помилка: " + response.error);
+      }
+    } catch (error: any) {
+      console.error(error);
+      alert("Не вдалося зберегти рецензію. Можливо, сталася помилка на сервері або з інтернет-з'єднанням.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -67,8 +67,9 @@ export async function submitComment(articleId: string, formData: FormData) {
 }
 
 export async function submitTrackRating(articleId: string, formData: FormData) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  try {
+    const session = await auth();
+    if (!session?.user) throw new Error("Unauthorized");
 
   const text = parseInt(formData.get("text") as string);
   const beats = parseInt(formData.get("beats") as string);
@@ -140,5 +141,11 @@ export async function submitTrackRating(articleId: string, formData: FormData) {
   if (article) {
     revalidatePath(`/article/${article.slug}`);
     revalidatePath(`/category/reviews`);
+  }
+  
+  return { success: true };
+  } catch (error: any) {
+    console.error("submitTrackRating Error:", error);
+    return { error: error.message || "Failed to submit rating" };
   }
 }
