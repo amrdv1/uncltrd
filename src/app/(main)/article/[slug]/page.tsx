@@ -101,12 +101,12 @@ const renderContentWithMedia = (content: string, media: any[]) => {
           );
         } else {
           return (
-            <div key={index} className="my-10 flex justify-center w-full">
+            <div key={index} className="my-8 flex justify-center w-full px-6 md:px-16">
               <Lightbox src={mediaItem.url} alt={`Media ${part}`}>
                 <img 
                   src={mediaItem.url} 
                   alt={`Media ${part}`} 
-                  className="max-h-[500px] w-auto max-w-full rounded-2xl shadow-xl border border-border object-contain bg-secondary" 
+                  className="max-h-[280px] md:max-h-[350px] w-auto max-w-full rounded-xl shadow-md border border-border object-contain bg-secondary" 
                 />
               </Lightbox>
             </div>
