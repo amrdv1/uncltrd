@@ -2,53 +2,43 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Moon, Sun, Laptop } from "lucide-react";
+import { Moon, Sun, Coffee, Star } from "lucide-react";
 
 export function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
-  // useEffect only runs on the client, so now we can safely show the UI
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
-    return <div className="h-10 w-full animate-pulse bg-zinc-200 dark:bg-zinc-800 rounded-xl"></div>;
+    return <div className="h-20 w-full animate-pulse bg-zinc-200 dark:bg-zinc-800 rounded-xl"></div>;
   }
 
+  const themes = [
+    { id: "light", label: "Світла", icon: <Sun size={16} /> },
+    { id: "dark", label: "Темна", icon: <Moon size={16} /> },
+    { id: "midnight", label: "Опівніч", icon: <Star size={16} /> },
+    { id: "coffee", label: "Кава", icon: <Coffee size={16} /> },
+  ];
+
   return (
-    <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl border border-zinc-200 dark:border-zinc-800">
-      <button
-        onClick={() => setTheme("light")}
-        className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-bold transition-all ${
-          theme === "light"
-            ? "bg-white text-black shadow-sm dark:bg-zinc-800 dark:text-white"
-            : "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white"
-        }`}
-      >
-        <Sun size={16} /> Світла
-      </button>
-      <button
-        onClick={() => setTheme("dark")}
-        className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-bold transition-all ${
-          theme === "dark"
-            ? "bg-white text-black shadow-sm dark:bg-zinc-800 dark:text-white"
-            : "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white"
-        }`}
-      >
-        <Moon size={16} /> Темна
-      </button>
-      <button
-        onClick={() => setTheme("system")}
-        className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-bold transition-all ${
-          theme === "system"
-            ? "bg-white text-black shadow-sm dark:bg-zinc-800 dark:text-white"
-            : "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white"
-        }`}
-      >
-        <Laptop size={16} /> Авто
-      </button>
+    <div className="grid grid-cols-2 gap-2 bg-secondary p-2 rounded-xl border border-border">
+      {themes.map((t) => (
+        <button
+          key={t.id}
+          onClick={() => setTheme(t.id)}
+          className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg text-sm font-bold transition-all ${
+            theme === t.id
+              ? "bg-background text-foreground shadow-md ring-1 ring-border"
+              : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+          }`}
+        >
+          {t.icon}
+          {t.label}
+        </button>
+      ))}
     </div>
   );
 }
