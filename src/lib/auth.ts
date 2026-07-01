@@ -138,8 +138,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           });
         } else {
           // Update photo if changed, or upgrade to ADMIN if added to the list later
+          // Only update photo if the user doesn't currently have one
           const updateData: any = {};
-          if (tgUser.photo_url && user.image !== tgUser.photo_url) {
+          if (tgUser.photo_url && !user.image) {
             updateData.image = tgUser.photo_url;
           }
           if (isAdmin && user.role !== "ADMIN") {

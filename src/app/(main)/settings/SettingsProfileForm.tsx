@@ -4,6 +4,7 @@ import { useState } from "react";
 import { updateProfile, deleteAvatar } from "@/app/actions/user";
 import { User, Trash2, Loader2, AlertTriangle, X } from "lucide-react";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 interface SettingsProfileFormProps {
   user: {
@@ -15,6 +16,7 @@ interface SettingsProfileFormProps {
 }
 
 export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
+  const { update } = useSession();
   const [isPending, setIsPending] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -25,7 +27,12 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
     
     try {
       const formData = new FormData(e.currentTarget);
+      const newName = formData.get("name") as string;
       await updateProfile(formData);
+      
+      // Force NextAuth to update the session cookie so the new name/avatar is reflected immediately
+      await update({ name: newName });
+      
       toast.success("Зміни успішно збережено!");
     } catch (error) {
       console.error(error);
@@ -40,6 +47,10 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
     setIsDeleting(true);
     try {
       await deleteAvatar();
+      
+      // Update session to reflect removed avatar
+      await update();
+      
       toast.success("Аватарку видалено!");
     } catch (error) {
       console.error(error);
