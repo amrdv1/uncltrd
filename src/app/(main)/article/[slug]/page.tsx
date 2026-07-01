@@ -101,9 +101,13 @@ const renderContentWithMedia = (content: string, media: any[]) => {
           );
         } else {
           return (
-            <div key={index} className="my-8 relative w-full aspect-video md:aspect-[21/9] bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800">
+            <div key={index} className="my-10 flex justify-center w-full">
               <Lightbox src={mediaItem.url} alt={`Media ${part}`}>
-                <Image src={mediaItem.url} alt={`Media ${part}`} fill className="object-cover" unoptimized={mediaItem.url.toLowerCase().endsWith('.gif') || mediaItem.url.includes('tiktokcdn.com') || mediaItem.url.includes('byteimg.com')} />
+                <img 
+                  src={mediaItem.url} 
+                  alt={`Media ${part}`} 
+                  className="max-h-[500px] w-auto max-w-full rounded-2xl shadow-xl border border-border object-contain bg-secondary" 
+                />
               </Lightbox>
             </div>
           );
