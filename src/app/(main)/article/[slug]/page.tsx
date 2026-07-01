@@ -457,7 +457,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
           </span>
         </div>
         
-        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] font-antapani mb-6">
+        <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] font-antapani mb-6">
           {article.title}
         </h1>
         
@@ -483,7 +483,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
         </div>
       )}
 
-      <div className="prose prose-lg prose-zinc dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:font-black prose-headings:font-antapani prose-headings:uppercase prose-headings:tracking-tighter transition-colors">
+      <div className="prose prose-lg prose-zinc dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:font-black prose-headings:font-antapani prose-headings:tracking-tighter transition-colors">
         <div className="whitespace-pre-wrap font-medium text-lg leading-relaxed text-zinc-800 dark:text-zinc-200 transition-colors">
           {renderContentWithMedia(article.content, article.media)}
         </div>

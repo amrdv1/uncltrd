@@ -116,7 +116,7 @@
 }
 
 .heading-massive {
-  @apply font-serif font-black uppercase tracking-tighter;
+  @apply font-serif font-black tracking-tighter;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
