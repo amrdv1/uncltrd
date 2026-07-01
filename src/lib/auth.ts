@@ -115,6 +115,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const tgId = tgUser.id.toString();
         const tgEmail = `tg_${tgId}@t.me`;
 
+        // Check if this Telegram ID is in the admin list
+        // You can add IDs here as strings, e.g., ["123456789", "987654321"]
+        // Or pass them via environment variable TELEGRAM_ADMIN_IDS="123456,78910"
+        const envAdminIds = process.env.TELEGRAM_ADMIN_IDS ? process.env.TELEGRAM_ADMIN_IDS.split(',') : [];
+        const hardcodedAdminIds: string[] = []; // I will add user IDs here later
+        const isAdmin = envAdminIds.includes(tgId) || hardcodedAdminIds.includes(tgId);
+
         let user = await db.user.findUnique({
           where: { email: tgEmail }
         });
@@ -126,14 +133,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               name: tgUser.first_name + (tgUser.last_name ? ` ${tgUser.last_name}` : ""),
               emailVerified: new Date(),
               image: tgUser.photo_url || null,
+              role: isAdmin ? "ADMIN" : "USER"
             }
           });
-        } else if (tgUser.photo_url && user.image !== tgUser.photo_url) {
-          // Update photo if changed
-          user = await db.user.update({
-            where: { id: user.id },
-            data: { image: tgUser.photo_url }
-          });
+        } else {
+          // Update photo if changed, or upgrade to ADMIN if added to the list later
+          const updateData: any = {};
+          if (tgUser.photo_url && user.image !== tgUser.photo_url) {
+            updateData.image = tgUser.photo_url;
+          }
+          if (isAdmin && user.role !== "ADMIN") {
+            updateData.role = "ADMIN";
+          }
+          
+          if (Object.keys(updateData).length > 0) {
+            user = await db.user.update({
+              where: { id: user.id },
+              data: updateData
+            });
+          }
         }
 
         return {
