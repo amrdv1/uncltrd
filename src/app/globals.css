@@ -81,6 +81,18 @@
 }
 
 @media (min-width: 1024px) {
+  /* Enhance all tailwind transitions on PC to feel much more fluid and luxurious */
+  .transition-all, 
+  .transition, 
+  .transition-colors,
+  .transition-opacity,
+  .transition-transform {
+    transition-duration: 600ms !important;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+}
+
+@media (min-width: 1024px) {
   body {
     zoom: 0.8;
   }
