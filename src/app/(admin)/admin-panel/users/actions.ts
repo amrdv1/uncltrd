@@ -80,3 +80,29 @@ export async function changeUserRole(formData: FormData) {
   
   return { success: true };
 }
+
+export async function deleteUser(userId: string) {
+  if (!userId) {
+    throw new Error("Missing user ID");
+  }
+
+  const session = await auth();
+  const isTrueAdmin = session?.user?.role === "ADMIN";
+
+  if (!isTrueAdmin) {
+    throw new Error("Unauthorized: Only ADMIN can delete users");
+  }
+
+  // Prevent deleting yourself
+  if (session?.user?.id === userId) {
+    throw new Error("Cannot delete your own account");
+  }
+
+  await db.user.delete({
+    where: { id: userId },
+  });
+
+  revalidatePath("/admin-panel/users");
+  
+  return { success: true };
+}
