@@ -472,12 +472,12 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
       </div>
 
       {article.imageUrl && (
-        <div className="relative w-full flex justify-center mb-12">
+        <div className="relative w-full flex justify-center mb-10 px-4 md:px-24">
           <Lightbox src={article.imageUrl} alt={article.title}>
             <img 
               src={article.imageUrl} 
               alt={article.title} 
-              className="w-auto max-w-full max-h-[450px] md:max-h-[550px] object-contain rounded-2xl shadow-xl border border-border bg-secondary hover:scale-[1.02] transition duration-700" 
+              className="w-auto max-w-full max-h-[250px] md:max-h-[350px] object-contain rounded-xl shadow-md border border-border bg-secondary hover:scale-[1.02] transition duration-700" 
             />
           </Lightbox>
         </div>
