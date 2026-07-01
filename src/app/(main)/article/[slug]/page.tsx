@@ -13,6 +13,48 @@ import { CustomAudioPlayer } from "@/components/ui/CustomAudioPlayer";
 import { SoundCloudPlayer } from "@/components/ui/SoundCloudPlayer";
 import { Carousel } from "@/components/ui/Carousel";
 
+const generatePlayerIframe = (url: string) => {
+  try {
+    const parsedUrl = new URL(url);
+    
+    // Spotify
+    if (parsedUrl.hostname === 'open.spotify.com') {
+      const embedUrl = url.replace('open.spotify.com/', 'open.spotify.com/embed/');
+      return `<div class="my-8 w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800"><iframe style="border-radius:12px" src="${embedUrl}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>`;
+    }
+    
+    // Apple Music
+    if (parsedUrl.hostname === 'music.apple.com') {
+      const embedUrl = url.replace('music.apple.com/', 'embed.music.apple.com/');
+      return `<div class="my-8 w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800"><iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;background:transparent;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="${embedUrl}"></iframe></div>`;
+    }
+    
+    // SoundCloud
+    if (parsedUrl.hostname === 'soundcloud.com') {
+      const encodedUrl = encodeURIComponent(url);
+      return `<div class="my-8 w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800"><iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=${encodedUrl}&color=%23000000&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe></div>`;
+    }
+
+    // YouTube
+    if (parsedUrl.hostname === 'www.youtube.com' && parsedUrl.pathname === '/watch') {
+      const videoId = parsedUrl.searchParams.get('v');
+      if (videoId) {
+        return `<div class="my-8 rounded-2xl overflow-hidden shadow-xl mx-auto w-full max-w-4xl border border-zinc-200 dark:border-zinc-800 aspect-video"><iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width: 100%; height: 100%;"></iframe></div>`;
+      }
+    }
+    
+    if (parsedUrl.hostname === 'youtu.be') {
+      const videoId = parsedUrl.pathname.slice(1);
+      if (videoId) {
+        return `<div class="my-8 rounded-2xl overflow-hidden shadow-xl mx-auto w-full max-w-4xl border border-zinc-200 dark:border-zinc-800 aspect-video"><iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width: 100%; height: 100%;"></iframe></div>`;
+      }
+    }
+  } catch (e) {
+    return null;
+  }
+  return null;
+};
+
 const parseMarkdown = (text: string) => {
   if (!text) return "";
   let html = text;
@@ -31,8 +73,19 @@ const parseMarkdown = (text: string) => {
   // Italic
   html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
   
-  // Links
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">$1</a>');
+  // Links (Check for Music Players first)
+  html = html.replace(/\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/gim, (match, linkText, url) => {
+    const player = generatePlayerIframe(url);
+    if (player) return player;
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline font-bold">${linkText || url}</a>`;
+  });
+
+  // Raw URLs (if not inside an HTML attribute)
+  html = html.replace(/(^|[^"'])(https?:\/\/(?:open\.spotify\.com|music\.apple\.com|soundcloud\.com|www\.youtube\.com\/watch|youtu\.be)[^\s<]+)/gim, (match, prefix, url) => {
+    const player = generatePlayerIframe(url);
+    if (player) return prefix + player;
+    return match;
+  });
   
   // Lists
   html = html.replace(/(?:^\- .*(?:\n|$))+/gim, (match) => {
