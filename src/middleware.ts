@@ -5,6 +5,12 @@ export default auth((req) => {
   const url = req.nextUrl
   const hostname = req.headers.get("host") || ""
   
+  // SEO Redirect: www to non-www
+  if (hostname.startsWith("www.")) {
+    const newHostname = hostname.replace("www.", "")
+    return NextResponse.redirect(new URL(url.pathname + url.search, `https://${newHostname}`), 301)
+  }
+  
   // Check if we are on the admin subdomain
   const isAdminSubdomain = hostname.startsWith("admin.")
   
