@@ -180,7 +180,7 @@ export async function newVerification(token: string) {
 }
 
 export async function loginWithGoogle() {
-  await signIn("google");
+  await signIn("google", { redirectTo: "/" });
 }
 
 export async function resetPassword(formData: FormData) {

@@ -10,16 +10,22 @@ export default auth((req) => {
     const newHostname = hostname.replace("www.", "")
     return NextResponse.redirect(new URL(url.pathname + url.search, `https://${newHostname}`), 301)
   }
+  // Check authentication globally
+  const isLoggedIn = !!req.auth;
+  const role = req.auth?.user?.role;
+
+  // Redirect logged-in users away from auth pages
+  if (isLoggedIn && (url.pathname === "/login" || url.pathname === "/register")) {
+    const mainUrl = new URL("/", req.url);
+    mainUrl.hostname = mainUrl.hostname.replace("admin.", "");
+    return NextResponse.redirect(mainUrl);
+  }
   
   // Check if we are on the admin subdomain
-  const isAdminSubdomain = hostname.startsWith("admin.")
+  const isAdminSubdomain = hostname.startsWith("admin.");
   
   // If we are on the admin subdomain
   if (isAdminSubdomain) {
-    // Check authentication and role
-    const isLoggedIn = !!req.auth
-    const role = req.auth?.user?.role
-    
     const isAdminOrEditor = role === "ADMIN" || role === "EDITOR"
 
     // If trying to access admin panel without correct permissions
