@@ -5,9 +5,13 @@ import { Check } from "lucide-react";
 
 const ACCENT_COLORS = [
   { id: "pink", value: "345 100% 60%", bgClass: "bg-[#FF3366]" },
-  { id: "blue", value: "217 91% 60%", bgClass: "bg-[#2A75FF]" },
-  { id: "green", value: "145 100% 39%", bgClass: "bg-[#00C853]" },
+  { id: "red", value: "350 100% 50%", bgClass: "bg-[#FF0033]" },
   { id: "orange", value: "40 100% 50%", bgClass: "bg-[#FFAB00]" },
+  { id: "yellow", value: "50 100% 50%", bgClass: "bg-[#FFD600]" },
+  { id: "green", value: "145 100% 39%", bgClass: "bg-[#00C853]" },
+  { id: "teal", value: "180 100% 40%", bgClass: "bg-[#00BFA5]" },
+  { id: "blue", value: "217 91% 60%", bgClass: "bg-[#2A75FF]" },
+  { id: "indigo", value: "250 100% 65%", bgClass: "bg-[#6554FF]" },
   { id: "purple", value: "280 100% 50%", bgClass: "bg-[#AA00FF]" },
 ];
 
