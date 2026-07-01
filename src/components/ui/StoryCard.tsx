@@ -78,7 +78,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
               </span>
               <span className="text-xs md:text-sm font-medium text-zinc-300 drop-shadow-md">{date}</span>
             </div>
-            <h2 className={cn("font-black tracking-tighter leading-[0.95] font-antapani mb-2 group-hover:text-accent transition-colors drop-shadow-lg", titleClass)}>
+            <h2 className={cn("font-black uppercase tracking-tighter leading-[0.95] font-antapani mb-2 group-hover:text-accent transition-colors drop-shadow-lg", titleClass)}>
               {title}
             </h2>
             {author && isHero && <p className="text-sm md:text-lg font-medium text-zinc-300 drop-shadow-md mt-2 md:mt-4">By {author}</p>}
@@ -108,7 +108,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
             </span>
             <span className="text-xs text-zinc-500">{date}</span>
           </div>
-          <h3 className="text-2xl md:text-3xl font-black tracking-tighter leading-tight font-antapani group-hover:text-zinc-600 transition-colors">
+          <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-tight font-antapani group-hover:text-zinc-600 transition-colors">
             {title}
           </h3>
           {author && <p className="text-sm font-medium text-zinc-500 mt-4">By {author}</p>}
@@ -135,7 +135,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
             <span className="text-[10px] font-bold uppercase tracking-widest text-accent font-serif">{category}</span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{date}</span>
           </div>
-          <h3 className="text-xl font-black text-black dark:text-white tracking-tighter leading-tight font-antapani group-hover:text-accent transition-colors">
+          <h3 className="text-xl font-black text-black dark:text-white uppercase tracking-tighter leading-tight font-antapani group-hover:text-accent transition-colors">
             {title}
           </h3>
         </div>
@@ -188,7 +188,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
             <span className="text-xs text-zinc-500">{date}</span>
           </div>
         )}
-        <h3 className={cn("font-black tracking-tighter leading-[0.95] font-antapani group-hover:text-zinc-600 transition-colors", titleSizes.review)}>
+        <h3 className={cn("font-black uppercase tracking-tighter leading-[0.95] font-antapani group-hover:text-zinc-600 transition-colors", titleSizes.review)}>
           {title}
         </h3>
         {size === "review" && (
