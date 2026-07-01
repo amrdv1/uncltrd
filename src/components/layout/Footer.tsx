@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { PrivacyPolicyModal } from "@/components/ui/PrivacyPolicyModal";
+import { AboutModal } from "@/components/ui/AboutModal";
+
 export function Footer() {
   return (
     <footer className="bg-black text-white py-16 px-6 lg:px-12 border-t border-zinc-900 mt-20 font-sans">
@@ -71,7 +73,7 @@ export function Footer() {
       <div className="max-w-[1600px] mx-auto mt-16 pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center text-zinc-500 text-sm gap-6">
         <p className="order-2 md:order-1">&copy; {new Date().getFullYear()} UNCULTURED. Всі права захищено.</p>
         <div className="flex items-center space-x-8 order-1 md:order-2 font-medium">
-          <Link href="/about" className="hover:text-white transition-colors">Про нас</Link>
+          <AboutModal />
           <PrivacyPolicyModal />
         </div>
       </div>
