@@ -16,9 +16,21 @@ export default function LoginPage() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const successParam = params.get("success");
+      const errorParam = params.get("error");
+      
       if (successParam) {
         setSuccess(successParam);
-        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      
+      if (errorParam) {
+        if (errorParam === "OAuthAccountNotLinked") {
+          setError("Цей email вже використовується. Будь ласка, увійдіть за допомогою пароля.");
+        } else if (errorParam === "AccessDenied") {
+          setError("Доступ заборонено.");
+        } else {
+          setError(`Помилка авторизації: ${errorParam}`);
+        }
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     }
