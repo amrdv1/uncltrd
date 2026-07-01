@@ -87,8 +87,8 @@
   .transition-colors,
   .transition-opacity,
   .transition-transform {
-    transition-duration: 600ms !important;
-    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition-duration: 800ms !important;
+    transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1) !important;
   }
 }
 
