@@ -63,11 +63,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         where: { id: user.id }
       });
 
+      if (!existingUser) return false;
+
       // Prevent sign in without email verification
       if (!existingUser.emailVerified) {
         return false;
       }
-      if (!existingUser) return false;
 
       // Check 2FA
       if (existingUser.isTwoFactorEnabled) {

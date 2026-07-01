@@ -49,6 +49,12 @@ export function StoryCard({ category, title, image, date, author, size = "medium
             src={image}
             alt={title}
             fill
+            sizes={
+              size === "hero" ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw" :
+              size === "large" ? "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw" :
+              size === "medium" ? "(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw" :
+              "(max-width: 768px) 50vw, 33vw"
+            }
             className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
             priority={isHero}
             unoptimized={image.toLowerCase().endsWith('.gif') || image.includes('tiktokcdn.com') || image.includes('byteimg.com')}
@@ -90,6 +96,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
             src={image}
             alt={title}
             fill
+            sizes="(max-width: 768px) 100vw, 33vw"
             className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
             unoptimized={image.toLowerCase().endsWith('.gif') || image.includes('tiktokcdn.com') || image.includes('byteimg.com')}
           />
@@ -118,6 +125,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
             src={image}
             alt={title}
             fill
+            sizes="(max-width: 768px) 50vw, 25vw"
             className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
             unoptimized={image.toLowerCase().endsWith('.gif') || image.includes('tiktokcdn.com') || image.includes('byteimg.com')}
           />
@@ -156,6 +164,7 @@ export function StoryCard({ category, title, image, date, author, size = "medium
           src={image}
           alt={title}
           fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-110"
           unoptimized={image.toLowerCase().endsWith('.gif') || image.includes('tiktokcdn.com') || image.includes('byteimg.com')}
         />

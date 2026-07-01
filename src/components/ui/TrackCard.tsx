@@ -38,6 +38,7 @@ export function TrackCard({
           src={coverUrl} 
           alt={title} 
           fill 
+          sizes="(max-width: 768px) 65vw, (max-width: 1200px) 33vw, 25vw"
           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-105" 
           unoptimized={coverUrl.toLowerCase().endsWith('.gif') || coverUrl.includes('tiktokcdn.com') || coverUrl.includes('byteimg.com')}
         />
