@@ -16,7 +16,7 @@ export function AboutModal() {
     <>
       <button 
         onClick={() => setIsOpen(true)}
-        className="text-zinc-500 hover:text-black dark:hover:text-white transition-colors uppercase tracking-widest text-xs font-bold"
+        className="text-zinc-400 hover:text-accent transition-colors uppercase tracking-widest text-xs font-bold"
       >
         Про нас
       </button>
