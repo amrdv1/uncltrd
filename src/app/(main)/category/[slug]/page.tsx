@@ -276,7 +276,7 @@ export default async function CategoryPage(props: {
                       name="q" 
                       defaultValue={searchParam} 
                       placeholder="ПОШУК..."
-                      className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white px-4 py-2.5 rounded-xl font-bold uppercase tracking-widest text-xs outline-none focus:border-black dark:focus:border-white transition-colors w-full sm:w-64 placeholder:text-zinc-400"
+                      className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white px-4 py-2.5 rounded-xl font-bold tracking-widest text-xs outline-none focus:border-black dark:focus:border-white transition-colors w-full sm:w-64 placeholder:text-zinc-400 placeholder:uppercase"
                     />
 
                     <button type="submit" className="w-full sm:w-auto bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white px-6 py-2.5 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors">ОК</button>
@@ -301,7 +301,7 @@ export default async function CategoryPage(props: {
                       name="q" 
                       defaultValue={searchParam} 
                       placeholder="ПОШУК..."
-                      className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white px-4 py-2.5 rounded-xl font-bold uppercase tracking-widest text-xs outline-none focus:border-black dark:focus:border-white transition-colors w-full sm:w-64 placeholder:text-zinc-400"
+                      className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white px-4 py-2.5 rounded-xl font-bold tracking-widest text-xs outline-none focus:border-black dark:focus:border-white transition-colors w-full sm:w-64 placeholder:text-zinc-400 placeholder:uppercase"
                     />
 
                     <select name="year" defaultValue={yearParam} className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white px-4 py-2.5 rounded-xl font-bold uppercase tracking-widest text-xs outline-none focus:border-black dark:focus:border-white transition-colors w-full sm:w-auto cursor-pointer">

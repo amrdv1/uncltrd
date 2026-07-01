@@ -128,3 +128,13 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Apple Emojis (twemoji override) */
+img.apple-emoji {
+  height: 1.2em;
+  width: 1.2em;
+  margin: 0 .05em 0 .1em;
+  vertical-align: -0.2em;
+  display: inline-block;
+  pointer-events: none;
+}
