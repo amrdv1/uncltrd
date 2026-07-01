@@ -118,7 +118,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Check if this Telegram ID is in the admin list
         // You can add IDs here as strings, e.g., ["123456789", "987654321"]
         // Or pass them via environment variable TELEGRAM_ADMIN_IDS="123456,78910"
-        const envAdminIds = process.env.TELEGRAM_ADMIN_IDS ? process.env.TELEGRAM_ADMIN_IDS.split(',') : [];
+        const envAdminIds = process.env.TELEGRAM_ADMIN_IDS ? process.env.TELEGRAM_ADMIN_IDS.split(',').map(id => id.trim()) : [];
         const hardcodedAdminIds: string[] = []; // I will add user IDs here later
         const isAdmin = envAdminIds.includes(tgId) || hardcodedAdminIds.includes(tgId);
 
