@@ -472,15 +472,12 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
       </div>
 
       {article.imageUrl && (
-        <div className="relative w-full aspect-[21/9] mb-12 bg-zinc-100 rounded-xl overflow-hidden shadow-sm">
+        <div className="relative w-full flex justify-center mb-12">
           <Lightbox src={article.imageUrl} alt={article.title}>
-            <Image 
+            <img 
               src={article.imageUrl} 
               alt={article.title} 
-              fill 
-              className="object-cover hover:scale-105 transition duration-700" 
-              priority
-              unoptimized={article.imageUrl.toLowerCase().endsWith('.gif') || article.imageUrl.includes('tiktokcdn.com') || article.imageUrl.includes('byteimg.com')}
+              className="w-auto max-w-full max-h-[450px] md:max-h-[550px] object-contain rounded-2xl shadow-xl border border-border bg-secondary hover:scale-[1.02] transition duration-700" 
             />
           </Lightbox>
         </div>
