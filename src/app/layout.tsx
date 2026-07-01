@@ -7,6 +7,7 @@ import { getSiteConfig } from "@/app/actions/config";
 import { cookies } from "next/headers";
 import { Toaster } from "sonner";
 import { AppleEmojiProvider } from "@/components/ui/AppleEmojiProvider";
+import { TelegramProvider } from "@/components/providers/TelegramProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -160,9 +161,11 @@ export default async function RootLayout({
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-accent/20 dark:bg-accent/10 blur-[120px] mix-blend-screen opacity-50 dark:opacity-30"></div>
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 dark:bg-blue-500/5 blur-[120px] mix-blend-screen opacity-50 dark:opacity-30"></div>
           </div>
-          <AppleEmojiProvider>
-            {children}
-          </AppleEmojiProvider>
+          <TelegramProvider>
+            <AppleEmojiProvider>
+              {children}
+            </AppleEmojiProvider>
+          </TelegramProvider>
           <Toaster 
             position="bottom-center"
             toastOptions={{
