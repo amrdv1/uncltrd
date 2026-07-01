@@ -26,10 +26,10 @@ export async function POST(request: Request) {
       );
     }
     
-    // Only allow images and videos
-    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+    // Allow images, videos, and audio files
+    if (!file.type.startsWith('image/') && !file.type.startsWith('video/') && !file.type.startsWith('audio/')) {
       return NextResponse.json(
-        { error: 'File type must be image or video' },
+        { error: 'File type must be image, video, or audio' },
         { status: 400 }
       );
     }
@@ -40,7 +40,8 @@ export async function POST(request: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
-    const resourceType = isVideo ? 'video' : 'image';
+    const isVideoOrAudio = file.type.startsWith('video/') || file.type.startsWith('audio/');
+    const resourceType = isVideoOrAudio ? 'video' : 'image';
     
     const uploadResult = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
