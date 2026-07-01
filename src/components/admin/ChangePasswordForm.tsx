@@ -4,6 +4,8 @@ import { useState } from "react";
 import { changeUserPassword } from "@/app/(admin)/admin-panel/users/actions";
 import { KeyRound, Check, X } from "lucide-react";
 
+import { toast } from "sonner";
+
 export function ChangePasswordForm({ userId, userName }: { userId: string, userName: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [password, setPassword] = useState("");
@@ -22,9 +24,9 @@ export function ChangePasswordForm({ userId, userName }: { userId: string, userN
       await changeUserPassword(formData);
       setIsOpen(false);
       setPassword("");
-      alert(`Пароль для користувача ${userName} успішно змінено!`);
+      toast.success(`Пароль для користувача ${userName} успішно змінено!`);
     } catch (error) {
-      alert("Помилка при зміні пароля");
+      toast.error("Помилка при зміні пароля");
     } finally {
       setIsSubmitting(false);
     }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { updateProfile, deleteAvatar } from "@/app/actions/user";
 import { User, Trash2, Loader2, AlertTriangle, X } from "lucide-react";
+import { toast } from "sonner";
 
 interface SettingsProfileFormProps {
   user: {
@@ -25,9 +26,10 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
     try {
       const formData = new FormData(e.currentTarget);
       await updateProfile(formData);
+      toast.success("Зміни успішно збережено!");
     } catch (error) {
       console.error(error);
-      alert("Не вдалося зберегти зміни. Спробуйте ще раз.");
+      toast.error("Не вдалося зберегти зміни. Спробуйте ще раз.");
     } finally {
       setIsPending(false);
     }
@@ -38,9 +40,10 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
     setIsDeleting(true);
     try {
       await deleteAvatar();
+      toast.success("Аватарку видалено!");
     } catch (error) {
       console.error(error);
-      alert("Не вдалося видалити аватарку.");
+      toast.error("Не вдалося видалити аватарку.");
     } finally {
       setIsDeleting(false);
     }

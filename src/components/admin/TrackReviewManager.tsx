@@ -5,6 +5,8 @@ import { Search } from "lucide-react";
 import Image from "next/image";
 import { findTrackMedia } from "@/app/actions/search";
 import { resetAdminRatings } from "@/app/actions/articles";
+import { toast } from "sonner";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 const AdminSlider = ({ label, value, setter, max, name }: any) => (
   <div>
@@ -43,23 +45,23 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
   const [listenUrl, setListenUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
-  const handleResetRatings = async () => {
+  const confirmResetRatings = async () => {
     if (!initialData?.articleId) return;
-    if (!confirm("Ви впевнені, що хочете скинути всі оцінки редакції для цієї статті? Це видалить всі голоси адміністраторів.")) return;
     
     setResetting(true);
     try {
       await resetAdminRatings(initialData.articleId);
-      alert("Оцінки редакції успішно скинуті!");
+      toast.success("Оцінки редакції успішно скинуті!");
     } catch (e) {
-      alert("Помилка при скиданні оцінок.");
+      toast.error("Помилка при скиданні оцінок.");
     }
     setResetting(false);
   };
 
   const handleSearch = async () => {
-    if (!artistName || !trackName) return alert("Введіть ім'я артиста та назву треку");
+    if (!artistName || !trackName) return toast.error("Введіть ім'я артиста та назву треку");
     setLoading(true);
     try {
       const result = await findTrackMedia(artistName, trackName);
@@ -76,14 +78,14 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
       }
 
       if (!result.coverUrl && !result.releaseDate) {
-        alert("Обкладинку та дату релізу не знайдено. Вставте їх вручну.");
+        toast.error("Обкладинку та дату релізу не знайдено. Вставте їх вручну.");
       } else if (!result.coverUrl) {
-        alert("Обкладинку не знайдено. Вставте посилання вручну.");
+        toast.error("Обкладинку не знайдено. Вставте посилання вручну.");
       } else if (!result.releaseDate) {
-        alert("Дату релізу не знайдено. Вставте її вручну.");
+        toast.error("Дату релізу не знайдено. Вставте її вручну.");
       }
     } catch (e) {
-      alert("Помилка пошуку");
+      toast.error("Помилка пошуку");
     }
     setLoading(false);
   };
@@ -105,15 +107,26 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
       if (data.url) {
         setter(data.url);
       } else {
-        alert(data.error || "Помилка завантаження");
+        toast.error(data.error || "Помилка завантаження");
       }
     } catch (err) {
-      alert("Помилка завантаження");
+      toast.error("Помилка завантаження");
     }
     setLoading(false);
   };
   return (
     <div className="space-y-4">
+      <ConfirmModal
+        isOpen={showResetConfirm}
+        onClose={() => setShowResetConfirm(false)}
+        onConfirm={confirmResetRatings}
+        title="Скинути оцінки?"
+        description="Ви впевнені, що хочете скинути всі оцінки редакції для цієї статті? Це видалить всі голоси адміністраторів. Цю дію неможливо скасувати."
+        confirmText="Скинути"
+        cancelText="Скасувати"
+        isDestructive={true}
+      />
+
       {!forceReview && (
         <div className="flex items-center space-x-3 mb-6 bg-zinc-50 dark:bg-[#151515] p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
           <input 
@@ -251,7 +264,7 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
               {initialData?.articleId && (
                 <button 
                   type="button" 
-                  onClick={handleResetRatings}
+                  onClick={() => setShowResetConfirm(true)}
                   disabled={resetting}
                   className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-colors"
                 >

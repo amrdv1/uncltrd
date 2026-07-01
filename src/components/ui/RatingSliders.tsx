@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { submitTrackRating } from "@/app/actions/interactions";
 import { motion } from "framer-motion";
 
@@ -53,12 +55,12 @@ export function RatingSliders({ articleId, initialUserRating, totalScores, curre
   const adminTotal = dynamicAdminTotal || totalScores?.adminTotal || 0;
 
   const handleSubmit = async () => {
-    if (!currentUserId) return alert("Потрібно увійти, щоб оцінювати!");
+    if (!currentUserId) return toast.error("Потрібно увійти, щоб оцінювати!");
     if (!text || !beats || !sound || !vibe || !charisma) {
-      return alert("Оцініть усі критерії!");
+      return toast.error("Оцініть усі критерії!");
     }
     if (!content || !content.trim()) {
-      return alert("Напишіть короткий коментар-аргументацію до вашої оцінки!");
+      return toast.error("Напишіть короткий коментар-аргументацію до вашої оцінки!");
     }
     
     setLoading(true);
@@ -73,11 +75,11 @@ export function RatingSliders({ articleId, initialUserRating, totalScores, curre
       
       const response = await submitTrackRating(articleId, formData);
       if (response && response.error) {
-        alert("Помилка: " + response.error);
+        toast.error("Помилка: " + response.error);
       }
     } catch (error: any) {
       console.error(error);
-      alert("Не вдалося зберегти рецензію. Можливо, сталася помилка на сервері або з інтернет-з'єднанням.");
+      toast.error("Не вдалося зберегти рецензію. Можливо, сталася помилка на сервері або з інтернет-з'єднанням.");
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { toast } from "sonner";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 
 export function MediaInputManager({ initialMedia = [] }: { initialMedia?: any[] }) {
@@ -49,7 +50,7 @@ export function MediaInputManager({ initialMedia = [] }: { initialMedia?: any[] 
       }
       setMedia(newMedia);
     } catch (err) {
-      alert("Помилка завантаження файлу");
+      toast.error("Помилка завантаження файлу");
     } finally {
       setUploadingIndex(null);
     }

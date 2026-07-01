@@ -2,6 +2,8 @@
 
 import { useState, useRef } from "react";
 
+import { toast } from "sonner";
+
 export function ImageUploadField({ 
   name, 
   defaultValue = "", 
@@ -40,7 +42,7 @@ export function ImageUploadField({
       const data = await res.json();
       setUrl(data.url);
     } catch (err: any) {
-      alert(`Помилка завантаження файлу: ${err.message}`);
+      toast.error(`Помилка завантаження файлу: ${err.message}`);
     } finally {
       setIsUploading(false);
     }

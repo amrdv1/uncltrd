@@ -2,6 +2,7 @@
 
 import { changeUserRole } from "@/app/(admin)/admin-panel/users/actions";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function ChangeRoleSelect({ userId, currentRole }: { userId: string, currentRole: string }) {
   const [isPending, setIsPending] = useState(false);
@@ -17,8 +18,9 @@ export function ChangeRoleSelect({ userId, currentRole }: { userId: string, curr
       formData.append("newRole", newRole);
       
       await changeUserRole(formData);
+      toast.success("Роль успішно змінено");
     } catch (error: any) {
-      alert(error.message || "Помилка при зміні ролі");
+      toast.error(error.message || "Помилка при зміні ролі");
       e.target.value = currentRole; // Reset
     } finally {
       setIsPending(false);

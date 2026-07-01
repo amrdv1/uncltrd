@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { getSiteConfig } from "@/app/actions/config";
 import { cookies } from "next/headers";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -159,6 +160,13 @@ export default async function RootLayout({
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 dark:bg-blue-500/5 blur-[120px] mix-blend-screen opacity-50 dark:opacity-30"></div>
           </div>
           {children}
+          <Toaster 
+            position="bottom-center"
+            toastOptions={{
+              className: "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-black dark:text-white rounded-2xl shadow-xl font-bold font-sans",
+              duration: 4000,
+            }} 
+          />
         </ThemeProvider>
       </body>
     </html>
