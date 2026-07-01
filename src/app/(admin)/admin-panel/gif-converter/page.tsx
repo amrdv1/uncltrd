@@ -147,14 +147,26 @@ export default function GifConverterPage() {
             <h3 className="font-bold text-xl mb-6">Готово! Ваша GIF-ка:</h3>
             
             <div className="flex flex-col md:flex-row gap-8 items-start">
-              <div className="w-full md:w-1/2 aspect-video bg-zinc-100 dark:bg-black rounded-2xl overflow-hidden relative border border-zinc-200 dark:border-zinc-800 flex items-center justify-center">
+              <div className="w-full md:w-1/2 aspect-video bg-zinc-100 dark:bg-black rounded-2xl overflow-hidden relative border border-zinc-200 dark:border-zinc-800 flex items-center justify-center p-4">
                 <Image 
                   src={resultUrl} 
                   alt="Converted GIF" 
                   fill 
-                  className="object-contain" 
+                  className="object-contain z-10" 
                   unoptimized 
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                  onLoad={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'block';
+                  }}
                 />
+                {/* Fallback info layer (shows under the image if transparent, or acts as a warning if image breaks) */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-zinc-100 dark:bg-black z-0">
+                  <RefreshCw size={32} className="text-accent mb-4 animate-spin opacity-50" />
+                  <p className="font-bold mb-2">Обробка GIF...</p>
+                  <p className="text-xs text-zinc-500">Якщо відео велике (20+ МБ), Cloudinary обробляє його кілька хвилин у фоні. Якщо посилання видає помилку 423, зачекайте та оновіть його пізніше.</p>
+                </div>
               </div>
               
               <div className="w-full md:w-1/2 flex flex-col gap-4">
