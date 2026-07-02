@@ -28,7 +28,12 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
     try {
       const formData = new FormData(e.currentTarget);
       const newName = formData.get("name") as string;
-      await updateProfile(formData);
+      const result = await updateProfile(formData);
+      
+      if (result?.error) {
+        toast.error(result.error);
+        return;
+      }
       
       // Force NextAuth to update the session cookie so the new name/avatar is reflected immediately
       await update({ name: newName });

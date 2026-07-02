@@ -15,7 +15,7 @@ cloudinary.config({
 export async function updateProfile(formData: FormData) {
   const session = await auth();
   if (!session?.user) {
-    throw new Error("Unauthorized");
+    return { error: "Не авторизовано" };
   }
 
   const name = formData.get("name") as string;
@@ -40,7 +40,7 @@ export async function updateProfile(formData: FormData) {
       image = uploadResult.secure_url;
     } catch (error) {
       console.error("Cloudinary upload error:", error);
-      throw new Error("Не вдалося завантажити зображення");
+      return { error: "Не вдалося завантажити зображення" };
     }
   }
 
@@ -51,7 +51,7 @@ export async function updateProfile(formData: FormData) {
       where: { name: { equals: name } }
     });
     if (existingName) {
-      throw new Error("Цей нікнейм вже зайнятий");
+      return { error: "Цей нікнейм вже зайнятий" };
     }
   }
 
@@ -65,6 +65,8 @@ export async function updateProfile(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/settings");
+
+  return { success: true };
 }
 
 export async function deleteAvatar() {
