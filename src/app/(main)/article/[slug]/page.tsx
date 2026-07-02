@@ -269,7 +269,12 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
       avgCharisma = Math.round((adminRatings.reduce((acc: number, r: any) => acc + r.charisma, 0) / adminRatings.length) * 10) / 10;
     }
     
-    // Removed autoPreviewUrl logic completely to rely on UniversalPlayer directly
+    // Prepare autoPreviewUrl for Spotify via our new btch-downloader proxy
+    let autoPreviewUrl = null;
+    if (article.media && article.media.length > 0 && article.media[0].url.includes('spotify.com')) {
+      autoPreviewUrl = `/api/resolve-track?url=${encodeURIComponent(article.media[0].url)}`;
+    }
+    
     return (
       <div className="bg-white dark:bg-[#050505] min-h-screen pt-8 pb-20 text-black dark:text-white font-sans transition-colors">
         <div className="max-w-6xl mx-auto px-6">
@@ -336,6 +341,20 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                 {article.media && article.media.length > 0 ? (
                   article.media[0].url.match(/\.(mp3|wav|ogg|m4a|aac)$/i) || !article.media[0].url.match(/(spotify\.com|music\.apple\.com|soundcloud\.com|youtube\.com|youtu\.be)/i) ? (
                     <UniversalPlayer url={article.media[0].url} />
+                  ) : article.media[0].url.includes('spotify.com') ? (
+                    <>
+                      <div className="w-full min-w-[280px] max-w-sm xl:max-w-md mt-2 md:mt-0 hidden [.in-telegram_&]:block">
+                        {autoPreviewUrl ? (
+                          <CustomAudioPlayer src={autoPreviewUrl} />
+                        ) : (
+                          <UniversalPlayer url={article.media[0].url} />
+                        )}
+                      </div>
+                      <a href={article.media[0].url} target="_blank" rel="noopener noreferrer" className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white px-8 py-3.5 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center gap-2 [.in-telegram_&]:hidden">
+                        <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />
+                        СЛУХАТИ
+                      </a>
+                    </>
                   ) : (
                     <>
                       <div className="w-full min-w-[280px] max-w-sm xl:max-w-md mt-2 md:mt-0 hidden [.in-telegram_&]:block">
