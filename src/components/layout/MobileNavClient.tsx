@@ -3,15 +3,14 @@ import { useState, useEffect } from "react";
 import { Menu, X, User, Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTelegram } from "@/components/providers/TelegramProvider";
 import { NavLinks } from "@/components/layout/NavLinks";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 
 export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: any) {
   const [isOpen, setIsOpen] = useState(false);
+  const [tgPadding, setTgPadding] = useState(0);
   const pathname = usePathname();
-  const { isTelegram } = useTelegram();
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -24,6 +23,27 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+  // Force Telegram Padding independently of any context
+  useEffect(() => {
+    const checkTg = () => {
+      const isTgAgent = navigator.userAgent.toLowerCase().includes('telegram');
+      const tg = (window as any).Telegram?.WebApp;
+      const isTgObj = tg && tg.platform && tg.platform !== 'unknown';
+      
+      if (isTgAgent || isTgObj || (tg && tg.initData)) {
+        let p = 48; // fallback
+        if (tg && tg.contentSafeAreaInset && tg.contentSafeAreaInset.top > 0) {
+          p = tg.contentSafeAreaInset.top + 8;
+        } else if (tg && tg.safeAreaInset && tg.safeAreaInset.top > 0) {
+          p = tg.safeAreaInset.top + 24;
+        }
+        setTgPadding(p);
+      }
+    };
+    checkTg();
+    setTimeout(checkTg, 500);
+    setTimeout(checkTg, 1500);
+  }, []);
 
   return (
     <div className="lg:hidden">
@@ -31,8 +51,8 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
       <div 
         className="fixed top-0 left-0 w-full bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 z-40 flex items-center justify-between px-6 shadow-sm transition-all"
         style={
-          isTelegram 
-            ? { height: 'calc(4rem + var(--tg-header-padding, 48px))', paddingTop: 'var(--tg-header-padding, 48px)' }
+          tgPadding > 0
+            ? { height: `calc(4rem + ${tgPadding}px)`, paddingTop: `${tgPadding}px` }
             : { height: '4rem' }
         }
       >
@@ -60,8 +80,8 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
               <div 
                 className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800"
                 style={
-                  isTelegram
-                    ? { paddingTop: 'calc(1rem + var(--tg-header-padding, 48px))' }
+                  tgPadding > 0
+                    ? { paddingTop: `calc(1rem + ${tgPadding}px)` }
                     : undefined
                 }
               >

@@ -1,15 +1,36 @@
 "use client";
-import { useTelegram } from "@/components/providers/TelegramProvider";
+import { useEffect, useState } from "react";
 
 export function TelegramSpacer() {
-  const { isTelegram } = useTelegram();
+  const [tgPadding, setTgPadding] = useState(0);
+
+  useEffect(() => {
+    const checkTg = () => {
+      const isTgAgent = navigator.userAgent.toLowerCase().includes('telegram');
+      const tg = (window as any).Telegram?.WebApp;
+      const isTgObj = tg && tg.platform && tg.platform !== 'unknown';
+      
+      if (isTgAgent || isTgObj || (tg && tg.initData)) {
+        let p = 48; // fallback
+        if (tg && tg.contentSafeAreaInset && tg.contentSafeAreaInset.top > 0) {
+          p = tg.contentSafeAreaInset.top + 8;
+        } else if (tg && tg.safeAreaInset && tg.safeAreaInset.top > 0) {
+          p = tg.safeAreaInset.top + 24;
+        }
+        setTgPadding(p);
+      }
+    };
+    checkTg();
+    setTimeout(checkTg, 500);
+    setTimeout(checkTg, 1500);
+  }, []);
   
-  if (!isTelegram) return null;
+  if (tgPadding === 0) return null;
   
   return (
     <div 
       className="w-full shrink-0 lg:hidden"
-      style={{ height: 'var(--tg-header-padding, 48px)' }}
+      style={{ height: `${tgPadding}px` }}
       aria-hidden="true" 
     />
   );
