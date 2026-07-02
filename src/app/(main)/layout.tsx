@@ -12,7 +12,7 @@ export default function MainLayout({
       <MobileNav />
       <Sidebar />
       <div className="flex-1 lg:ml-[320px] bg-white dark:bg-transparent text-black dark:text-white min-h-screen flex flex-col transition-colors overflow-x-hidden w-full">
-        <main className="flex-1 w-full max-w-[1600px] mx-auto bg-white dark:bg-transparent transition-colors pt-16 lg:pt-0">
+        <main className="flex-1 w-full max-w-[1600px] mx-auto bg-white dark:bg-transparent transition-colors pt-16 [.in-telegram_&]:pt-[calc(4rem+var(--tg-safe-area-inset-top,0px))] lg:pt-0">
           {children}
         </main>
         <Footer />

@@ -52,6 +52,24 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
           tg.expand();
         }
         
+        // Bind safe area insets to CSS variables
+        const updateSafeAreas = () => {
+          if (tg.safeAreaInset) {
+            document.documentElement.style.setProperty('--tg-safe-area-inset-top', `${tg.safeAreaInset.top}px`);
+            document.documentElement.style.setProperty('--tg-safe-area-inset-bottom', `${tg.safeAreaInset.bottom}px`);
+            document.documentElement.style.setProperty('--tg-safe-area-inset-left', `${tg.safeAreaInset.left}px`);
+            document.documentElement.style.setProperty('--tg-safe-area-inset-right', `${tg.safeAreaInset.right}px`);
+          }
+          if (tg.contentSafeAreaInset) {
+            document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', `${tg.contentSafeAreaInset.top}px`);
+            document.documentElement.style.setProperty('--tg-content-safe-area-inset-bottom', `${tg.contentSafeAreaInset.bottom}px`);
+          }
+        };
+
+        updateSafeAreas();
+        tg.onEvent('safeAreaChanged', updateSafeAreas);
+        tg.onEvent('contentSafeAreaChanged', updateSafeAreas);
+        
         // Set Theme Color based on Telegram's current color scheme
         if (tg.colorScheme === "dark") {
           document.documentElement.classList.add("dark");
