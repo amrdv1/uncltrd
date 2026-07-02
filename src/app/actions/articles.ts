@@ -59,6 +59,11 @@ export async function createArticle(formData: FormData) {
   }
 
   const listenUrl = formData.get("listenUrl") as string;
+  const appleUrl = formData.get("appleUrl") as string;
+  const youtubeUrl = formData.get("youtubeUrl") as string;
+  
+  if (youtubeUrl) mediaFiles.unshift({ type: "AUDIO", url: youtubeUrl });
+  if (appleUrl) mediaFiles.unshift({ type: "AUDIO", url: appleUrl });
   if (listenUrl) {
     mediaFiles.unshift({ type: "AUDIO", url: listenUrl });
   }
@@ -145,6 +150,14 @@ export async function updateArticle(id: string, formData: FormData) {
   }
 
   const listenUrl = formData.get("listenUrl") as string;
+  const appleUrl = formData.get("appleUrl") as string;
+  const youtubeUrl = formData.get("youtubeUrl") as string;
+  
+  // Need to clear existing AUDIO/VIDEO media first to avoid duplicates since we replace them
+  mediaFiles = mediaFiles.filter(m => m.type === "IMAGE");
+  
+  if (youtubeUrl) mediaFiles.unshift({ type: "AUDIO", url: youtubeUrl });
+  if (appleUrl) mediaFiles.unshift({ type: "AUDIO", url: appleUrl });
   if (listenUrl) {
     mediaFiles.unshift({ type: "AUDIO", url: listenUrl });
   }

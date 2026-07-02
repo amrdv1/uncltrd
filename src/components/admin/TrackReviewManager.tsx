@@ -237,22 +237,45 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
           )}
 
           <div className="pt-4">
-            <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest">Посилання на трек (Слухати) або Аудіофайл</label>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <input 
-                type="text" 
-                name="listenUrl" 
-                value={listenUrl} 
-                onChange={(e) => setListenUrl(e.target.value)}
-                className="flex-1 px-4 py-3 bg-white dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-xl outline-none focus:border-accent text-black dark:text-white transition-colors text-sm"
-                placeholder="https://music.apple.com/... або Spotify / YouTube"
-              />
-              <label className="bg-zinc-100 dark:bg-zinc-800 text-black dark:text-white px-6 rounded-xl font-bold uppercase tracking-widest hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all hover:scale-[1.02] cursor-pointer flex items-center justify-center text-xs h-[46px]">
-                Завантажити трек
-                <input type="file" accept="audio/*" className="hidden" onChange={(e) => handleUpload(e, setListenUrl)} disabled={loading} />
-              </label>
+            <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest">Посилання на майданчики (Слухати)</label>
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="w-10 h-10 rounded-xl bg-[#1DB954]/10 text-[#1DB954] flex items-center justify-center font-bold text-xs shrink-0 self-center hidden sm:flex">S</div>
+                <input 
+                  type="text" 
+                  name="listenUrl" 
+                  value={listenUrl} 
+                  onChange={(e) => setListenUrl(e.target.value)}
+                  className="flex-1 px-4 py-3 bg-white dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-xl outline-none focus:border-[#1DB954] text-black dark:text-white transition-colors text-sm"
+                  placeholder="Основне посилання (напр. Spotify)"
+                />
+                <label className="bg-zinc-100 dark:bg-zinc-800 text-black dark:text-white px-6 rounded-xl font-bold uppercase tracking-widest hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all hover:scale-[1.02] cursor-pointer flex items-center justify-center text-xs h-[46px] sm:w-auto w-full">
+                  Файл
+                  <input type="file" accept="audio/*" className="hidden" onChange={(e) => handleUpload(e, setListenUrl)} disabled={loading} />
+                </label>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="w-10 h-10 rounded-xl bg-[#FA243C]/10 text-[#FA243C] flex items-center justify-center font-bold text-xs shrink-0 self-center hidden sm:flex">A</div>
+                <input 
+                  type="text" 
+                  name="appleUrl" 
+                  className="flex-1 px-4 py-3 bg-white dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-xl outline-none focus:border-[#FA243C] text-black dark:text-white transition-colors text-sm"
+                  placeholder="Додаткове посилання (напр. Apple Music) - опціонально"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="w-10 h-10 rounded-xl bg-[#FF0000]/10 text-[#FF0000] flex items-center justify-center font-bold text-xs shrink-0 self-center hidden sm:flex">Y</div>
+                <input 
+                  type="text" 
+                  name="youtubeUrl" 
+                  className="flex-1 px-4 py-3 bg-white dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-xl outline-none focus:border-[#FF0000] text-black dark:text-white transition-colors text-sm"
+                  placeholder="Додаткове посилання (напр. YouTube) - опціонально"
+                />
+              </div>
             </div>
-            <p className="text-[10px] text-zinc-500 mt-2 font-bold uppercase tracking-widest">Вставте URL або завантажте аудіофайл (.mp3, .wav) напряму.</p>
+            <p className="text-[10px] text-zinc-500 mt-2 font-bold uppercase tracking-widest">Вставте URL для кожного майданчика. Основне посилання використовується для відтворення.</p>
           </div>
 
           <hr className="border-zinc-200 dark:border-zinc-800/50 my-6" />

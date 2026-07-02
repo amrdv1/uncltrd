@@ -360,20 +360,64 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                           <UniversalPlayer url={article.media[0].url} />
                         )}
                       </div>
-                      <a href={article.media[0].url} target="_blank" rel="noopener noreferrer" className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white px-8 py-3.5 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center gap-2 [.in-telegram_&]:hidden">
-                        <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />
-                        СЛУХАТИ
-                      </a>
+                      <div className="flex flex-wrap items-center gap-2 mt-4 [.in-telegram_&]:mt-2 w-full max-w-md">
+                        {article.media.filter((m: any) => m.type === 'AUDIO').map((m: any, idx: number) => {
+                          let pName = "СЛУХАТИ";
+                          let pColor = "bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white";
+                          let url = m.url.toLowerCase();
+                          if (url.includes('spotify.com')) {
+                            pName = "Spotify";
+                            pColor = "bg-[#1DB954]/10 dark:bg-[#1DB954]/20 hover:bg-[#1DB954]/20 dark:hover:bg-[#1DB954]/30 text-[#1DB954]";
+                          } else if (url.includes('apple.com')) {
+                            pName = "Apple Music";
+                            pColor = "bg-[#FA243C]/10 dark:bg-[#FA243C]/20 hover:bg-[#FA243C]/20 dark:hover:bg-[#FA243C]/30 text-[#FA243C]";
+                          } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                            pName = "YouTube";
+                            pColor = "bg-[#FF0000]/10 dark:bg-[#FF0000]/20 hover:bg-[#FF0000]/20 dark:hover:bg-[#FF0000]/30 text-[#FF0000]";
+                          } else if (url.includes('soundcloud.com')) {
+                            pName = "SoundCloud";
+                            pColor = "bg-[#FF5500]/10 dark:bg-[#FF5500]/20 hover:bg-[#FF5500]/20 dark:hover:bg-[#FF5500]/30 text-[#FF5500]";
+                          }
+                          return (
+                            <a key={idx} href={m.url} target="_blank" rel="noopener noreferrer" className={`${pColor} px-6 py-3 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 text-[10px] flex-1 min-w-[120px]`}>
+                              {pName === "СЛУХАТИ" && <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />}
+                              {pName}
+                            </a>
+                          );
+                        })}
+                      </div>
                     </>
                   ) : (
                     <>
                       <div className="w-full min-w-[280px] max-w-sm xl:max-w-md mt-2 md:mt-0 hidden [.in-telegram_&]:block">
                         <UniversalPlayer url={article.media[0].url} />
                       </div>
-                      <a href={article.media[0].url} target="_blank" rel="noopener noreferrer" className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white px-8 py-3.5 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center gap-2 [.in-telegram_&]:hidden">
-                        <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />
-                        СЛУХАТИ
-                      </a>
+                      <div className="flex flex-wrap items-center gap-2 mt-4 [.in-telegram_&]:mt-2 w-full max-w-md">
+                        {article.media.filter((m: any) => m.type === 'AUDIO').map((m: any, idx: number) => {
+                          let pName = "СЛУХАТИ";
+                          let pColor = "bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white";
+                          let url = m.url.toLowerCase();
+                          if (url.includes('spotify.com')) {
+                            pName = "Spotify";
+                            pColor = "bg-[#1DB954]/10 dark:bg-[#1DB954]/20 hover:bg-[#1DB954]/20 dark:hover:bg-[#1DB954]/30 text-[#1DB954]";
+                          } else if (url.includes('apple.com')) {
+                            pName = "Apple Music";
+                            pColor = "bg-[#FA243C]/10 dark:bg-[#FA243C]/20 hover:bg-[#FA243C]/20 dark:hover:bg-[#FA243C]/30 text-[#FA243C]";
+                          } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                            pName = "YouTube";
+                            pColor = "bg-[#FF0000]/10 dark:bg-[#FF0000]/20 hover:bg-[#FF0000]/20 dark:hover:bg-[#FF0000]/30 text-[#FF0000]";
+                          } else if (url.includes('soundcloud.com')) {
+                            pName = "SoundCloud";
+                            pColor = "bg-[#FF5500]/10 dark:bg-[#FF5500]/20 hover:bg-[#FF5500]/20 dark:hover:bg-[#FF5500]/30 text-[#FF5500]";
+                          }
+                          return (
+                            <a key={idx} href={m.url} target="_blank" rel="noopener noreferrer" className={`${pColor} px-6 py-3 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 text-[10px] flex-1 min-w-[120px]`}>
+                              {pName === "СЛУХАТИ" && <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />}
+                              {pName}
+                            </a>
+                          );
+                        })}
+                      </div>
                     </>
                   )
                 ) : (
