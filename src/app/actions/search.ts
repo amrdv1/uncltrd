@@ -1,5 +1,30 @@
 "use server";
+import * as cheerio from 'cheerio';
 
+async function searchDDG(site: string, artist: string, track: string): Promise<string | null> {
+  try {
+    const query = `site:${site} ${artist} ${track}`;
+    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+      }
+    });
+    const html = await res.text();
+    const $ = cheerio.load(html);
+    
+    let foundUrl: string | null = null;
+    $('a.result__url').each((i: any, el: any) => {
+      const url = $(el).attr('href');
+      if (url && url.includes(site)) {
+        foundUrl = url;
+        return false; // break
+      }
+    });
+    return foundUrl;
+  } catch (e) {
+    return null;
+  }
+}
 export async function findTrackMedia(artist: string, track: string) {
   const query = `${artist} ${track}`;
   let coverUrl = null;
@@ -35,6 +60,27 @@ export async function findTrackMedia(artist: string, track: string) {
     }
   } catch (e) {
     console.error("Apple Music search failed", e);
+  }
+
+  // 1.5 Apple Music DDG Fallback
+  if (!appleUrl) {
+    try {
+      appleUrl = await searchDDG("music.apple.com", artist, track);
+    } catch(e) {}
+  }
+
+  // 1.8 Spotify DDG Search for main listenUrl
+  if (!listenUrl) {
+    try {
+      const spotUrl = await searchDDG("open.spotify.com/track", artist, track);
+      if (spotUrl) {
+        listenUrl = spotUrl;
+      } else {
+        // Try searching album if track fails
+        const spotAlbumUrl = await searchDDG("open.spotify.com/album", artist, track);
+        if (spotAlbumUrl) listenUrl = spotAlbumUrl;
+      }
+    } catch(e) {}
   }
 
   // 2. Deezer API Fallback for Cover URL
