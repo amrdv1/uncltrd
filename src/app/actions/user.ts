@@ -59,7 +59,7 @@ export async function updateProfile(formData: FormData) {
     where: { id: session.user.id },
     data: {
       name: name || session.user.name,
-      image: image || null,
+      image: image !== "" ? image : session.user.image || null,
     },
   });
 

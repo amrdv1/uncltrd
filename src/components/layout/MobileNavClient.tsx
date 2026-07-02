@@ -124,13 +124,13 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
                   </div>
                 ) : (
                   <div className="mb-8 flex flex-col space-y-3">
-                    <Link href="/login" onClick={() => setIsOpen(false)} className="flex items-center justify-center space-x-2 bg-transparent border-2 border-black dark:border-white text-black dark:text-white py-3 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors w-full">
+                    <button onClick={() => { setIsOpen(false); router.push("/login"); }} className="flex items-center justify-center space-x-2 bg-transparent border-2 border-black dark:border-white text-black dark:text-white py-3 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors w-full">
                       <User size={16} />
                       <span>Увійти</span>
-                    </Link>
-                    <Link href="/register" onClick={() => setIsOpen(false)} className="flex items-center justify-center space-x-2 bg-accent text-white py-3 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-black transition-colors w-full">
+                    </button>
+                    <button onClick={() => { setIsOpen(false); router.push("/register"); }} className="flex items-center justify-center space-x-2 bg-accent text-white py-3 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-black transition-colors w-full">
                       <span>Створити акаунт</span>
-                    </Link>
+                    </button>
                   </div>
                 )}
 
@@ -150,9 +150,9 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
 
                 {isLoggedIn && (
                   <div className="mt-8 pt-8 border-t border-zinc-200 dark:border-zinc-800 space-y-4">
-                    <Link href="/settings" onClick={() => setIsOpen(false)} className="block text-sm font-bold uppercase tracking-widest text-zinc-500 hover:text-black dark:hover:text-white transition-colors">
+                    <button onClick={() => { setIsOpen(false); router.push("/settings"); }} className="text-left block text-sm font-bold uppercase tracking-widest text-zinc-500 hover:text-black dark:hover:text-white transition-colors w-full">
                       Налаштування
-                    </Link>
+                    </button>
                     <LogoutButton className="text-left text-sm font-bold uppercase tracking-widest text-red-500 hover:text-red-600 transition-colors w-full">
                       Вийти
                     </LogoutButton>

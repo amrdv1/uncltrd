@@ -93,15 +93,17 @@ export default async function AdminLayout({
           <span className="text-[10px] font-bold uppercase mt-1">GIF</span>
         </Link>
         {isAdmin && (
-          <Link href="/admin-panel/users" className="flex flex-col items-center p-2 text-zinc-500 hover:text-green-500 dark:text-zinc-400 dark:hover:text-green-500">
-            <Users size={20} />
-            <span className="text-[10px] font-bold uppercase mt-1">Люди</span>
-          </Link>
+          <>
+            <Link href="/admin-panel/users" className="flex flex-col items-center p-2 text-zinc-500 hover:text-green-500 dark:text-zinc-400 dark:hover:text-green-500">
+              <Users size={20} />
+              <span className="text-[10px] font-bold uppercase mt-1">Люди</span>
+            </Link>
+            <Link href="/admin-panel/settings" className="flex flex-col items-center p-2 text-zinc-500 hover:text-purple-500 dark:text-zinc-400 dark:hover:text-purple-500">
+              <Settings size={20} />
+              <span className="text-[10px] font-bold uppercase mt-1">Налаштування</span>
+            </Link>
+          </>
         )}
-        <Link href="/admin-panel/settings" className="flex flex-col items-center p-2 text-zinc-500 hover:text-purple-500 dark:text-zinc-400 dark:hover:text-purple-500">
-          <Settings size={20} />
-          <span className="text-[10px] font-bold uppercase mt-1">Налаштування</span>
-        </Link>
         <Link href="/" className="flex flex-col items-center p-2 text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-500">
           <LogOut size={20} />
           <span className="text-[10px] font-bold uppercase mt-1">На сайт</span>
