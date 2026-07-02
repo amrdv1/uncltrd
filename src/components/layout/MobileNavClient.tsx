@@ -35,16 +35,18 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
       
       let p = 0;
       if (isTgRaw || isTgAgent || isTgObj || hasProxy || (tg && tg.initData)) {
-        p = 54; // Better fallback for iOS
+        // We need to clear BOTH the OS status bar AND the Telegram custom header pill
+        // iOS status bar (~50px) + Telegram header (~44px) = ~94px. We use 100px for safety.
+        // Android status bar (~24px) + Telegram header (~40px) = ~64px.
+        let p = tg?.platform === 'ios' ? 100 : 70; 
+        
         if (tg && tg.contentSafeAreaInset && tg.contentSafeAreaInset.top > 0) {
-          p = tg.contentSafeAreaInset.top + 8;
+          p = Math.max(p, tg.contentSafeAreaInset.top + 8);
         } else if (tg && tg.safeAreaInset && tg.safeAreaInset.top > 0) {
-          p = tg.safeAreaInset.top + 24;
+          p = Math.max(p, tg.safeAreaInset.top + 50); // safeArea is just status bar, add 50 for the pill
         }
         setTgPadding(p);
       }
-      
-      setDebugStr(`r:${isTgRaw?1:0} a:${isTgAgent?1:0} p:${hasProxy?1:0} o:${isTgObj?1:0} i:${tg?.initData?1:0} = ${p}`);
     };
     checkTg();
     setTimeout(checkTg, 500);
@@ -63,7 +65,7 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
         }
       >
         <Link href="/" className="text-2xl font-black uppercase tracking-tighter font-serif flex items-center">
-          uncultured<span className="text-accent">.</span><span className="text-[10px] ml-1 text-red-500 max-w-[100px] overflow-hidden leading-tight truncate">v3 {debugStr}</span>
+          uncultured<span className="text-accent">.</span>
         </Link>
         <button 
           onClick={() => setIsOpen(true)}

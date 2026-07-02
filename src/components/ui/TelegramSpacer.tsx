@@ -12,11 +12,12 @@ export function TelegramSpacer() {
       const isTgObj = tg && tg.platform && tg.platform !== 'unknown';
       
       if (isTgRaw || isTgAgent || isTgObj || (tg && tg.initData)) {
-        let p = 54; // fallback
+        let p = tg?.platform === 'ios' ? 100 : 70; 
+        
         if (tg && tg.contentSafeAreaInset && tg.contentSafeAreaInset.top > 0) {
-          p = tg.contentSafeAreaInset.top + 8;
+          p = Math.max(p, tg.contentSafeAreaInset.top + 8);
         } else if (tg && tg.safeAreaInset && tg.safeAreaInset.top > 0) {
-          p = tg.safeAreaInset.top + 24;
+          p = Math.max(p, tg.safeAreaInset.top + 50); // safeArea is just status bar, add 50 for the pill
         }
         setTgPadding(p);
       }
