@@ -225,5 +225,5 @@ export async function findTrackMedia(artist: string, track: string) {
   // Do not override listenUrl with youtubeUrl/appleUrl so that S field is kept for Spotify/Other
   listenUrl = null;
 
-  return { coverUrl, listenUrl, appleUrl, youtubeUrl, releaseDate };
+  return { coverUrl, listenUrl, appleUrl, youtubeUrl, releaseDate, spotifyKeysMissing, spotifyError };
 }
