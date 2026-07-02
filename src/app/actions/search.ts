@@ -51,12 +51,15 @@ export async function findTrackMedia(artist: string, track: string) {
   // 1.5 Spotify API Search (Official & Robust)
   if (!listenUrl && process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET) {
     try {
+      const clientId = process.env.SPOTIFY_CLIENT_ID.trim();
+      const clientSecret = process.env.SPOTIFY_CLIENT_SECRET.trim();
+      
       // Get Spotify Access Token
       const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic " + Buffer.from(process.env.SPOTIFY_CLIENT_ID + ":" + process.env.SPOTIFY_CLIENT_SECRET).toString("base64")
+          "Authorization": "Basic " + Buffer.from(clientId + ":" + clientSecret).toString("base64")
         },
         body: "grant_type=client_credentials"
       });
