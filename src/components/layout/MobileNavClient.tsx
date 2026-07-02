@@ -3,12 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, User, Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useTelegramPadding } from "@/components/ui/TelegramSpacer";
 import { NavLinks } from "@/components/layout/NavLinks";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 
 export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: any) {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const tgPadding = useTelegramPadding();
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -25,7 +29,10 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
   return (
     <div className="lg:hidden">
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 w-full h-16 telegram-header-height telegram-header-padding bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 z-40 flex items-center justify-between px-6 shadow-sm transition-all">
+      <div 
+        className="fixed top-0 left-0 w-full h-16 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 z-40 flex items-center justify-between px-6 shadow-sm transition-all"
+        style={{ height: `calc(4rem + ${tgPadding}px)`, paddingTop: `${tgPadding}px` }}
+      >
         <Link href="/" className="text-2xl font-black uppercase tracking-tighter font-serif">
           uncultured<span className="text-accent">.</span>
         </Link>
@@ -47,7 +54,10 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
       <div 
         className={`fixed top-0 right-0 w-[80vw] sm:w-[320px] h-full bg-white/80 dark:bg-background/80 backdrop-blur-xl z-50 flex flex-col overflow-y-auto shadow-2xl transition-transform duration-400 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-              <div className="flex items-center justify-between p-4 telegram-header-padding border-b border-zinc-200 dark:border-zinc-800">
+              <div 
+                className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800"
+                style={{ paddingTop: `calc(1rem + ${tgPadding}px)` }}
+              >
                 <span className="text-xl font-black uppercase tracking-tighter font-serif">Меню</span>
                 <button onClick={() => setIsOpen(false)} className="p-2">
                   <X size={24} />
