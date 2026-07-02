@@ -25,7 +25,7 @@ export async function findTrackMedia(artist: string, track: string) {
           const sArtist = artist.toLowerCase();
           const sTrack = cleanTrack.toLowerCase();
           
-          const artistMatch = rArtist.includes(sArtist) || sArtist.includes(rArtist);
+          const artistMatch = rArtist.includes(sArtist) || sArtist.includes(rArtist) || rArtist.includes(sArtist.split(' ')[0]);
           const trackMatch = rTrack.includes(sTrack) || sTrack.includes(rTrack);
           return artistMatch && trackMatch;
         });
@@ -79,12 +79,16 @@ export async function findTrackMedia(artist: string, track: string) {
           const searchData = await searchRes.json();
           if (searchData.tracks?.items?.length > 0) {
             const exactMatch = searchData.tracks.items.find((item: any) => {
-              const rArtist = (item.artists[0]?.name || "").toLowerCase();
               const rTrack = (item.name || "").toLowerCase();
               const sArtist = artist.toLowerCase();
               const sTrack = cleanTrack.toLowerCase();
               
-              const artistMatch = rArtist.includes(sArtist) || sArtist.includes(rArtist);
+              // Check all artists on the track
+              const artistMatch = item.artists.some((a: any) => {
+                const aName = (a.name || "").toLowerCase();
+                return aName.includes(sArtist) || sArtist.includes(aName) || aName.includes(sArtist.split(' ')[0]);
+              });
+              
               const trackMatch = rTrack.includes(sTrack) || sTrack.includes(rTrack);
               return artistMatch && trackMatch;
             });
@@ -113,7 +117,7 @@ export async function findTrackMedia(artist: string, track: string) {
             const sArtist = artist.toLowerCase();
             const sTrack = cleanTrack.toLowerCase();
             
-            const artistMatch = rArtist.includes(sArtist) || sArtist.includes(rArtist);
+            const artistMatch = rArtist.includes(sArtist) || sArtist.includes(rArtist) || rArtist.includes(sArtist.split(' ')[0]);
             const trackMatch = rTrack.includes(sTrack) || sTrack.includes(rTrack);
             return artistMatch && trackMatch;
           });

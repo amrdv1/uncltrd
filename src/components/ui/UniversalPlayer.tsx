@@ -19,23 +19,23 @@ export function UniversalPlayer({ url }: { url: string }) {
           width="100%" 
           height="152" 
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-          loading="lazy"
         />
       );
     }
 
     // Apple Music Embed
     if (hostname === "music.apple.com") {
+      // Must include the search query parameters (like ?i=123) for tracks to load correctly!
       const pathname = parsedUrl.pathname;
-      const embedUrl = `https://embed.music.apple.com${pathname}`;
+      const search = parsedUrl.search;
+      const embedUrl = `https://embed.music.apple.com${pathname}${search}`;
       return (
         <iframe 
-          className="w-full max-w-sm rounded-xl shadow-xl border-0 overflow-hidden"
+          className="w-full max-w-sm rounded-xl shadow-xl border-0 overflow-hidden bg-transparent"
           src={embedUrl} 
           width="100%" 
           height="175" 
           allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" 
-          loading="lazy"
         />
       );
     }
