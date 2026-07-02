@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, User, Search } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { NavLinks } from "@/components/layout/NavLinks";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
@@ -12,6 +12,7 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
   const [tgPadding, setTgPadding] = useState(0);
   const [debugStr, setDebugStr] = useState("init");
   const pathname = usePathname();
+  const router = useRouter();
 
   // Prevent body scroll when menu is open
   useEffect(() => {
