@@ -6,12 +6,13 @@ export function TelegramSpacer() {
 
   useEffect(() => {
     const checkTg = () => {
+      const isTgRaw = document.documentElement.classList.contains('is-telegram-raw');
       const isTgAgent = navigator.userAgent.toLowerCase().includes('telegram');
       const tg = (window as any).Telegram?.WebApp;
       const isTgObj = tg && tg.platform && tg.platform !== 'unknown';
       
-      if (isTgAgent || isTgObj || (tg && tg.initData)) {
-        let p = 48; // fallback
+      if (isTgRaw || isTgAgent || isTgObj || (tg && tg.initData)) {
+        let p = 54; // fallback
         if (tg && tg.contentSafeAreaInset && tg.contentSafeAreaInset.top > 0) {
           p = tg.contentSafeAreaInset.top + 8;
         } else if (tg && tg.safeAreaInset && tg.safeAreaInset.top > 0) {

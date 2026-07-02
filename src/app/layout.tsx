@@ -149,6 +149,23 @@ export default async function RootLayout({
         />
       </head>
       <body className="antialiased bg-background text-foreground selection:bg-accent selection:text-white min-h-screen overflow-x-hidden">
+        {/* Raw script to detect Telegram before Next.js hydration strips the hash */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                var isTg = false;
+                if (window.location.hash.includes('tgWebAppData')) isTg = true;
+                if (window.location.search.includes('tgWebApp')) isTg = true;
+                if (window.TelegramWebviewProxy !== undefined) isTg = true;
+                if (window.TelegramWebview !== undefined) isTg = true;
+                if (isTg) {
+                  document.documentElement.classList.add('is-telegram-raw');
+                }
+              } catch(e) {}
+            })();
+          `
+        }} />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

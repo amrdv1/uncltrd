@@ -26,12 +26,14 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
   // Force Telegram Padding independently of any context
   useEffect(() => {
     const checkTg = () => {
+      const isTgRaw = document.documentElement.classList.contains('is-telegram-raw');
       const isTgAgent = navigator.userAgent.toLowerCase().includes('telegram');
+      const hasProxy = typeof (window as any).TelegramWebviewProxy !== 'undefined';
       const tg = (window as any).Telegram?.WebApp;
       const isTgObj = tg && tg.platform && tg.platform !== 'unknown';
       
-      if (isTgAgent || isTgObj || (tg && tg.initData)) {
-        let p = 48; // fallback
+      if (isTgRaw || isTgAgent || isTgObj || hasProxy || (tg && tg.initData)) {
+        let p = 54; // Better fallback for iOS
         if (tg && tg.contentSafeAreaInset && tg.contentSafeAreaInset.top > 0) {
           p = tg.contentSafeAreaInset.top + 8;
         } else if (tg && tg.safeAreaInset && tg.safeAreaInset.top > 0) {
