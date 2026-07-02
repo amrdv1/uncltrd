@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { updateProfile, updateProfileJson, deleteAvatar } from "@/app/actions/user";
+import { deleteAvatar } from "@/app/actions/user";
 import { User, Trash2, Loader2, AlertTriangle, X } from "lucide-react";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
@@ -46,11 +46,17 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
         base64Data = `data:${file.type};base64,${b64}`;
       }
 
-      // Use JSON Server Action instead of FormData to prevent iOS Safari/WKWebView fetch bugs
-      const result = await updateProfileJson(newName, base64Data, existingImage);
+      // Use standard fetch API instead of Server Action to prevent iOS/Telegram Next.js bugs
+      const response = await fetch("/api/user/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newName, imageBase64: base64Data, existingImageUrl: existingImage })
+      });
       
-      if (result?.error) {
-        toast.error(result.error);
+      const result = await response.json().catch(() => ({ error: "Помилка сервера" }));
+      
+      if (!response.ok || result?.error) {
+        toast.error(result?.error || "Не вдалося зберегти зміни");
         return;
       }
       
