@@ -58,7 +58,9 @@ export async function GET(request: Request) {
         const track = searchParams.get('track');
         if (artist && track) {
           const ytSearch = require('yt-search');
-          const query = `${artist} ${track}`;
+          // Clean the track name from special characters (like '!!!!!') that break yt-search
+          const cleanTrack = track.replace(/[^\p{L}\p{N} ]/gu, '').trim() || track;
+          const query = `${artist} ${cleanTrack}`;
           const r = await ytSearch(query);
           const videos = r.videos;
           if (videos.length > 0) {

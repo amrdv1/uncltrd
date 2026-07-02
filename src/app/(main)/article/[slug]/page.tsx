@@ -270,12 +270,12 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
       avgCharisma = Math.round((adminRatings.reduce((acc: number, r: any) => acc + r.charisma, 0) / adminRatings.length) * 10) / 10;
     }
     
-    // Prepare autoPreviewUrl ONLY for YouTube via our new btch-downloader proxy
-    // For Spotify and Apple Music, we use the official fast iframes (UniversalPlayer)
+    // Prepare autoPreviewUrl for Spotify/YouTube/Apple via our btch-downloader proxy
+    // The user wants Spotify and Apple Music to play in the custom mini player
     let autoPreviewUrl = null;
     if (article.media && article.media.length > 0) {
       const url = article.media[0].url.toLowerCase();
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      if (url.includes('spotify.com') || url.includes('youtube.com') || url.includes('youtu.be') || url.includes('apple.com')) {
         let queryStr = `url=${encodeURIComponent(article.media[0].url)}`;
         if (article.trackReview) {
             queryStr += `&artist=${encodeURIComponent(article.trackReview.artistName)}&track=${encodeURIComponent(article.trackReview.trackName)}`;
