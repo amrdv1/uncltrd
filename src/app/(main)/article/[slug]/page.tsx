@@ -264,18 +264,9 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
     
     let autoPreviewUrl = null;
     if (article.media && article.media.length > 0 && !article.media[0].url.match(/\.(mp3|wav|ogg|m4a|aac)$/i) && !article.media[0].url.includes('soundcloud.com')) {
-      try {
-        const query = encodeURIComponent(`${article.trackReview.artistName} ${article.trackReview.trackName}`);
-        const itunesRes = await fetch(`https://itunes.apple.com/search?term=${query}&entity=song&limit=1`, { next: { revalidate: 86400 } });
-        if (itunesRes.ok) {
-          const data = await itunesRes.json();
-          if (data.results && data.results.length > 0) {
-            autoPreviewUrl = data.results[0].previewUrl;
-          }
-        }
-      } catch (e) {
-        console.error("Failed to fetch preview URL", e);
-      }
+      const artist = encodeURIComponent(article.trackReview.artistName);
+      const track = encodeURIComponent(article.trackReview.trackName);
+      autoPreviewUrl = `/api/resolve-track?artist=${artist}&track=${track}`;
     }
 
     return (
