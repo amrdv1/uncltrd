@@ -27,10 +27,13 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
     // Only run if we are in the browser and Telegram WebApp is injected
     const initTelegram = async () => {
       const tg = (window as any).Telegram?.WebApp;
-      // If platform is not unknown, we are definitely inside a Telegram Mini App
-      if (tg && tg.platform && tg.platform !== 'unknown') {
+      const isTgPlatform = tg && tg.platform && tg.platform !== 'unknown';
+      const isTgUserAgent = typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().includes('telegram');
+      
+      // If platform is not unknown OR user agent contains telegram, we are inside Telegram
+      if (isTgPlatform || isTgUserAgent || (tg && tg.initData)) {
         setIsTelegram(true);
-        setWebApp(tg);
+        if (tg) setWebApp(tg);
         document.documentElement.classList.add("in-telegram");
         
         // Notify Telegram that the app is ready to be displayed
@@ -64,12 +67,11 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
             document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', `${tg.contentSafeAreaInset.top}px`);
             document.documentElement.style.setProperty('--tg-content-safe-area-inset-bottom', `${tg.contentSafeAreaInset.bottom}px`);
           }
-          
           // Calculate a single variable for header padding to avoid complex CSS calc failures
-          let topPadding = 48; // Default fallback for Telegram overlay
-          if (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top > 0) {
+          let topPadding = 48; // Default fallback for Telegram overlay (In-App Browser usually needs this)
+          if (tg && tg.contentSafeAreaInset && tg.contentSafeAreaInset.top > 0) {
             topPadding = tg.contentSafeAreaInset.top + 8;
-          } else if (tg.safeAreaInset && tg.safeAreaInset.top > 0) {
+          } else if (tg && tg.safeAreaInset && tg.safeAreaInset.top > 0) {
             topPadding = tg.safeAreaInset.top + 24;
           }
           document.documentElement.style.setProperty('--tg-header-padding', `${topPadding}px`);
