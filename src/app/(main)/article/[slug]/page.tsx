@@ -20,13 +20,19 @@ const generatePlayerIframe = (url: string) => {
     // Spotify
     if (parsedUrl.hostname === 'open.spotify.com') {
       const embedUrl = url.replace('open.spotify.com/', 'open.spotify.com/embed/');
-      return `<div class="my-8 w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800"><iframe style="border-radius:12px" src="${embedUrl}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>`;
+      return `
+        <div class="my-8 w-full min-w-[280px] max-w-sm xl:max-w-md mx-auto hidden [.in-telegram_&]:block" data-inline-audio="${url}"></div>
+        <div class="my-8 w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800 [.in-telegram_&]:hidden"><iframe style="border-radius:12px" src="${embedUrl}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+      `;
     }
     
     // Apple Music
     if (parsedUrl.hostname === 'music.apple.com') {
       const embedUrl = url.replace('music.apple.com/', 'embed.music.apple.com/');
-      return `<div class="my-8 w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800"><iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;background:transparent;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="${embedUrl}"></iframe></div>`;
+      return `
+        <div class="my-8 w-full min-w-[280px] max-w-sm xl:max-w-md mx-auto hidden [.in-telegram_&]:block" data-inline-audio="${url}"></div>
+        <div class="my-8 w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800 [.in-telegram_&]:hidden"><iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;background:transparent;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="${embedUrl}"></iframe></div>
+      `;
     }
     
     // SoundCloud

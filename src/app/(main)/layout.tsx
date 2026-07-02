@@ -1,6 +1,7 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { Footer } from "@/components/layout/Footer";
+import { InlineAudioHydrator } from "@/components/ui/InlineAudioHydrator";
 
 export default function MainLayout({
   children,
@@ -17,6 +18,7 @@ export default function MainLayout({
         </main>
         <Footer />
       </div>
+      <InlineAudioHydrator />
     </div>
   );
 }
