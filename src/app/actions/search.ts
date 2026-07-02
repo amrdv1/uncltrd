@@ -136,8 +136,8 @@ export async function findTrackMedia(artist: string, track: string) {
     }
   }
 
-  // Priority for listenUrl if needed as fallback (for backward compatibility if anything else uses it)
-  listenUrl = youtubeUrl || appleUrl;
+  // Do not override listenUrl with youtubeUrl/appleUrl so that S field is kept for Spotify/Other
+  listenUrl = null;
 
   return { coverUrl, listenUrl, appleUrl, youtubeUrl, releaseDate };
 }
