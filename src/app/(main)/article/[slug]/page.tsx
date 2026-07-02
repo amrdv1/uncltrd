@@ -270,10 +270,17 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
       avgCharisma = Math.round((adminRatings.reduce((acc: number, r: any) => acc + r.charisma, 0) / adminRatings.length) * 10) / 10;
     }
     
-    // Prepare autoPreviewUrl for Spotify via our new btch-downloader proxy
+    // Prepare autoPreviewUrl for Spotify/YouTube/Apple via our new btch-downloader proxy
     let autoPreviewUrl = null;
-    if (article.media && article.media.length > 0 && article.media[0].url.includes('spotify.com')) {
-      autoPreviewUrl = `/api/resolve-track?url=${encodeURIComponent(article.media[0].url)}`;
+    if (article.media && article.media.length > 0) {
+      const url = article.media[0].url.toLowerCase();
+      if (url.includes('spotify.com') || url.includes('youtube.com') || url.includes('youtu.be') || url.includes('apple.com')) {
+        let queryStr = `url=${encodeURIComponent(article.media[0].url)}`;
+        if (article.trackReview) {
+            queryStr += `&artist=${encodeURIComponent(article.trackReview.artistName)}&track=${encodeURIComponent(article.trackReview.trackName)}`;
+        }
+        autoPreviewUrl = `/api/resolve-track?${queryStr}`;
+      }
     }
     
     return (
@@ -342,10 +349,10 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                 {article.media && article.media.length > 0 ? (
                   article.media[0].url.match(/\.(mp3|wav|ogg|m4a|aac)$/i) || !article.media[0].url.match(/(spotify\.com|music\.apple\.com|soundcloud\.com|youtube\.com|youtu\.be)/i) ? (
                     <UniversalPlayer url={article.media[0].url} />
-                  ) : article.media[0].url.includes('spotify.com') ? (
+                  ) : article.media[0].url.toLowerCase().includes('spotify.com') || article.media[0].url.toLowerCase().includes('youtube.com') || article.media[0].url.toLowerCase().includes('youtu.be') || article.media[0].url.toLowerCase().includes('apple.com') ? (
                     <>
                       <div className="w-full min-w-[280px] max-w-sm xl:max-w-md mt-2 md:mt-0 hidden [.in-telegram_&]:block">
-                        {article.media[0].url.includes('spotify.com/album/') ? (
+                        {article.media[0].url.toLowerCase().includes('spotify.com/album/') ? (
                           <AlbumPlayer albumUrl={article.media[0].url} />
                         ) : autoPreviewUrl ? (
                           <CustomAudioPlayer src={autoPreviewUrl} />
