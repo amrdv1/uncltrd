@@ -1,35 +1,41 @@
 "use client";
 
-import { useEffect } from "react";
-import { createRoot } from "react-dom/client";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { CustomAudioPlayer } from "@/components/ui/CustomAudioPlayer";
 
 export function InlineAudioHydrator() {
+  const [portals, setPortals] = useState<Array<{ container: Element, url: string, id: string }>>([]);
+
   useEffect(() => {
-    // We run this periodically or on DOM changes to catch dynamically loaded markdown content
+    let active = true;
+
     const hydratePlayers = () => {
       const containers = document.querySelectorAll('div[data-inline-audio]');
+      const newPortals: Array<{ container: Element, url: string, id: string }> = [];
+      let changed = false;
+
       containers.forEach(container => {
-        if (container.hasAttribute('data-hydrated')) return;
-        container.setAttribute('data-hydrated', 'true');
+        if (container.hasAttribute('data-hydrated')) {
+          return;
+        }
         
+        container.setAttribute('data-hydrated', 'true');
         const url = container.getAttribute('data-inline-audio');
         if (!url) return;
         
         const audioUrl = `/api/resolve-track?url=${encodeURIComponent(url)}`;
-        
-        try {
-          const root = createRoot(container);
-          root.render(<CustomAudioPlayer src={audioUrl} />);
-        } catch (e) {
-          console.error("Failed to hydrate inline audio player", e);
-        }
+        newPortals.push({ container, url: audioUrl, id: Math.random().toString(36).substr(2, 9) });
+        changed = true;
       });
+
+      if (changed && active) {
+        setPortals(prev => [...prev, ...newPortals]);
+      }
     };
 
     hydratePlayers();
     
-    // Set up a mutation observer to hydrate players that are loaded asynchronously (e.g. navigation)
     const observer = new MutationObserver((mutations) => {
       let shouldHydrate = false;
       for (const mutation of mutations) {
@@ -38,13 +44,20 @@ export function InlineAudioHydrator() {
           break;
         }
       }
-      if (shouldHydrate) hydratePlayers();
+      if (shouldHydrate && active) hydratePlayers();
     });
     
     observer.observe(document.body, { childList: true, subtree: true });
     
-    return () => observer.disconnect();
+    return () => {
+      active = false;
+      observer.disconnect();
+    };
   }, []);
 
-  return null;
+  return (
+    <>
+      {portals.map((p) => createPortal(<CustomAudioPlayer src={p.url} />, p.container))}
+    </>
+  );
 }
