@@ -58,7 +58,7 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
     <div className="lg:hidden">
       {/* Top Bar */}
       <div 
-        className="fixed top-0 left-0 w-full bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 z-40 flex items-center justify-between px-6 shadow-sm transition-all"
+        className="fixed top-0 left-0 w-full bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50 z-40 flex items-center justify-between px-6 shadow-sm transition-all"
         style={
           tgPadding > 0
             ? { height: `calc(4rem + ${tgPadding}px)`, paddingTop: `${tgPadding}px` }
@@ -84,7 +84,7 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
       
       {/* Sidebar */}
       <div 
-        className={`fixed top-0 right-0 w-[80vw] sm:w-[320px] h-full bg-white/80 dark:bg-background/80 backdrop-blur-xl z-50 flex flex-col overflow-y-auto shadow-2xl transition-transform duration-400 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 right-0 w-[80vw] sm:w-[320px] h-full bg-white dark:bg-[#0a0a0a] z-50 flex flex-col overflow-y-auto shadow-2xl transition-transform duration-300 ease-out will-change-transform ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
               <div 
                 className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800"
