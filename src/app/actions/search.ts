@@ -18,22 +18,29 @@ export async function findTrackMedia(artist: string, track: string) {
     if (res.ok) {
       const data = await res.json();
       if (data.results && data.results.length > 0) {
-        // Try to find exact artist match if possible to avoid wrong covers
-        const exactMatch = data.results.find((r: any) => 
-          r.artistName?.toLowerCase().includes(artist.toLowerCase()) || 
-          artist.toLowerCase().includes(r.artistName?.toLowerCase() || "")
-        );
-        const bestMatch = exactMatch || data.results[0];
+        // Try to find exact artist and track match
+        const exactMatch = data.results.find((r: any) => {
+          const rArtist = (r.artistName || "").toLowerCase();
+          const rTrack = (r.trackName || "").toLowerCase();
+          const sArtist = artist.toLowerCase();
+          const sTrack = cleanTrack.toLowerCase();
+          
+          const artistMatch = rArtist.includes(sArtist) || sArtist.includes(rArtist);
+          const trackMatch = rTrack.includes(sTrack) || sTrack.includes(rTrack);
+          return artistMatch && trackMatch;
+        });
         
-        if (bestMatch.artworkUrl100) {
-          coverUrl = bestMatch.artworkUrl100.replace("100x100bb", "600x600bb");
-        }
-        if (bestMatch.trackViewUrl || bestMatch.collectionViewUrl) {
-          appleUrl = bestMatch.trackViewUrl || bestMatch.collectionViewUrl;
-        }
-        
-        if (bestMatch.releaseDate) {
-          releaseDate = new Date(bestMatch.releaseDate).toISOString().split('T')[0];
+        if (exactMatch) {
+          if (exactMatch.artworkUrl100) {
+            coverUrl = exactMatch.artworkUrl100.replace("100x100bb", "600x600bb");
+          }
+          if (exactMatch.trackViewUrl || exactMatch.collectionViewUrl) {
+            appleUrl = exactMatch.trackViewUrl || exactMatch.collectionViewUrl;
+          }
+          
+          if (exactMatch.releaseDate) {
+            releaseDate = new Date(exactMatch.releaseDate).toISOString().split('T')[0];
+          }
         }
       }
     }
@@ -58,8 +65,8 @@ export async function findTrackMedia(artist: string, track: string) {
         const tokenData = await tokenRes.json();
         const accessToken = tokenData.access_token;
         
-        // Search for track
-        const searchRes = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=1`, {
+        // Search for track with limit 10 to find exact match
+        const searchRes = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=10`, {
           headers: {
             "Authorization": `Bearer ${accessToken}`
           }
@@ -68,7 +75,20 @@ export async function findTrackMedia(artist: string, track: string) {
         if (searchRes.ok) {
           const searchData = await searchRes.json();
           if (searchData.tracks?.items?.length > 0) {
-            listenUrl = searchData.tracks.items[0].external_urls.spotify;
+            const exactMatch = searchData.tracks.items.find((item: any) => {
+              const rArtist = (item.artists[0]?.name || "").toLowerCase();
+              const rTrack = (item.name || "").toLowerCase();
+              const sArtist = artist.toLowerCase();
+              const sTrack = cleanTrack.toLowerCase();
+              
+              const artistMatch = rArtist.includes(sArtist) || sArtist.includes(rArtist);
+              const trackMatch = rTrack.includes(sTrack) || sTrack.includes(rTrack);
+              return artistMatch && trackMatch;
+            });
+
+            if (exactMatch) {
+              listenUrl = exactMatch.external_urls.spotify;
+            }
           }
         }
       }
@@ -84,28 +104,36 @@ export async function findTrackMedia(artist: string, track: string) {
       if (dzRes.ok) {
         const dzData = await dzRes.json();
         if (dzData.data && dzData.data.length > 0) {
-          const exactMatch = dzData.data.find((r: any) => 
-            r.artist?.name?.toLowerCase().includes(artist.toLowerCase())
-          );
-          const bestMatch = exactMatch || dzData.data[0];
+          const exactMatch = dzData.data.find((r: any) => {
+            const rArtist = (r.artist?.name || "").toLowerCase();
+            const rTrack = (r.title || "").toLowerCase();
+            const sArtist = artist.toLowerCase();
+            const sTrack = cleanTrack.toLowerCase();
+            
+            const artistMatch = rArtist.includes(sArtist) || sArtist.includes(rArtist);
+            const trackMatch = rTrack.includes(sTrack) || sTrack.includes(rTrack);
+            return artistMatch && trackMatch;
+          });
           
-          if (bestMatch.album && bestMatch.album.cover_xl) {
-            coverUrl = bestMatch.album.cover_xl;
-          } else if (bestMatch.album && bestMatch.album.cover_big) {
-            coverUrl = bestMatch.album.cover_big;
-          }
+          if (exactMatch) {
+            if (exactMatch.album && exactMatch.album.cover_xl) {
+              coverUrl = exactMatch.album.cover_xl;
+            } else if (exactMatch.album && exactMatch.album.cover_big) {
+              coverUrl = exactMatch.album.cover_big;
+            }
 
-          if (!releaseDate && bestMatch.album?.id) {
-            try {
-              const albumRes = await fetch(`https://api.deezer.com/album/${bestMatch.album.id}`);
-              if (albumRes.ok) {
-                const albumData = await albumRes.json();
-                if (albumData.release_date) {
-                  releaseDate = albumData.release_date;
+            if (!releaseDate && exactMatch.album?.id) {
+              try {
+                const albumRes = await fetch(`https://api.deezer.com/album/${exactMatch.album.id}`);
+                if (albumRes.ok) {
+                  const albumData = await albumRes.json();
+                  if (albumData.release_date) {
+                    releaseDate = albumData.release_date;
+                  }
                 }
+              } catch (e) {
+                console.error("Deezer album fetch failed", e);
               }
-            } catch (e) {
-              console.error("Deezer album fetch failed", e);
             }
           }
         }
