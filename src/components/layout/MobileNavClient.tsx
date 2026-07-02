@@ -1,10 +1,9 @@
 "use client";
-
 import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
-import { Search, User, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useTelegramPadding } from "@/components/ui/TelegramSpacer";
+import { useTelegram } from "@/components/providers/TelegramProvider";
 import { NavLinks } from "@/components/layout/NavLinks";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
@@ -12,7 +11,7 @@ import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const tgPadding = useTelegramPadding();
+  const { isTelegram } = useTelegram();
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -30,8 +29,12 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
     <div className="lg:hidden">
       {/* Top Bar */}
       <div 
-        className="fixed top-0 left-0 w-full h-16 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 z-40 flex items-center justify-between px-6 shadow-sm transition-all"
-        style={{ height: `calc(4rem + ${tgPadding}px)`, paddingTop: `${tgPadding}px` }}
+        className="fixed top-0 left-0 w-full bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 z-40 flex items-center justify-between px-6 shadow-sm transition-all"
+        style={
+          isTelegram 
+            ? { height: 'calc(4rem + var(--tg-header-padding, 48px))', paddingTop: 'var(--tg-header-padding, 48px)' }
+            : { height: '4rem' }
+        }
       >
         <Link href="/" className="text-2xl font-black uppercase tracking-tighter font-serif">
           uncultured<span className="text-accent">.</span>
@@ -56,7 +59,11 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
       >
               <div 
                 className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800"
-                style={{ paddingTop: `calc(1rem + ${tgPadding}px)` }}
+                style={
+                  isTelegram
+                    ? { paddingTop: 'calc(1rem + var(--tg-header-padding, 48px))' }
+                    : undefined
+                }
               >
                 <span className="text-xl font-black uppercase tracking-tighter font-serif">Меню</span>
                 <button onClick={() => setIsOpen(false)} className="p-2">
