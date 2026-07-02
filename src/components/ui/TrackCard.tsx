@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Play, Music } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,8 +31,18 @@ export function TrackCard({
   compact = false,
   listenUrl
 }: TrackCardProps) {
+  const router = useRouter();
+
+  const handleClick = (e: React.MouseEvent) => {
+    // Only navigate if the user didn't click inside the Listen button
+    router.push(`/article/${slug}`);
+  };
+
   return (
-    <Link href={`/article/${slug}`} className={cn("group flex flex-col w-full h-full bg-[#111] rounded-xl transition-all duration-300 hover:-translate-y-2 hover:bg-[#151515] border border-zinc-800 hover:border-accent/50 hover:shadow-[0_20px_40px_-15px_rgba(255,51,102,0.15)] active:scale-[0.98]", compact ? "p-3" : "p-4", className)}>
+    <div 
+      onClick={handleClick}
+      className={cn("cursor-pointer group flex flex-col w-full h-full bg-[#111] rounded-xl transition-all duration-300 hover:-translate-y-2 hover:bg-[#151515] border border-zinc-800 hover:border-accent/50 hover:shadow-[0_20px_40px_-15px_rgba(255,51,102,0.15)] active:scale-[0.98]", compact ? "p-3" : "p-4", className)}
+    >
       {/* Cover Image */}
       <div className={cn("relative w-full aspect-square overflow-hidden shadow-sm group-hover:shadow-lg transition-shadow duration-500 shrink-0", compact ? "rounded-lg mb-3" : "rounded-xl mb-4")}>
         <Image 
@@ -81,6 +92,6 @@ export function TrackCard({
           </div>
         )}
       </div>
-    </Link>
+    </div>
   );
 }
