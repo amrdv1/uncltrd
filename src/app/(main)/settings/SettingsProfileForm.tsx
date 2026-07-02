@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { updateProfile, deleteAvatar } from "@/app/actions/user";
+import { updateProfile, updateProfileJson, deleteAvatar } from "@/app/actions/user";
 import { User, Trash2, Loader2, AlertTriangle, X } from "lucide-react";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
@@ -30,7 +30,24 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
     try {
       const formData = new FormData(e.currentTarget);
       const newName = formData.get("name") as string;
-      const result = await updateProfile(formData);
+      const existingImage = formData.get("image") as string;
+      const file = formData.get("avatarFile") as File;
+      
+      let base64Data: string | null = null;
+      if (file && file.size > 0) {
+        // Convert to Base64
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        const b64 = window.btoa(binary);
+        base64Data = `data:${file.type};base64,${b64}`;
+      }
+
+      // Use JSON Server Action instead of FormData to prevent iOS Safari/WKWebView fetch bugs
+      const result = await updateProfileJson(newName, base64Data, existingImage);
       
       if (result?.error) {
         toast.error(result.error);
@@ -38,7 +55,12 @@ export function SettingsProfileForm({ user }: SettingsProfileFormProps) {
       }
       
       // Force NextAuth to update the session cookie so the new name/avatar is reflected immediately
-      await update({ name: newName });
+      try {
+        await update({ name: newName });
+      } catch (updateError) {
+        console.error("NextAuth update error:", updateError);
+        // We continue even if update fails, because router.refresh() will update the Server Component UI
+      }
       
       // Refresh the page data so the Server Component UI updates with the new user prop
       router.refresh();

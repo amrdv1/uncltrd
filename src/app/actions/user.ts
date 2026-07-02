@@ -12,6 +12,54 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+export async function updateProfileJson(name: string, imageBase64: string | null, existingImageUrl: string | null) {
+  const session = await auth();
+  if (!session?.user) {
+    return { error: "Не авторизовано" };
+  }
+
+  let image = existingImageUrl || "";
+  
+  if (imageBase64) {
+    try {
+      const uploadResult = await cloudinary.uploader.upload(imageBase64, {
+        folder: "uncultured_avatars",
+        transformation: [
+          { width: 400, height: 400, crop: "fill", gravity: "face" }
+        ]
+      });
+      image = uploadResult.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      return { error: "Не вдалося завантажити зображення" };
+    }
+  }
+
+  image = formatImageUrl(image) || "";
+
+  if (name && name !== session.user.name) {
+    const existingName = await db.user.findFirst({
+      where: { name: { equals: name } }
+    });
+    if (existingName) {
+      return { error: "Цей нікнейм вже зайнятий" };
+    }
+  }
+
+  await db.user.update({
+    where: { id: session.user.id },
+    data: {
+      name: name || session.user.name,
+      image: image !== "" ? image : session.user.image || null,
+    },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/settings");
+
+  return { success: true };
+}
+
 export async function updateProfile(formData: FormData) {
   const session = await auth();
   if (!session?.user) {
