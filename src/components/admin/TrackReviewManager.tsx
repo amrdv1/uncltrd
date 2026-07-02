@@ -42,7 +42,9 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
       : ""
   );
   const [coverUrl, setCoverUrl] = useState(initialData?.coverUrl || "");
-  const [listenUrl, setListenUrl] = useState("");
+  const [listenUrl, setListenUrl] = useState(initialData?.listenUrl || "");
+  const [appleUrl, setAppleUrl] = useState(initialData?.appleUrl || "");
+  const [youtubeUrl, setYoutubeUrl] = useState(initialData?.youtubeUrl || "");
   const [loading, setLoading] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -71,6 +73,14 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
       
       if (result.listenUrl) {
         setListenUrl(result.listenUrl);
+      }
+      
+      if (result.appleUrl) {
+        setAppleUrl(result.appleUrl);
+      }
+      
+      if (result.youtubeUrl) {
+        setYoutubeUrl(result.youtubeUrl);
       }
 
       if (result.releaseDate) {
@@ -260,6 +270,8 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
                 <input 
                   type="text" 
                   name="appleUrl" 
+                  value={appleUrl}
+                  onChange={(e) => setAppleUrl(e.target.value)}
                   className="flex-1 px-4 py-3 bg-white dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-xl outline-none focus:border-[#FA243C] text-black dark:text-white transition-colors text-sm"
                   placeholder="Додаткове посилання (напр. Apple Music) - опціонально"
                 />
@@ -270,6 +282,8 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
                 <input 
                   type="text" 
                   name="youtubeUrl" 
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
                   className="flex-1 px-4 py-3 bg-white dark:bg-[#151515] border border-zinc-200 dark:border-zinc-800 rounded-xl outline-none focus:border-[#FF0000] text-black dark:text-white transition-colors text-sm"
                   placeholder="Додаткове посилання (напр. YouTube) - опціонально"
                 />

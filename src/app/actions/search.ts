@@ -3,6 +3,8 @@
 export async function findTrackMedia(artist: string, track: string) {
   const query = `${artist} ${track}`;
   let coverUrl = null;
+  let appleUrl = null;
+  let youtubeUrl = null;
   let listenUrl = null;
   let releaseDate = null;
 
@@ -23,7 +25,7 @@ export async function findTrackMedia(artist: string, track: string) {
           coverUrl = bestMatch.artworkUrl100.replace("100x100bb", "600x600bb");
         }
         if (bestMatch.trackViewUrl || bestMatch.collectionViewUrl) {
-          listenUrl = bestMatch.trackViewUrl || bestMatch.collectionViewUrl;
+          appleUrl = bestMatch.trackViewUrl || bestMatch.collectionViewUrl;
         }
         
         if (bestMatch.releaseDate) {
@@ -74,7 +76,7 @@ export async function findTrackMedia(artist: string, track: string) {
   }
 
   // 3. YouTube Fallback for Listen URL
-  if (!listenUrl) {
+  if (!youtubeUrl) {
     try {
       const ytRes = await fetch(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, {
         headers: {
@@ -87,7 +89,7 @@ export async function findTrackMedia(artist: string, track: string) {
       // Extract first video ID
       const match = html.match(/"videoId":"([^"]+)"/);
       if (match) {
-        listenUrl = `https://www.youtube.com/watch?v=${match[1]}`;
+        youtubeUrl = `https://www.youtube.com/watch?v=${match[1]}`;
       }
     } catch (e) {
       console.error("YouTube search failed", e);
@@ -98,8 +100,8 @@ export async function findTrackMedia(artist: string, track: string) {
   if (!releaseDate) {
     try {
       let videoId = null;
-      if (listenUrl && listenUrl.includes("youtube.com/watch?v=")) {
-        videoId = new URL(listenUrl).searchParams.get("v");
+      if (youtubeUrl && youtubeUrl.includes("youtube.com/watch?v=")) {
+        videoId = new URL(youtubeUrl).searchParams.get("v");
       } else {
         const ytRes = await fetch(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, {
           headers: { 
@@ -134,5 +136,8 @@ export async function findTrackMedia(artist: string, track: string) {
     }
   }
 
-  return { coverUrl, listenUrl, releaseDate };
+  // Priority for listenUrl if needed as fallback (for backward compatibility if anything else uses it)
+  listenUrl = youtubeUrl || appleUrl;
+
+  return { coverUrl, listenUrl, appleUrl, youtubeUrl, releaseDate };
 }

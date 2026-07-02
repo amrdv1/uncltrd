@@ -83,7 +83,16 @@ export default async function EditArticlePage(props: { params: Promise<{ id: str
 
           {article.isTrackReview && (
             <div className="mb-6">
-              <TrackReviewManager initialData={article.trackReview} forceReview={true} />
+              <TrackReviewManager 
+                initialData={{
+                  ...article.trackReview, 
+                  articleId: article.id,
+                  listenUrl: article.media.find(m => !m.url.includes('apple.com') && !m.url.includes('youtube.com') && !m.url.includes('youtu.be'))?.url || article.media.find(m => m.type === 'AUDIO')?.url || "",
+                  appleUrl: article.media.find(m => m.url.includes('apple.com'))?.url || "",
+                  youtubeUrl: article.media.find(m => m.url.includes('youtube.com') || m.url.includes('youtu.be'))?.url || ""
+                }} 
+                forceReview={true} 
+              />
             </div>
           )}
 
