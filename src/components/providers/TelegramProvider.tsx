@@ -27,8 +27,8 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
     // Only run if we are in the browser and Telegram WebApp is injected
     const initTelegram = async () => {
       const tg = (window as any).Telegram?.WebApp;
-      // If initData is present, it means the app is running inside Telegram
-      if (tg && (tg.initData || window.location.hash.includes('tgWebAppData'))) {
+      // If platform is not unknown, we are definitely inside a Telegram Mini App
+      if (tg && tg.platform && tg.platform !== 'unknown') {
         setIsTelegram(true);
         setWebApp(tg);
         document.documentElement.classList.add("in-telegram");
