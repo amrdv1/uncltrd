@@ -64,6 +64,15 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
             document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', `${tg.contentSafeAreaInset.top}px`);
             document.documentElement.style.setProperty('--tg-content-safe-area-inset-bottom', `${tg.contentSafeAreaInset.bottom}px`);
           }
+          
+          // Calculate a single variable for header padding to avoid complex CSS calc failures
+          let topPadding = 48; // Default fallback for Telegram overlay
+          if (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top > 0) {
+            topPadding = tg.contentSafeAreaInset.top + 8;
+          } else if (tg.safeAreaInset && tg.safeAreaInset.top > 0) {
+            topPadding = tg.safeAreaInset.top + 24;
+          }
+          document.documentElement.style.setProperty('--tg-header-padding', `${topPadding}px`);
         };
 
         updateSafeAreas();
