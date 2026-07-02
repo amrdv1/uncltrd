@@ -41,6 +41,42 @@ export async function findTrackMedia(artist: string, track: string) {
     console.error("Apple Music search failed", e);
   }
 
+  // 1.5 Spotify API Search (Official & Robust)
+  if (!listenUrl && process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET) {
+    try {
+      // Get Spotify Access Token
+      const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic " + Buffer.from(process.env.SPOTIFY_CLIENT_ID + ":" + process.env.SPOTIFY_CLIENT_SECRET).toString("base64")
+        },
+        body: "grant_type=client_credentials"
+      });
+      
+      if (tokenRes.ok) {
+        const tokenData = await tokenRes.json();
+        const accessToken = tokenData.access_token;
+        
+        // Search for track
+        const searchRes = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=1`, {
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+        
+        if (searchRes.ok) {
+          const searchData = await searchRes.json();
+          if (searchData.tracks?.items?.length > 0) {
+            listenUrl = searchData.tracks.items[0].external_urls.spotify;
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Spotify API search failed", e);
+    }
+  }
+
   // 2. Deezer API Fallback for Cover URL
   if (!coverUrl) {
     try {
