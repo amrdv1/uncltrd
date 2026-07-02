@@ -10,6 +10,7 @@ import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [tgPadding, setTgPadding] = useState(0);
+  const [debugStr, setDebugStr] = useState("init");
   const pathname = usePathname();
 
   // Prevent body scroll when menu is open
@@ -32,8 +33,9 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
       const tg = (window as any).Telegram?.WebApp;
       const isTgObj = tg && tg.platform && tg.platform !== 'unknown';
       
+      let p = 0;
       if (isTgRaw || isTgAgent || isTgObj || hasProxy || (tg && tg.initData)) {
-        let p = 54; // Better fallback for iOS
+        p = 54; // Better fallback for iOS
         if (tg && tg.contentSafeAreaInset && tg.contentSafeAreaInset.top > 0) {
           p = tg.contentSafeAreaInset.top + 8;
         } else if (tg && tg.safeAreaInset && tg.safeAreaInset.top > 0) {
@@ -41,6 +43,8 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
         }
         setTgPadding(p);
       }
+      
+      setDebugStr(`r:${isTgRaw?1:0} a:${isTgAgent?1:0} p:${hasProxy?1:0} o:${isTgObj?1:0} i:${tg?.initData?1:0} = ${p}`);
     };
     checkTg();
     setTimeout(checkTg, 500);
@@ -59,7 +63,7 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
         }
       >
         <Link href="/" className="text-2xl font-black uppercase tracking-tighter font-serif flex items-center">
-          uncultured<span className="text-accent">.</span><span className="text-xs ml-1 text-gray-500">v2</span>
+          uncultured<span className="text-accent">.</span><span className="text-[10px] ml-1 text-red-500 max-w-[100px] overflow-hidden leading-tight truncate">v3 {debugStr}</span>
         </Link>
         <button 
           onClick={() => setIsOpen(true)}
