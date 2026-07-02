@@ -87,6 +87,14 @@ export function TrackReviewManager({ initialData, forceReview = false }: { initi
         setReleaseDate(result.releaseDate);
       }
 
+      if (result.spotifyKeysMissing) {
+        toast.error("Ключі Spotify відсутні на сервері! Неможливо шукати в Spotify.");
+      }
+
+      if (result.spotifyError) {
+        toast.error("Помилка підключення до Spotify API. Перевірте правильність введених ключів Client ID та Secret.");
+      }
+
       if (!result.coverUrl && !result.releaseDate) {
         toast.error("Обкладинку та дату релізу не знайдено. Вставте їх вручну.");
       } else if (!result.coverUrl) {

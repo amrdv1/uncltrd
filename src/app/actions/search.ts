@@ -48,59 +48,70 @@ export async function findTrackMedia(artist: string, track: string) {
     console.error("Apple Music search failed", e);
   }
 
+  let spotifyKeysMissing = false;
+  let spotifyError = false;
+
   // 1.5 Spotify API Search (Official & Robust)
-  if (!listenUrl && process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET) {
-    try {
-      const clientId = process.env.SPOTIFY_CLIENT_ID.trim();
-      const clientSecret = process.env.SPOTIFY_CLIENT_SECRET.trim();
-      
-      // Get Spotify Access Token
-      const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic " + Buffer.from(clientId + ":" + clientSecret).toString("base64")
-        },
-        body: "grant_type=client_credentials"
-      });
-      
-      if (tokenRes.ok) {
-        const tokenData = await tokenRes.json();
-        const accessToken = tokenData.access_token;
+  if (!listenUrl) {
+    if (process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET) {
+      try {
+        const clientId = process.env.SPOTIFY_CLIENT_ID.trim();
+        const clientSecret = process.env.SPOTIFY_CLIENT_SECRET.trim();
         
-        // Search for track with limit 10 to find exact match
-        const searchRes = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=10`, {
+        // Get Spotify Access Token
+        const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+          method: "POST",
           headers: {
-            "Authorization": `Bearer ${accessToken}`
-          }
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": "Basic " + Buffer.from(clientId + ":" + clientSecret).toString("base64")
+          },
+          body: "grant_type=client_credentials"
         });
         
-        if (searchRes.ok) {
-          const searchData = await searchRes.json();
-          if (searchData.tracks?.items?.length > 0) {
-            const exactMatch = searchData.tracks.items.find((item: any) => {
-              const rTrack = (item.name || "").toLowerCase();
-              const sArtist = artist.toLowerCase();
-              const sTrack = cleanTrack.toLowerCase();
-              
-              // Check all artists on the track
-              const artistMatch = item.artists.some((a: any) => {
-                const aName = (a.name || "").toLowerCase();
-                return aName.includes(sArtist) || sArtist.includes(aName) || aName.includes(sArtist.split(' ')[0]);
+        if (tokenRes.ok) {
+          const tokenData = await tokenRes.json();
+          const accessToken = tokenData.access_token;
+          
+          // Search for track with limit 10 to find exact match
+          const searchRes = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=10`, {
+            headers: {
+              "Authorization": `Bearer ${accessToken}`
+            }
+          });
+          
+          if (searchRes.ok) {
+            const searchData = await searchRes.json();
+            if (searchData.tracks?.items?.length > 0) {
+              const exactMatch = searchData.tracks.items.find((item: any) => {
+                const rTrack = (item.name || "").toLowerCase();
+                const sArtist = artist.toLowerCase();
+                const sTrack = cleanTrack.toLowerCase();
+                
+                // Check all artists on the track
+                const artistMatch = item.artists.some((a: any) => {
+                  const aName = (a.name || "").toLowerCase();
+                  return aName.includes(sArtist) || sArtist.includes(aName) || aName.includes(sArtist.split(' ')[0]);
+                });
+                
+                const trackMatch = rTrack.includes(sTrack) || sTrack.includes(rTrack);
+                return artistMatch && trackMatch;
               });
-              
-              const trackMatch = rTrack.includes(sTrack) || sTrack.includes(rTrack);
-              return artistMatch && trackMatch;
-            });
 
-            if (exactMatch) {
-              listenUrl = exactMatch.external_urls.spotify;
+              if (exactMatch) {
+                listenUrl = exactMatch.external_urls.spotify;
+              }
             }
           }
+        } else {
+          console.error("Spotify token fetch failed:", await tokenRes.text());
+          spotifyError = true;
         }
+      } catch (e) {
+        console.error("Spotify API search failed", e);
+        spotifyError = true;
       }
-    } catch (e) {
-      console.error("Spotify API search failed", e);
+    } else {
+      spotifyKeysMissing = true;
     }
   }
 
