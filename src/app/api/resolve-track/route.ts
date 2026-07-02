@@ -13,7 +13,25 @@ export async function GET(request: Request) {
         const result = await spotify(url);
         if (result && result.status && result.result && result.result.formats && result.result.formats.length > 0) {
           const mp3Url = result.result.formats[0].url;
-          return NextResponse.redirect(mp3Url);
+          // Fetch the stream and pipe it to the client with correct headers
+          const mp3Response = await fetch(mp3Url, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0'
+            }
+          });
+
+          if (!mp3Response.ok) {
+            return NextResponse.json({ error: 'Failed to download MP3 from provider' }, { status: 500 });
+          }
+
+          // Return the stream with proper audio/mpeg headers for Safari
+          return new Response(mp3Response.body, {
+            headers: {
+              'Content-Type': 'audio/mpeg',
+              'Accept-Ranges': 'bytes',
+              'Content-Length': mp3Response.headers.get('content-length') || '',
+            }
+          });
         } else {
           return NextResponse.json({ error: 'Failed to extract Spotify MP3' }, { status: 400 });
         }
