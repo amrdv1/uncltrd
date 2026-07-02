@@ -3,11 +3,12 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { getSiteConfig } from "@/app/actions/config";
 import { cookies } from "next/headers";
+import { auth } from "@/lib/auth";
 import { Toaster } from "sonner";
 import { AppleEmojiProvider } from "@/components/ui/AppleEmojiProvider";
 import { TelegramProvider } from "@/components/providers/TelegramProvider";
+import { NextAuthProvider } from "@/components/providers/NextAuthProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,7 +29,6 @@ const antapani = localFont({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const config = await getSiteConfig();
   const siteUrl = "https://uncultured.media";
   
   // Використовуємо затверджений SEO текст
@@ -118,6 +118,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   const cookieStore = await cookies();
   const rawAccentCookie = cookieStore.get("accentColor")?.value;
   let accentCookie = "345 100% 60%";
@@ -178,11 +179,13 @@ export default async function RootLayout({
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-accent/20 dark:bg-accent/10 blur-[120px] mix-blend-screen opacity-50 dark:opacity-30"></div>
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 dark:bg-blue-500/5 blur-[120px] mix-blend-screen opacity-50 dark:opacity-30"></div>
           </div>
-          <TelegramProvider>
-            <AppleEmojiProvider>
-              {children}
-            </AppleEmojiProvider>
-          </TelegramProvider>
+          <NextAuthProvider session={session}>
+            <TelegramProvider>
+              <AppleEmojiProvider>
+                {children}
+              </AppleEmojiProvider>
+            </TelegramProvider>
+          </NextAuthProvider>
           <Toaster 
             position="bottom-center"
             toastOptions={{
