@@ -29,12 +29,17 @@ export function UniversalPlayer({ url }: { url: string }) {
       const pathname = parsedUrl.pathname;
       const search = parsedUrl.search;
       const embedUrl = `https://embed.music.apple.com${pathname}${search}`;
+      
+      // If it's an album or EP (contains /album/ and no specific track ?i=), make it taller to show tracklist
+      const isAlbum = pathname.includes('/album/') && !search.includes('?i=');
+      const height = isAlbum ? "450" : "175";
+      
       return (
         <iframe 
-          className="w-full max-w-sm rounded-xl shadow-xl border-0 overflow-hidden bg-transparent"
+          className={`w-full max-w-sm rounded-xl shadow-xl border-0 overflow-hidden bg-transparent ${isAlbum ? 'max-w-md' : ''}`}
           src={embedUrl} 
           width="100%" 
-          height="175" 
+          height={height} 
           allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" 
         />
       );

@@ -270,12 +270,13 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
       avgCharisma = Math.round((adminRatings.reduce((acc: number, r: any) => acc + r.charisma, 0) / adminRatings.length) * 10) / 10;
     }
     
-    // Prepare autoPreviewUrl for Spotify/YouTube/Apple via our btch-downloader proxy
-    // The user wants Spotify and Apple Music to play in the custom mini player
+    // Prepare autoPreviewUrl for Spotify/YouTube/Apple tracks via our btch-downloader proxy
+    // Apple Music Albums are excluded so they use UniversalPlayer (which renders a tall tracklist widget)
     let autoPreviewUrl = null;
     if (article.media && article.media.length > 0) {
       const url = article.media[0].url.toLowerCase();
-      if (url.includes('spotify.com') || url.includes('youtube.com') || url.includes('youtu.be') || url.includes('apple.com')) {
+      const isAppleAlbum = url.includes('apple.com') && url.includes('/album/') && !url.includes('?i=');
+      if ((url.includes('spotify.com') && !url.includes('spotify.com/album/')) || url.includes('youtube.com') || url.includes('youtu.be') || (url.includes('apple.com') && !isAppleAlbum)) {
         let queryStr = `url=${encodeURIComponent(article.media[0].url)}`;
         if (article.trackReview) {
             queryStr += `&artist=${encodeURIComponent(article.trackReview.artistName)}&track=${encodeURIComponent(article.trackReview.trackName)}`;
