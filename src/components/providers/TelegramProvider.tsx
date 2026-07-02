@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useRef } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Script from "next/script";
 import { signIn, getSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 
 interface TelegramContextType {
   webApp: any | null;
@@ -19,6 +20,8 @@ const TelegramContext = createContext<TelegramContextType>({
 export function TelegramProvider({ children }: { children: React.ReactNode }) {
   const [webApp, setWebApp] = useState<any | null>(null);
   const [isTelegram, setIsTelegram] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     // Only run if we are in the browser and Telegram WebApp is injected
@@ -33,8 +36,21 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
         // Notify Telegram that the app is ready to be displayed
         tg.ready();
         
-        // Expand the Web App to take up the full available screen height
-        tg.expand();
+        // Prevent accidental swipe closing
+        if (typeof tg.disableVerticalSwipes === 'function') {
+          tg.disableVerticalSwipes();
+        }
+
+        // Expand the Web App to take up the full available screen height or full screen
+        if (typeof tg.requestFullscreen === 'function') {
+          try {
+            tg.requestFullscreen();
+          } catch (e) {
+            tg.expand();
+          }
+        } else {
+          tg.expand();
+        }
         
         // Set Theme Color based on Telegram's current color scheme
         if (tg.colorScheme === "dark") {
@@ -75,6 +91,27 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
     const timer = setTimeout(initTelegram, 300);
     return () => clearTimeout(timer);
   }, []);
+
+  // Handle BackButton based on current route
+  useEffect(() => {
+    if (!webApp) return;
+
+    if (pathname !== "/") {
+      webApp.BackButton.show();
+    } else {
+      webApp.BackButton.hide();
+    }
+
+    const handleBack = () => {
+      router.back();
+    };
+
+    webApp.BackButton.onClick(handleBack);
+
+    return () => {
+      webApp.BackButton.offClick(handleBack);
+    };
+  }, [pathname, webApp, router]);
 
   return (
     <>
