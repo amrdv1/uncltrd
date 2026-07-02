@@ -10,6 +10,7 @@ import { InteractionBar } from "@/components/ui/InteractionBar";
 import { Lightbox } from "@/components/ui/Lightbox";
 import { RatingSliders } from "@/components/ui/RatingSliders";
 import { CustomAudioPlayer } from "@/components/ui/CustomAudioPlayer";
+import { UniversalPlayer } from "@/components/ui/UniversalPlayer";
 import { SoundCloudPlayer } from "@/components/ui/SoundCloudPlayer";
 import { Carousel } from "@/components/ui/Carousel";
 
@@ -268,13 +269,7 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
       avgCharisma = Math.round((adminRatings.reduce((acc: number, r: any) => acc + r.charisma, 0) / adminRatings.length) * 10) / 10;
     }
     
-    let autoPreviewUrl = null;
-    if (article.media && article.media.length > 0 && !article.media[0].url.match(/\.(mp3|wav|ogg|m4a|aac)$/i) && !article.media[0].url.includes('soundcloud.com')) {
-      const artist = encodeURIComponent(article.trackReview.artistName);
-      const track = encodeURIComponent(article.trackReview.trackName);
-      autoPreviewUrl = `/api/resolve-track?artist=${artist}&track=${track}`;
-    }
-
+    // Removed autoPreviewUrl logic completely to rely on UniversalPlayer directly
     return (
       <div className="bg-white dark:bg-[#050505] min-h-screen pt-8 pb-20 text-black dark:text-white font-sans transition-colors">
         <div className="max-w-6xl mx-auto px-6">
@@ -339,59 +334,18 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                 </div>
                 
                 {article.media && article.media.length > 0 ? (
-                  article.media[0].url.match(/\.(mp3|wav|ogg|m4a|aac)$/i) ? (
-                    <CustomAudioPlayer src={article.media[0].url} />
-                  ) : article.media[0].url.includes('soundcloud.com') ? (
-                    <>
-                      <div className="w-full min-w-[280px] max-w-sm xl:max-w-md mt-2 md:mt-0 hidden [.in-telegram_&]:block"><SoundCloudPlayer url={article.media[0].url} /></div>
-                      <a href={article.media[0].url} target="_blank" rel="noopener noreferrer" className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white px-8 py-3.5 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center gap-2 [.in-telegram_&]:hidden">
-                        <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />
-                        СЛУХАТИ
-                      </a>
-                    </>
-                  ) : article.media[0].url.includes('open.spotify.com') ? (
-                    <>
-                      <div className="w-full min-w-[280px] max-w-sm xl:max-w-md mt-2 md:mt-0 hidden [.in-telegram_&]:block">
-                        {autoPreviewUrl ? (
-                          <CustomAudioPlayer src={autoPreviewUrl} />
-                        ) : (
-                          <iframe style={{ borderRadius: "12px" }} src={`${article.media[0].url.replace('open.spotify.com/', 'open.spotify.com/embed/')}?utm_source=generator`} width="100%" height="152" frameBorder="0" allowFullScreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-                        )}
-                      </div>
-                      <a href={article.media[0].url} target="_blank" rel="noopener noreferrer" className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white px-8 py-3.5 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center gap-2 [.in-telegram_&]:hidden">
-                        <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />
-                        СЛУХАТИ
-                      </a>
-                    </>
-                  ) : article.media[0].url.includes('music.apple.com') ? (
-                    <>
-                      <div className="w-full min-w-[280px] max-w-sm xl:max-w-md mt-2 md:mt-0 hidden [.in-telegram_&]:block">
-                        {autoPreviewUrl ? (
-                          <CustomAudioPlayer src={autoPreviewUrl} />
-                        ) : (
-                          <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameBorder="0" height="150" style={{ width: "100%", overflow: "hidden", background: "transparent", borderRadius: "12px" }} sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src={article.media[0].url.replace('music.apple.com/', 'embed.music.apple.com/')}></iframe>
-                        )}
-                      </div>
-                      <a href={article.media[0].url} target="_blank" rel="noopener noreferrer" className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white px-8 py-3.5 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center gap-2 [.in-telegram_&]:hidden">
-                        <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />
-                        СЛУХАТИ
-                      </a>
-                    </>
-                  ) : article.media[0].url.includes('youtube.com/watch') || article.media[0].url.includes('youtu.be') ? (
-                    <>
-                      <div className="w-full min-w-[280px] max-w-sm xl:max-w-md mt-2 md:mt-0 aspect-video rounded-xl overflow-hidden shadow-lg border border-zinc-200 dark:border-zinc-800 hidden [.in-telegram_&]:block">
-                        <iframe src={`https://www.youtube.com/embed/${article.media[0].url.includes('youtu.be') ? article.media[0].url.split('youtu.be/')[1] : new URL(article.media[0].url).searchParams.get('v')}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="w-full h-full"></iframe>
-                      </div>
-                      <a href={article.media[0].url} target="_blank" rel="noopener noreferrer" className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white px-8 py-3.5 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center gap-2 [.in-telegram_&]:hidden">
-                        <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />
-                        СЛУХАТИ
-                      </a>
-                    </>
+                  article.media[0].url.match(/\.(mp3|wav|ogg|m4a|aac)$/i) || !article.media[0].url.match(/(spotify\.com|music\.apple\.com|soundcloud\.com|youtube\.com|youtu\.be)/i) ? (
+                    <UniversalPlayer url={article.media[0].url} />
                   ) : (
-                    <a href={article.media[0].url} target="_blank" rel="noopener noreferrer" className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white px-8 py-3.5 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />
-                      СЛУХАТИ
-                    </a>
+                    <>
+                      <div className="w-full min-w-[280px] max-w-sm xl:max-w-md mt-2 md:mt-0 hidden [.in-telegram_&]:block">
+                        <UniversalPlayer url={article.media[0].url} />
+                      </div>
+                      <a href={article.media[0].url} target="_blank" rel="noopener noreferrer" className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-black dark:text-white px-8 py-3.5 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center gap-2 [.in-telegram_&]:hidden">
+                        <span className="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse" />
+                        СЛУХАТИ
+                      </a>
+                    </>
                   )
                 ) : (
                   <button className="bg-zinc-200/50 dark:bg-zinc-800/50 text-zinc-400 dark:text-zinc-500 px-8 py-3.5 rounded-full font-bold uppercase tracking-widest cursor-not-allowed flex items-center gap-2 transition-colors" title="Немає посилання на трек">
