@@ -196,12 +196,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.role = (user as any).role;
         token.id = user.id;
         token.isTwoFactorEnabled = (user as any).isTwoFactorEnabled;
       }
+      
+      if (trigger === "update" && session) {
+        if (session.name) {
+          token.name = session.name;
+        }
+        if (session.image !== undefined) {
+          token.picture = session.image;
+        }
+      }
+      
       return token;
     },
     async session({ session, token }) {
