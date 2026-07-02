@@ -14,42 +14,14 @@ export async function GET(request: Request) {
         if (result && result.status && result.result && result.result.formats && result.result.formats.length > 0) {
           const mp3Url = result.result.formats[0].url;
           
-          const mp3Response = await fetch(mp3Url, {
-            headers: { 'User-Agent': 'Mozilla/5.0' }
-          });
-
-          if (!mp3Response.ok) {
-            return NextResponse.json({ error: 'Failed to download MP3 from provider' }, { status: 500 });
-          }
-
-          return new Response(mp3Response.body, {
-            headers: {
-              'Content-Type': 'audio/mpeg',
-              'Accept-Ranges': 'bytes',
-              'Content-Length': mp3Response.headers.get('content-length') || '',
-            }
-          });
+          return NextResponse.redirect(mp3Url, 302);
         } else {
           return NextResponse.json({ error: 'Failed to extract Spotify MP3' }, { status: 400 });
         }
       } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
         const result = await youtube(url);
         if (result && result.status && result.mp3) {
-          const mp3Response = await fetch(result.mp3, {
-            headers: { 'User-Agent': 'Mozilla/5.0' }
-          });
-
-          if (!mp3Response.ok) {
-            return NextResponse.json({ error: 'Failed to download YouTube MP3' }, { status: 500 });
-          }
-
-          return new Response(mp3Response.body, {
-            headers: {
-              'Content-Type': 'audio/mpeg',
-              'Accept-Ranges': 'bytes',
-              'Content-Length': mp3Response.headers.get('content-length') || '',
-            }
-          });
+          return NextResponse.redirect(result.mp3, 302);
         } else {
           return NextResponse.json({ error: 'Failed to extract YouTube MP3' }, { status: 400 });
         }
@@ -67,21 +39,7 @@ export async function GET(request: Request) {
             const firstVideoUrl = videos[0].url;
             const result = await youtube(firstVideoUrl);
             if (result && result.status && result.mp3) {
-              const mp3Response = await fetch(result.mp3, {
-                headers: { 'User-Agent': 'Mozilla/5.0' }
-              });
-
-              if (!mp3Response.ok) {
-                return NextResponse.json({ error: 'Failed to download Apple Music via YouTube' }, { status: 500 });
-              }
-
-              return new Response(mp3Response.body, {
-                headers: {
-                  'Content-Type': 'audio/mpeg',
-                  'Accept-Ranges': 'bytes',
-                  'Content-Length': mp3Response.headers.get('content-length') || '',
-                }
-              });
+              return NextResponse.redirect(result.mp3, 302);
             }
           }
         }
