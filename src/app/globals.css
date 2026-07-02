@@ -64,6 +64,19 @@
   }
 }
 
+/* Telegram Mini App Utilities */
+html.in-telegram .telegram-header-padding {
+  padding-top: var(--tg-header-padding, 48px) !important;
+}
+
+html.in-telegram .telegram-header-height {
+  height: calc(4rem + var(--tg-header-padding, 48px)) !important;
+}
+
+html.in-telegram .telegram-layout-padding {
+  padding-top: calc(4rem + var(--tg-header-padding, 48px)) !important;
+}
+
 @layer base {
   * {
     @apply border-border;
