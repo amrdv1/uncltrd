@@ -3,6 +3,7 @@ import { Users, FileText, Settings, LayoutDashboard, BookOpen, LogOut, Image as 
 import { auth } from "@/lib/auth";
 
 import { redirect } from "next/navigation";
+import { TelegramSpacer } from "@/components/ui/TelegramSpacer";
 
 export default async function AdminLayout({
   children,
@@ -109,6 +110,7 @@ export default async function AdminLayout({
 
       {/* Admin Content */}
       <main className="flex-1 p-4 pb-24 md:pb-8 md:p-8 lg:p-12 relative z-10 overflow-x-hidden">
+        <TelegramSpacer />
         <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-accent/5 to-transparent pointer-events-none" />
         <div className="relative z-10 max-w-7xl mx-auto">
           {children}
