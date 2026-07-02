@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 
-export function CustomAudioPlayer({ src }: { src: string }) {
+export function CustomAudioPlayer({ src, onEnded }: { src: string, onEnded?: () => void }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -33,14 +33,20 @@ export function CustomAudioPlayer({ src }: { src: string }) {
     audio.addEventListener("loadeddata", setAudioData);
     audio.addEventListener("durationchange", setAudioData);
     audio.addEventListener("timeupdate", setAudioTime);
-    audio.addEventListener("ended", () => setIsPlaying(false));
+    audio.addEventListener("ended", () => {
+      setIsPlaying(false);
+      if (onEnded) onEnded();
+    });
 
     return () => {
       audio.removeEventListener("loadedmetadata", setAudioData);
       audio.removeEventListener("loadeddata", setAudioData);
       audio.removeEventListener("durationchange", setAudioData);
       audio.removeEventListener("timeupdate", setAudioTime);
-      audio.removeEventListener("ended", () => setIsPlaying(false));
+      audio.removeEventListener("ended", () => {
+        setIsPlaying(false);
+        if (onEnded) onEnded();
+      });
     };
   }, []);
 

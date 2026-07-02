@@ -11,6 +11,7 @@ import { Lightbox } from "@/components/ui/Lightbox";
 import { RatingSliders } from "@/components/ui/RatingSliders";
 import { CustomAudioPlayer } from "@/components/ui/CustomAudioPlayer";
 import { UniversalPlayer } from "@/components/ui/UniversalPlayer";
+import { AlbumPlayer } from "@/components/ui/AlbumPlayer";
 import { SoundCloudPlayer } from "@/components/ui/SoundCloudPlayer";
 import { Carousel } from "@/components/ui/Carousel";
 
@@ -344,7 +345,9 @@ export default async function ArticlePage(props: { params: Promise<{ slug: strin
                   ) : article.media[0].url.includes('spotify.com') ? (
                     <>
                       <div className="w-full min-w-[280px] max-w-sm xl:max-w-md mt-2 md:mt-0 hidden [.in-telegram_&]:block">
-                        {autoPreviewUrl ? (
+                        {article.media[0].url.includes('spotify.com/album/') ? (
+                          <AlbumPlayer albumUrl={article.media[0].url} />
+                        ) : autoPreviewUrl ? (
                           <CustomAudioPlayer src={autoPreviewUrl} />
                         ) : (
                           <UniversalPlayer url={article.media[0].url} />
