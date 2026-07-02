@@ -15,18 +15,30 @@ export function CustomAudioPlayer({ src }: { src: string }) {
     if (!audio) return;
 
     const setAudioData = () => {
-      setDuration(audio.duration);
+      if (audio.duration && !isNaN(audio.duration) && audio.duration !== Infinity) {
+        setDuration(audio.duration);
+      }
       setCurrentTime(audio.currentTime);
     };
 
-    const setAudioTime = () => setCurrentTime(audio.currentTime);
+    const setAudioTime = () => {
+      setCurrentTime(audio.currentTime);
+      // Fallback: update duration if it wasn't caught earlier or changed
+      if (audio.duration && !isNaN(audio.duration) && audio.duration !== Infinity && audio.duration !== duration) {
+        setDuration(audio.duration);
+      }
+    };
 
+    audio.addEventListener("loadedmetadata", setAudioData);
     audio.addEventListener("loadeddata", setAudioData);
+    audio.addEventListener("durationchange", setAudioData);
     audio.addEventListener("timeupdate", setAudioTime);
     audio.addEventListener("ended", () => setIsPlaying(false));
 
     return () => {
+      audio.removeEventListener("loadedmetadata", setAudioData);
       audio.removeEventListener("loadeddata", setAudioData);
+      audio.removeEventListener("durationchange", setAudioData);
       audio.removeEventListener("timeupdate", setAudioTime);
       audio.removeEventListener("ended", () => setIsPlaying(false));
     };
@@ -62,7 +74,7 @@ export function CustomAudioPlayer({ src }: { src: string }) {
   };
 
   const formatTime = (time: number) => {
-    if (isNaN(time)) return "0:00";
+    if (!time || isNaN(time) || time === Infinity) return "0:00";
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
@@ -87,7 +99,7 @@ export function CustomAudioPlayer({ src }: { src: string }) {
         <div className="relative w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden flex items-center">
           <div 
             className="absolute top-0 left-0 h-full bg-accent transition-all duration-100 ease-linear rounded-full"
-            style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
+            style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
           />
           <input
             type="range"
