@@ -58,8 +58,8 @@ export function MobileNavClient({ userRole, userName, userImage, isLoggedIn }: a
             : { height: '4rem' }
         }
       >
-        <Link href="/" className="text-2xl font-black uppercase tracking-tighter font-serif">
-          uncultured<span className="text-accent">.</span>
+        <Link href="/" className="text-2xl font-black uppercase tracking-tighter font-serif flex items-center">
+          uncultured<span className="text-accent">.</span><span className="text-xs ml-1 text-gray-500">v2</span>
         </Link>
         <button 
           onClick={() => setIsOpen(true)}
