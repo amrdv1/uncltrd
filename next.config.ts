@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  serverExternalPackages: ['yt-search', '@distube/ytdl-core', 'cheerio'],
 };
 
 export default nextConfig;

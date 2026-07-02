@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import ytdl from '@distube/ytdl-core';
 import ytSearch from 'yt-search';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const artist = searchParams.get('artist');
